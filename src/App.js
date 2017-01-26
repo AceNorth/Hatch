@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { View, StyleSheet } from 'react-native';
-// import { Provider } from 'react-redux';
+import { Provider } from 'react-redux';
 // import { createStore, applyMiddleware } from 'redux';
 import firebase from 'firebase';
 // import ReduxThunk from 'redux-thunk';
-import store from './'
+import store from './store';
 
-// import Router from './Router';
+import Router from './router';
 // import reducers from './reducers';
 
 const styles = StyleSheet.create({
@@ -43,9 +43,7 @@ export default class App extends Component {
   render() {
     return (
       <Provider store={store}>
-          <View style={styles.container}>
-             <router />
-          </View>
+             <Router />
       </Provider>
     );
   }
