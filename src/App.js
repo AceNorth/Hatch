@@ -3,8 +3,8 @@ import { View, StyleSheet } from 'react-native';
 // import { Provider } from 'react-redux';
 // import { createStore, applyMiddleware } from 'redux';
 import firebase from 'firebase';
-import LandingPage from './components/LandingPage';
 // import ReduxThunk from 'redux-thunk';
+import store from './'
 
 // import Router from './Router';
 // import reducers from './reducers';
@@ -42,9 +42,11 @@ export default class App extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
-         <LandingPage />
-      </View>
+      <Provider store={store}>
+          <View style={styles.container}>
+             <router />
+          </View>
+      </Provider>
     );
   }
 }
