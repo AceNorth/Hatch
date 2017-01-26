@@ -9,11 +9,19 @@
   "dependencies": {
     "firebase": "^3.6.7",
     "react": "15.4.2",
-    "react-native": "0.40.0"
+    "react-native": "0.40.0",
+    "redux": "^3.6.0",
+    "redux-logger": "^2.7.4",
+    "redux-thunk": "^2.2.0"
   },
   "devDependencies": {
     "babel-jest": "18.0.0",
     "babel-preset-react-native": "1.9.1",
+    "eslint": "^3.14.1",
+    "eslint-config-airbnb": "^14.0.0",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-jsx-a11y": "^3.0.2",
+    "eslint-plugin-react": "^6.9.0",
     "jest": "18.1.0",
     "react-test-renderer": "15.4.2"
   },
