@@ -3,20 +3,21 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, MapView } from 'react-native';
 import { Button, Spinner } from './common';
+import AddNodeForm from './AddNodeForm';
 
-export default class LocationDisplay extends Component {
+export default class LandingPage extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
       currentPosition: { timestamp: 0, coords: { latitude: 1, longitude: 1 } },
-      loading: false
+      loading: false,
+      showModal: false
     };
 
     this.onButtonPress = this.onButtonPress.bind(this);
 
   }
-
 
   onPackageRetrievalSuccess() {
     // what we do if the user is in the correct spot to retrieve their package
@@ -37,8 +38,10 @@ export default class LocationDisplay extends Component {
     // check the user's location data against the package data:
     // this.setState({ loading: true });
     // ...but not yet.
-    this.updateCurrentPosition();
-
+    // this.updateCurrentPosition();
+    console.log("FIXING THE STATE!");
+    this.setState({showModal: true})
+    console.log("FIXED THE STATE: ", this.state)
   }
 
   updateCurrentPosition() {
@@ -62,6 +65,10 @@ export default class LocationDisplay extends Component {
     return <Button onPress={this.onButtonPress}>
         Get current location
         </Button>
+
+    // return <Button onPress={this.onButtonPress}>
+    //     Get current location
+    //     </Button>
   }
 
   render() {
@@ -78,6 +85,14 @@ export default class LocationDisplay extends Component {
         <Text> Y: {position.coords.longitude} </Text>
         <Text> Timestamp: {position.timestamp} </Text>
         {this.renderButton()}
+        
+        <AddNodeForm
+          visible={this.state.showModal}
+        >
+          HAHA NICE 
+        </AddNodeForm>
+        
+
       </View>
     );
   }

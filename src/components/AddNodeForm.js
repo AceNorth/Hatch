@@ -1,33 +1,56 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Text, View, Modal } from 'react-native';
 import { CardSection } from './common/CardSection';
 import { Button } from './common/Button';
+import { Actions } from 'react-native-router-flux'
 
-const AddNodeForm = ({ children, visible, onAccept, onDecline }) => {
+export default class AddNodeForm extends Component { 
+    constructor(props) {
+        super(props);
+        this.state = {
+            visible: props.visible
+        }
+        this.children = props.children;
+        this.onSubmit = this.onSubmit.bind(this);
+    }
 
-    const { containerStyle, textStyle, cardSectionStyle } = styles;
 
-    return (
-        <Modal
-            visible={visible}
-            transparent
-            animationType="slide"
-            onRequestClose={() => {}}
-        >
-            <View style={containerStyle}>
-                <CardSection style={cardSectionStyle}>
-                    <Text style={textStyle}>
-                        {children}
-                    </Text>
-                </CardSection>
-                <CardSection>
-                    <Button onPress={onAccept}>Yes</Button>
-                    <Button onPress={onDecline}>No</Button>
-                </CardSection>
-            </View>
-        </Modal>
-    );
+    onSubmit() {
+        console.log("THIS IS: ", this)
+        console.log("nice submission");
+        this.setState({visible: false})
+    };
+
+    onCancel() {
+        console.log("nice cancel");
+        this.visible = false;
+    };
+
+    render() {
+        console.log("PROPS: ", this.props);
+        return (
+            <Modal
+                visible={this.state.visible}
+                transparent
+                animationType="slide"
+                onRequestClose={() => {}}
+            >
+                <View style={styles.containerStyle}>
+                    <CardSection style={styles.cardSectionStyle}>
+                        <Text style={styles.textStyle}>
+                            {this.children}
+                        </Text>
+                    </CardSection>
+                    <CardSection>
+                        <Button onPress={this.onSubmit}>Submit</Button>
+                        <Button onPress={this.onCancel}>Cancel</Button>
+                    </CardSection>
+                </View>
+            </Modal>
+        );
+    };
 };
+
 
 const styles = {
     cardSectionStyle: {
@@ -46,6 +69,4 @@ const styles = {
         justifyContent: 'center'
     }
 };
-
-export { AddNodeForm };
 
