@@ -36,12 +36,12 @@ class LandingPage extends Component {
   onSubmitNode() {
     console.log("submitted");
     //send data to DB
-    const message = {
+    const egg = {
       goHereText: this.state.text,
       latitude: this.state.annotations[0].latitude,
       longitude: this.state.annotations[0].longitude
     }
-    axios.post('http://localhost:1333/api/message', message);
+    axios.post('http://localhost:1333/api/egg', egg);
     this.setState({ showAddNodeModal: false, annotations: [] });
   }
 
@@ -102,7 +102,7 @@ class LandingPage extends Component {
     if (this.state.annotations.length) {
       return (
         <Button onPress={this.onAddNodeButtonPress.bind(this)}>
-        Leave a package at the current pin
+        Leave an egg at the current pin
         </Button>
         )
     }
@@ -132,7 +132,7 @@ class LandingPage extends Component {
           handleInputChange={this.handleInputChange}
           {...this.state}
         >
-          HAHAHAHA
+          BUK BUK BUK...
         </AddNodeForm>
         
 
