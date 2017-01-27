@@ -10,7 +10,7 @@ export default function AddNodeForm (props) {
             <Modal
                 visible={props.visible}
                 transparent
-                animationType="slide"
+                animationType="fade"
                 onRequestClose={() => {
                 }}
             >

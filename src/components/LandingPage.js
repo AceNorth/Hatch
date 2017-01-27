@@ -22,7 +22,6 @@ class LandingPage extends Component {
 	    text: 'placeholder'
     };
 
-    this.onButtonPress = this.onButtonPress.bind(this);
     this.onSubmitNode = this.onSubmitNode.bind(this);
     this.onCancelSubmitNode = this.onCancelSubmitNode.bind(this);
     this.onMapLongPress = this.onMapLongPress.bind(this);
@@ -33,22 +32,24 @@ class LandingPage extends Component {
     this.updateCurrentPosition();
   }
 
-
   onButtonPress() {
     this.setState({showAddNodeModal: true})
   }
 
   onAddNodeButtonPress() {
-    console.log("LEAVING A PACKAGE AT X: ", this.state.annotations[0].longitude);
-    console.log("LEAVING A PACKAGE AT Y: ", this.state.annotations[0].latitude);
+    this.setState({ showAddNodeModal: true })
   }
 
   onSubmitNode() {
     console.log("submitted");
     //send data to DB
-      const message = {goHereText: this.state.text}
+    const message = {
+      goHereText: this.state.text,
+      latitude: this.state.annotations[0].latitude,
+      longitude: this.state.annotations[0].longitude
+    }
     axios.post('http://localhost:1333/api/message', message);
-    this.setState({ showAddNodeModal: false });
+    this.setState({ showAddNodeModal: false, annotations: [] });
   }
 
   onCancelSubmitNode() {
