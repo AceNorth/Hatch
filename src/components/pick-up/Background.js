@@ -1,25 +1,7 @@
 import React, { Component } from 'react';
-import { View, StyleSheet } from 'react-native';
 import BackgroundGeolocation from 'react-native-background-geolocation';
-// import { Provider } from 'react-redux';
-// import { createStore, applyMiddleware } from 'redux';
-// import firebase from 'firebase';
-import LandingPage from './components/LandingPage';
-// import ReduxThunk from 'redux-thunk';
 
-// import Router from './Router';
-// import reducers from './reducers';
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-});
-
-export default class App extends Component {
+class Background extends Component {
   componentWillMount() {
     // This handler fires whenever bgGeo receives a location update.
     BackgroundGeolocation.on('location', this.onLocation);
@@ -34,7 +16,7 @@ export default class App extends Component {
       stationaryRadius: 25,
       distanceFilter: 10,
       // Activity Recognition
-      stopTimeout: 5,
+      stopTimeout: 1,
       // Application config
       debug: true, // <-- enable for debug sounds & notifications
       logLevel: BackgroundGeolocation.LOG_LEVEL_VERBOSE,
@@ -68,11 +50,6 @@ export default class App extends Component {
   onMotionChange(location) {
     console.log('- [js]motionchanged: ', JSON.stringify(location));
   }
-  render() {
-    return (
-      <View style={styles.container}>
-         <LandingPage />
-      </View>
-    );
-  }
 }
+
+export default Background;

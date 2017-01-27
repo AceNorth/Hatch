@@ -1,48 +1,65 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, MapView } from 'react-native';
-import { Button, Spinner } from './common';
+import { View, Text, StyleSheet, MapView, TextInput, TouchableWithoutFeedback } from 'react-native';
+import { Button } from './common';
+import  AddNodeForm  from './AddNodeForm';
+import { connect } from 'react-redux';
+import axios from 'axios';
 
 let events = require('events');
 let eventEmitter = new events.EventEmitter();
 
-/*
-current location
-x: 41.889189...
-y: -87.635707...
-*/
-
-export default class LocationDisplay extends Component {
+class LandingPage extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      currentPosition: { 
-        timestamp: 0, 
-        coords: { 
-          latitude: 1, 
-          longitude: 1 
-        } 
-      },
-      packagePosition: {
-        // x: 41.889189...
-        // y: -87.635707...
-        coords: {
-          lat: 41.889189,
-          long: -87.635707
-        }
-      },
-      fenceRadius: 1,
-      loading: false
+      currentPosition: { timestamp: 0, coords: { latitude: 1, longitude: 1 } },
+      packagePosition: { coords: { lat: 41.889189, long: -87.635707 } },
+      showAddNodeModal: false,
+      annotations: [],
+	    text: 'placeholder'
     };
 
     this.onButtonPress = this.onButtonPress.bind(this);
+    this.onSubmitNode = this.onSubmitNode.bind(this);
+    this.onCancelSubmitNode = this.onCancelSubmitNode.bind(this);
+    this.onMapLongPress = this.onMapLongPress.bind(this);
+    this.handleInputChange = this.handleInputChange.bind(this); 
+}
 
+  componentDidMount() {
+    this.updateCurrentPosition();
+  }
+
+
+  onButtonPress() {
+    this.setState({showAddNodeModal: true})
+  }
+
+  onAddNodeButtonPress() {
+    console.log("LEAVING A PACKAGE AT X: ", this.state.annotations[0].longitude);
+    console.log("LEAVING A PACKAGE AT Y: ", this.state.annotations[0].latitude);
+  }
+
+  onSubmitNode() {
+    console.log("submitted");
+    //send data to DB
+      const message = {goHereText: this.state.text}
+    axios.post('http://localhost:1333/api/message', message);
+    this.setState({ showAddNodeModal: false });
+  }
+
+  onCancelSubmitNode() {
+    this.setState({ showAddNodeModal: false });
+  }
+
+  handleInputChange(e){
+      this.setState({text: e });
   }
 
   updateCurrentPosition() {
-
     let options = {
       enableHighAccuracy: true,
       timeout: 5000,
@@ -54,22 +71,47 @@ export default class LocationDisplay extends Component {
       , null, options);
   }
 
-  onButtonPress() {
-    // eventually we'll want to set "loading" to true while we
-    // check the user's location data against the package data:
-    // this.setState({ loading: true });
-    // ...but not yet.
-    this.updateCurrentPosition();
+  onMapLongPress(event) {
+    if (!this.state.annotations.length) {
+      let options = {
+        enableHighAccuracy: true,
+        timeout: 5000,
+        maximumAge: 1
+      };
+
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          this.setState({
+              annotations: [this.createAnnotation(position.coords.longitude, position.coords.latitude)]
+            })
+        }
+        , null, options);
+    }
   }
 
-  renderButton() {
-    if (this.state.loading) {
-      return <Spinner size="small" />;
-    }
+  createAnnotation(longitude, latitude) {
+    return {
+      longitude,
+      latitude,
+      draggable: true,
+      onDragStateChange: (event) => {
+        if (event.state === 'idle') {
+          this.setState({
+            annotations: [this.createAnnotation(event.longitude, event.latitude)]
+          });
+        }
+      },
+    };
+  }
 
-    return <Button onPress={this.onButtonPress}>
-        Get current location
+  renderLeavePackageButton() {
+    if (this.state.annotations.length) {
+      return (
+        <Button onPress={this.onAddNodeButtonPress.bind(this)}>
+        Leave a package at the current pin
         </Button>
+        )
+    }
   }
   
   componentDidMount() {
@@ -105,31 +147,46 @@ export default class LocationDisplay extends Component {
 
   render() {
     const position = this.state.currentPosition;
+    const annotations = this.state.annotations;
+
     return (
-      <View>
-        <MapView
-          style={{height: 400, width: 400, margin: 0}}
-          showsUserLocation={true}
-          region={{latitude: position.coords.latitude, longitude: position.coords.longitude, 
-                   latitudeDelta: .01, longitudeDelta: .01}}
-          overlays={[
-            { coordinates: [
-                {latitude: position.coords.latitude,longitude: position.coords.longitude },
-              ],
-              strokeColor: '#640C64',
-              lineWidth: 50,
-            }]
-          }
-        />
-        <Text style={styles.title}>Current position: </Text>
-        <Text> X: {position.coords.latitude} </Text>
-        <Text> Y: {position.coords.longitude} </Text>
-        <Text> Timestamp: {position.timestamp} </Text>
-        {this.renderButton()}
-        
+      <View>        
+        <TouchableWithoutFeedback onLongPress={ this.onMapLongPress }>
+          <MapView
+            style={{height: 400, width: 400, margin: 0}}
+            showsUserLocation={true}
+            region={{latitude: position.coords.latitude, longitude: position.coords.longitude, latitudeDelta: .01, longitudeDelta: .01}}
+            annotations={ annotations }
+            overlays={[
+              { coordinates: [
+                  {latitude: position.coords.latitude,longitude: position.coords.longitude },
+                ],
+                strokeColor: '#640C64',
+                lineWidth: 50,
+              }]
+            }
+          />
+        </TouchableWithoutFeedback>
+
         <Text> Inbounds?: </Text>
         {this.renderFenceCheck()}
+
+        <Button onPress={this.onButtonPress.bind(this)}>
+        See an example modal
+        </Button>
         
+        {this.renderLeavePackageButton()}
+
+        <AddNodeForm
+          visible={ this.state.showAddNodeModal }
+          onSubmitNode={ this.onSubmitNode }
+          onCancelSubmitNode={ this.onCancelSubmitNode }
+          handleInputChange={this.handleInputChange}
+          {...this.state}
+        >
+          HAHAHAHA
+        </AddNodeForm>
+       
       </View>
     );
   }
@@ -140,3 +197,21 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
 });
+
+
+const mapStateToProps = (state, ownProps) => {
+    return {
+    };
+}
+
+
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+    return {
+        addUToDb: function(user){
+            dispatch(addUToDb(user));
+        },
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(LandingPage);
