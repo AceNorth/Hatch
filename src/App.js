@@ -23,20 +23,6 @@ const config = {
   loiteringDelay: '0' // Android only
 };
 
-const createGeofence = (config) => {
-  const bgGeo = global.BackgroundGeolocation;
-  bgGeo.addGeofence(config, createGeofenceSuccess, createGeofenceFail);
-  // BackgroundGeolocation.addGeofence(config, createGeofenceSuccess, createGeofenceFail);
-};
-
-const createGeofenceSuccess = (identifier) => {
-  console.log('you successfully created a geofence!:', identifier);
-};
-
-const createGeofenceFail = (error) => {
-  console.warn('- addGeofence error: ', error);
-};
-
 export default class App extends Component {
   componentWillMount() {
     // This handler fires whenever bgGeo receives a location update.
