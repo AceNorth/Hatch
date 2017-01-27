@@ -3,21 +3,12 @@ import {Text, View, Modal, TextInput} from 'react-native';
 import {CardSection} from './common/CardSection';
 import {Button} from './common/Button';
 
-export default class AddNodeForm extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            text: "useless placeholder"
-        };
-    }
 
-
-    render() {
+export default function AddNodeForm (props) {
         const { containerStyle, textStyle, cardSectionStyle, inputStyle } = styles;
-
         return (
             <Modal
-                visible={this.props.visible}
+                visible={props.visible}
                 transparent
                 animationType="slide"
                 onRequestClose={() => {
@@ -26,23 +17,24 @@ export default class AddNodeForm extends Component {
                 <View style={containerStyle}>
                     <CardSection style={cardSectionStyle}>
                         <Text style={textStyle}>
-                            {this.props.children}
+                            {props.children}
                         </Text>
                     </CardSection>
                     <TextInput
                         style={inputStyle}
-                        onChangeText={(text) => this.setState({text})}
-                        value={this.state.text}
+                        name='text'
+                        onChangeText={e => props.handleInputChange(e)}
+                        value={props.text}
                     />
 
                     <CardSection>
-                        <Button onPress={this.props.onSubmitNode}>Submit</Button>
-                        <Button onPress={this.props.onCancelSubmitNode}>Cancel</Button>
+                        <Button onPress={props.onSubmitNode}>Submit</Button>
+                        <Button onPress={props.onCancelSubmitNode}>Cancel</Button>
                     </CardSection>
                 </View>
             </Modal>
         );
-    }
+
 
 };
 
