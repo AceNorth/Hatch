@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 // import { createStore, applyMiddleware } from 'redux';
 import firebase from 'firebase';
 // import ReduxThunk from 'redux-thunk';
-import store from './Store';
+import store from '../store';
 
 import Router from './Router';
 // import reducers from './reducers';
