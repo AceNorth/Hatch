@@ -1,9 +1,9 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, MapView } from 'react-native';
+import { View, Text, StyleSheet, MapView, TextInput } from 'react-native';
 import { Button } from './common';
-import { AddNodeForm } from './AddNodeForm';
+import  AddNodeForm  from './AddNodeForm';
 
 export default class LandingPage extends Component {
 
@@ -11,7 +11,7 @@ export default class LandingPage extends Component {
     super(props);
     this.state = {
       currentPosition: { timestamp: 0, coords: { latitude: 1, longitude: 1 } },
-      showAddNodeModal: false
+      showAddNodeModal: false,
     };
 
     this.onButtonPress = this.onButtonPress.bind(this);
@@ -78,7 +78,7 @@ export default class LandingPage extends Component {
           onSubmitNode={ this.onSubmitNode }
           onCancelSubmitNode={ this.onCancelSubmitNode }
         >
-          HAHA NICE 
+          HAHAHAHA
         </AddNodeForm>
         
 
