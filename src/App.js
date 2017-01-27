@@ -1,42 +1,23 @@
 import React, { Component } from 'react';
 import { View, StyleSheet } from 'react-native';
 import BackgroundGeolocation from 'react-native-background-geolocation';
+// import { Provider } from 'react-redux';
 // import { createStore, applyMiddleware } from 'redux';
-// import LandingPage from './components/LandingPage';
-import { Provider } from 'react-redux';
 // import firebase from 'firebase';
-import store from '../store';
+import LandingPage from './components/LandingPage';
+// import ReduxThunk from 'redux-thunk';
 
-import Router from './Router';
+// import Router from './Router';
 // import reducers from './reducers';
 
-// Disables yellow warnings! Yay!
-console.disableYellowBox = true;
-
-const config = {
-  identifier: 'jeans geofence',
-  latitude: 0,
-  longitude: 0,
-  radius: '100', // in meters... is this supposed to be a string??
-  notifyOnEntry: true,
-  notifyOnExit: false,
-  notifyOnDwell: false, // Android only
-  loiteringDelay: '0' // Android only
-};
-
-const createGeofence = (config) => {
-  const bgGeo = global.BackgroundGeolocation;
-  bgGeo.addGeofence(config, createGeofenceSuccess, createGeofenceFail);
-  // BackgroundGeolocation.addGeofence(config, createGeofenceSuccess, createGeofenceFail);
-};
-
-const createGeofenceSuccess = (identifier) => {
-  console.log('you successfully created a geofence!:', identifier);
-};
-
-const createGeofenceFail = (error) => {
-  console.warn('- addGeofence error: ', error);
-};
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F5FCFF',
+  },
+});
 
 export default class App extends Component {
   componentWillMount() {
@@ -45,9 +26,6 @@ export default class App extends Component {
 
     // This handler fires when movement states changes (stationary->moving; moving->stationary)
     BackgroundGeolocation.on('motionchange', this.onMotionChange);
-
-    // This handler fires when a geofence crossing event occurs
-    BackgroundGeolocation.on('geofence', this.onGeofenceCross);
 
     // Now configure the plugin.
     BackgroundGeolocation.configure({
@@ -77,30 +55,12 @@ export default class App extends Component {
         });
       }
     });
-// 41.888723, -87.637215 is merchandise mart
-// 41.908076, -87.631128 is close to where the fence is
-    BackgroundGeolocation.addGeofence({
-      identifier: 'jeans geofence',
-      latitude: 41.908759,
-      longitude: -87.6310154,
-      radius: '100', // in meters... is this supposed to be a string??
-      notifyOnEntry: true,
-      notifyOnExit: false,
-      notifyOnDwell: false, // Android only
-      loiteringDelay: '0' // Android only
-    }, (identifier) => {
-      console.log('you successfully created a geofence!:', identifier);
-    }, (error) => {
-      console.warn('- addGeofence error: ', error);
-    });
   }
-
   // You must remove listeners when your component unmounts
   componentWillUnmount() {
     // Remove BackgroundGeolocation listeners
     BackgroundGeolocation.un('location', this.onLocation);
     BackgroundGeolocation.un('motionchange', this.onMotionChange);
-    BackgroundGeolocation.un('geofence', this.onGeofenceCross);
   }
   onLocation(location) {
     console.log('- [js]location: ', JSON.stringify(location));
@@ -108,20 +68,11 @@ export default class App extends Component {
   onMotionChange(location) {
     console.log('- [js]motionchanged: ', JSON.stringify(location));
   }
-  onGeofenceCross({ location, identifier, action }) {
-    try {
-      console.log('A geofence has been crossed: ', identifier);
-      console.log('ENTER or EXIT?: ', action);
-      console.log('location: ', JSON.stringify(location));
-    } catch (err) {
-      console.error('onGeofenceCross error happened:', err);
-    }
-  }
   render() {
     return (
-      <Provider store={store}>
-             <Router />
-      </Provider>
+      <View style={styles.container}>
+         <LandingPage />
+      </View>
     );
   }
 }
