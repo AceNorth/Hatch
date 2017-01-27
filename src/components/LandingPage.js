@@ -1,31 +1,23 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, MapView } from 'react-native';
-import { Button, Spinner } from './common';
+import { View, Text, StyleSheet, MapView, TextInput } from 'react-native';
+import { Button } from './common';
+import  AddNodeForm  from './AddNodeForm';
 
-export default class LocationDisplay extends Component {
+export default class LandingPage extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
       currentPosition: { timestamp: 0, coords: { latitude: 1, longitude: 1 } },
-      loading: false
+      showAddNodeModal: false,
     };
 
     this.onButtonPress = this.onButtonPress.bind(this);
+    this.onSubmitNode = this.onSubmitNode.bind(this);
+    this.onCancelSubmitNode = this.onCancelSubmitNode.bind(this);
 
-  }
-
-
-  onPackageRetrievalSuccess() {
-    // what we do if the user is in the correct spot to retrieve their package
-    // this.setState({ loading: false });
-  }
-
-  onPackageRetrievalFailure() {
-    // what we do if the user is NOT in the correct spot to retrieve their package
-    // this.setState({ loading: false });
   }
 
   componentDidMount() {
@@ -33,12 +25,17 @@ export default class LocationDisplay extends Component {
   }
 
   onButtonPress() {
-    // eventually we'll want to set "loading" to true while we
-    // check the user's location data against the package data:
-    // this.setState({ loading: true });
-    // ...but not yet.
-    this.updateCurrentPosition();
+    this.setState({showAddNodeModal: true})
+  }
 
+  onSubmitNode() {
+    // submit 
+    console.log("submitted")
+    this.setState({ showAddNodeModal: false });
+  }
+
+  onCancelSubmitNode() {
+    this.setState({ showAddNodeModal: false });
   }
 
   updateCurrentPosition() {
@@ -59,8 +56,8 @@ export default class LocationDisplay extends Component {
       return <Spinner size="small" />;
     }
 
-    return <Button onPress={this.onButtonPress}>
-        Get current location
+    return <Button onPress={this.onButtonPress.bind(this)}>
+        See an example modal
         </Button>
   }
 
@@ -73,11 +70,18 @@ export default class LocationDisplay extends Component {
           showsUserLocation={true}
           region={{latitude: position.coords.latitude, longitude: position.coords.longitude, latitudeDelta: .01, longitudeDelta: .01}}
         />
-        <Text style={styles.title}>Current position: </Text>
-        <Text> X: {position.coords.latitude} </Text>
-        <Text> Y: {position.coords.longitude} </Text>
-        <Text> Timestamp: {position.timestamp} </Text>
+
         {this.renderButton()}
+        
+        <AddNodeForm
+          visible={this.state.showAddNodeModal}
+          onSubmitNode={ this.onSubmitNode }
+          onCancelSubmitNode={ this.onCancelSubmitNode }
+        >
+          HAHAHAHA
+        </AddNodeForm>
+        
+
       </View>
     );
   }
