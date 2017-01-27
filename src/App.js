@@ -4,20 +4,11 @@ import BackgroundGeolocation from 'react-native-background-geolocation';
 // import { Provider } from 'react-redux';
 // import { createStore, applyMiddleware } from 'redux';
 // import firebase from 'firebase';
-import LandingPage from './components/LandingPage';
 // import ReduxThunk from 'redux-thunk';
 
 // import Router from './Router';
 // import reducers from './reducers';
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-});
+import LandingPage from './components/LandingPage';
 
 export default class App extends Component {
   componentWillMount() {
@@ -47,11 +38,11 @@ export default class App extends Component {
       //   "auth_token": "maybe_your_server_authenticates_via_token_YES?"
       // }
     }, function(state) {
-      console.log("- BackgroundGeolocation is configured and ready: ", state.enabled);
+      console.log('- BackgroundGeolocation is configured and ready: ', state.enabled);
 
       if (!state.enabled) {
         BackgroundGeolocation.start(function() {
-          console.log("- Start success");
+          console.log('- Start success');
         });
       }
     });
@@ -71,8 +62,17 @@ export default class App extends Component {
   render() {
     return (
       <View style={styles.container}>
-         <LandingPage />
+        <LandingPage />
       </View>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F5FCFF',
+  },
+});
