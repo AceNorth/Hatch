@@ -1,9 +1,9 @@
 import { combineReducers } from 'redux'
 //import reducers
-import messages from './messages';
+import eggs from './eggs';
 
 
 
-const rootReducer = combineReducers({messages})
+const rootReducer = combineReducers({eggs})
 
 export default rootReducer

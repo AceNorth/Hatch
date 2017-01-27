@@ -1,17 +1,18 @@
 import React from 'react'
 
-const ADD_MESSAGE = 'ADD_MESSAGE';
+const ADD_EGG = 'ADD_EGG';
 
 const initialState = {
-    allMessages: [],
+    allEggs: [],
+    selectedEgg: {}
 }
 
 
 export default function (state = initialState, action) {
     let newState = Object.assign({}, state)
     switch (action.type) {
-        case ADD_MESSAGE:
-            newState.allMessages = [...newState.allMessages, action.message];
+        case ADD_EGG:
+            newState.allEggs = [...newState.allEggs, action.egg];
             break;
         default:
             return state;
