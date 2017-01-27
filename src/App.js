@@ -4,9 +4,9 @@ import { Provider } from 'react-redux';
 // import { createStore, applyMiddleware } from 'redux';
 import firebase from 'firebase';
 // import ReduxThunk from 'redux-thunk';
-import store from './store';
+import store from './Store';
 
-import Router from './router';
+import Router from './Router';
 // import reducers from './reducers';
 
 const styles = StyleSheet.create({
