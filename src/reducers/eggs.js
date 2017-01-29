@@ -34,7 +34,6 @@ export default function (state = initialState, action) {
 }
 
 /* --------------    THUNKS/DISPATCHERS    -------------- */
-
 export const setSelectedEgg = eggId => dispatch => {
   axios.get(`http://localhost:1333/api/egg/${eggId}`)
   .then(res => dispatch(selectEgg(res.data)))
