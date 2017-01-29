@@ -73,6 +73,7 @@ class LandingPage extends Component {
     const egg = {
       goHereText: this.state.goHereText,
       payload: this.state.payload,
+      payloadType: 'Text',
       latitude: this.state.annotations[0].latitude,
       longitude: this.state.annotations[0].longitude
     }
