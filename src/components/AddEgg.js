@@ -5,8 +5,9 @@ import {Button} from './common/Button';
 import {Input} from './common/Input';
 import { connect } from 'react-redux';
 import axios from 'axios';
-import {showModal} from '../reducers/addNodeModal'
-import {setAnnotations, clearAnnotations} from '../reducers/map'
+import {showModal} from '../reducers/addNodeModal';
+import {setAnnotations, clearAnnotations} from '../reducers/map';
+import { tunnelIP } from '../TUNNELIP';
 
 
 class AddNodeForm extends Component {
@@ -37,17 +38,16 @@ class AddNodeForm extends Component {
         const egg = {
             goHereText: this.state.text,
             latitude: this.props.annotations[0].latitude,
-            longitude: this.props.annotations[0].longitude
+            longitude: this.props.annotations[0].longitude,
+            payloadType: 'Text'
         }
-        axios.post('http://localhost:1333/api/egg', egg)
+        axios.post(`${tunnelIP}/api/egg`, egg)
             .then(()=>{
                 this.setState({ text:'placeholder' });
                 this.props.showModal(false);
                 //this line below causes the app to crash, possibly an async issue with the axios post above
                 this.props.clearAnnotations();
             })
-
-
     }
 
     onCancelSubmitNode() {

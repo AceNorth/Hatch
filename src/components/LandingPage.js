@@ -5,9 +5,12 @@ import { View, Text, StyleSheet, MapView, TextInput, TouchableWithoutFeedback, M
 import { Button } from './common';
 import  AddNodeForm  from './AddEgg';
 import { connect } from 'react-redux';
-import {showModal} from '../reducers/addNodeModal'
-import {setAnnotations, clearAnnotations} from '../reducers/map'
-
+import axios from 'axios';
+import { Actions } from 'react-native-router-flux';
+import { setSelectedEgg } from '../reducers/eggs';
+import { tunnelIP } from '../TUNNELIP';
+import {showModal} from '../reducers/addNodeModal';
+import {setAnnotations, clearAnnotations} from '../reducers/map';
 
 class LandingPage extends Component {
 
@@ -20,9 +23,43 @@ class LandingPage extends Component {
     this.onMapLongPress = this.onMapLongPress.bind(this);
 }
 
-  componentDidMount() {
-    this.updateCurrentPosition();
+//--------------TEMPORARY STUFF FOR TESTING PURPOSES--------------------
+
+  renderPickupEggButton() {
+    // if you're within the fence of an egg, render the button
+    if (this.isWithinFence(this.state.currentPosition.coords, this.props.selectedEgg)) { 
+      return (
+        <Button onPress={Actions.viewPayload}>
+          FOUND AN EGG! PRESS HERE TO PICK IT UP!
+        </Button>
+      )
+    }
   }
+
+  isWithinFence(coordinatesObject, egg) {
+    if (!egg) { return false };
+    let latitudeMin = egg.latitude - 0.0001;
+    let latitudeMax = egg.latitude + 0.0001;
+    let longitudeMin = egg.longitude - 0.0001;
+    let longitudeMax = egg.longitude + 0.0001;
+    let isWithinLat = (latitudeMin <= coordinatesObject.latitude);
+    let isWithinLong = (longitudeMin <= coordinatesObject.longitude);
+    let evaluation = (isWithinLong && isWithinLat);
+    return evaluation;
+  }
+
+  componentWillMount() {
+    // update "current position" on state every second
+    this.timerID = setInterval(
+      () => this.updateCurrentPosition(),
+      1000
+    );
+
+    this.props.setSelectedEgg(3);
+
+  }
+
+//----------------------END TESTING DATA-----------------
 
   onAddNodeButtonPress() {
     this.props.showModal(true);
@@ -71,7 +108,7 @@ class LandingPage extends Component {
     };
   }
 
-  renderLeavePackageButton() {
+  renderLeaveEggButton() {
     if (this.props.annotations.length) {
       return (
         <Button onPress={this.onAddNodeButtonPress.bind(this)}>
@@ -89,14 +126,15 @@ class LandingPage extends Component {
       <View>
         <TouchableWithoutFeedback onLongPress={ this.onMapLongPress }>
           <MapView
-            style={{height: 400, width: 400, margin: 0}}
+            style={{height: 500, width: 400, margin: 0}}
             showsUserLocation={true}
             region={{latitude: position.coords.latitude, longitude: position.coords.longitude, latitudeDelta: .01, longitudeDelta: .01}}
             annotations={ annotations }
           />
         </TouchableWithoutFeedback>
         
-        {this.renderLeavePackageButton()}
+        {this.renderLeaveEggButton()}
+        {this.renderPickupEggButton()}
 
         <Modal
             visible={this.props.showAddNodeModal}
@@ -109,10 +147,6 @@ class LandingPage extends Component {
               {...this.state}>
           </AddNodeForm>
         </Modal>
-
-
-        
-
       </View>
     );
   }
@@ -124,29 +158,31 @@ const styles = StyleSheet.create({
   },
 });
 
-
 const mapStateToProps = (state, ownProps) => {
-  console.log('landing page, mstp, state', state)
+    let selectedEgg = state.eggs.selectedEgg;
+
     return {
         showAddNodeModal: state.addNodeModal.showAddNodeModal,
-        annotations: state.map.annotations
+        annotations: state.map.annotations,
+        selectedEgg
     };
-}
-
-
+};
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-    return {
-        showModal: function(boolean){
-            dispatch(showModal(boolean));
-        },
-        setAnnotations: function(annotations){
-          dispatch(setAnnotations(annotations))
-        },
-        clearAnnotations: function(){
-          dispatch(clearAnnotations())
-        }
+  return {
+    setSelectedEgg: function(eggId) {
+        dispatch(setSelectedEgg(eggId));
+      },
+    showModal: function(boolean) {
+        dispatch(showModal(boolean));
+    },
+    setAnnotations: function(annotations) {
+      dispatch(setAnnotations(annotations));
+    },
+    clearAnnotations: function() {
+      dispatch(clearAnnotations());
     }
-}
+  };
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(LandingPage);
