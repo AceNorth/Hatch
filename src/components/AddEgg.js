@@ -9,7 +9,7 @@ import {showModal} from '../reducers/addNodeModal'
 import {setAnnotations, clearAnnotations} from '../reducers/map'
 
 
-class AddNodeForm extends Component {
+class AddEgg extends Component {
     constructor(props){
         super(props);
         this.state = {
@@ -43,7 +43,6 @@ class AddNodeForm extends Component {
             .then(()=>{
                 this.setState({ text:'placeholder' });
                 this.props.showModal(false);
-                //this line below causes the app to crash, possibly an async issue with the axios post above
                 this.props.clearAnnotations();
             })
 
@@ -53,7 +52,7 @@ class AddNodeForm extends Component {
     onCancelSubmitNode() {
         this.setState({ text:'placeholder' });
         this.props.showModal(false);
-
+        this.props.clearAnnotations();
     }
 
     render(){
@@ -63,12 +62,38 @@ class AddNodeForm extends Component {
             <View style={containerStyle}>
                 <CardSection>
                     <Input
-                        label="GoHereText"
+                        label="GoHere Image"
+                        onChangeText={e => this.handleInputChange(e)}
+                        value={this.state.text}
+                        onFocus={this.clearInput}
+                    />
+
+                </CardSection>
+                <CardSection>
+                    <Input
+                        label="GoHere Text"
                         onChangeText={e => this.handleInputChange(e)}
                         value={this.state.text}
                         onFocus={this.clearInput}
                     />
                 </CardSection>
+                <CardSection>
+                    <Input
+                        label="Payload Type"
+                        onChangeText={e => this.handleInputChange(e)}
+                        value={this.state.text}
+                        onFocus={this.clearInput}
+                    />
+                </CardSection>
+                <CardSection>
+                    <Input
+                        label="Payload"
+                        onChangeText={e => this.handleInputChange(e)}
+                        value={this.state.text}
+                        onFocus={this.clearInput}
+                    />
+                </CardSection>
+
                 <CardSection>
                     <Button onPress={this.onSubmitNode}>Submit</Button>
                     <Button onPress={this.onCancelSubmitNode}>Cancel</Button>
@@ -120,4 +145,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AddNodeForm);
+export default connect(mapStateToProps, mapDispatchToProps)(AddEgg);

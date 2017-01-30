@@ -3,7 +3,7 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, MapView, TextInput, TouchableWithoutFeedback, Modal } from 'react-native';
 import { Button } from './common';
-import  AddNodeForm  from './AddEgg';
+import  AddEgg  from './AddEgg';
 import { connect } from 'react-redux';
 import {showModal} from '../reducers/addNodeModal'
 import {setAnnotations, clearAnnotations} from '../reducers/map'
@@ -105,14 +105,10 @@ class LandingPage extends Component {
             onRequestClose={() => {
             }}
         >
-          <AddNodeForm
+          <AddEgg
               {...this.state}>
-          </AddNodeForm>
+          </AddEgg>
         </Modal>
-
-
-        
-
       </View>
     );
   }
