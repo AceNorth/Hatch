@@ -1,11 +1,12 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, MapView, TextInput, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, StyleSheet, MapView, TextInput, TouchableWithoutFeedback, Modal } from 'react-native';
 import { Button } from './common';
 import  AddNodeForm  from './AddNodeForm';
 import { connect } from 'react-redux';
-import axios from 'axios';
+import {showModal} from '../reducers/addNodeModal'
+import {setAnnotations, addAnnotation} from '../reducers/map'
 
 
 class LandingPage extends Component {
@@ -14,15 +15,9 @@ class LandingPage extends Component {
     super(props);
     this.state = {
       currentPosition: { timestamp: 0, coords: { latitude: 1, longitude: 1 } },
-      showAddNodeModal: false,
-      annotations: [],
-      text: 'placeholder'
     };
 
-    this.onSubmitNode = this.onSubmitNode.bind(this);
-    this.onCancelSubmitNode = this.onCancelSubmitNode.bind(this);
     this.onMapLongPress = this.onMapLongPress.bind(this);
-    this.handleInputChange = this.handleInputChange.bind(this); 
 }
 
   componentDidMount() {
@@ -30,27 +25,7 @@ class LandingPage extends Component {
   }
 
   onAddNodeButtonPress() {
-    this.setState({ showAddNodeModal: true })
-  }
-
-  onSubmitNode() {
-    console.log("submitted");
-    //send data to DB
-    const egg = {
-      goHereText: this.state.text,
-      latitude: this.state.annotations[0].latitude,
-      longitude: this.state.annotations[0].longitude
-    }
-    axios.post('http://localhost:1333/api/egg', egg);
-    this.setState({ showAddNodeModal: false, annotations: [] });
-  }
-
-  onCancelSubmitNode() {
-    this.setState({ showAddNodeModal: false });
-  }
-
-  handleInputChange(e){
-      this.setState({text: e });
+    this.props.showModal(true);
   }
 
   updateCurrentPosition() {
@@ -66,7 +41,7 @@ class LandingPage extends Component {
   }
 
   onMapLongPress(event) {
-    if (!this.state.annotations.length) {
+    if (!this.props.annotations.length) {
       let options = {
         enableHighAccuracy: true,
         timeout: 5000,
@@ -75,9 +50,11 @@ class LandingPage extends Component {
 
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          this.setState({
-              annotations: [this.createAnnotation(position.coords.longitude, position.coords.latitude)]
-            })
+          let newA = this.createAnnotation(position.coords.longitude, position.coords.latitude);
+          this.props.setAnnotations(newA);
+          // this.setState({
+          //     annotations: [this.createAnnotation(position.coords.longitude, position.coords.latitude)]
+          //   })
         }
         , null, options);
     }
@@ -90,16 +67,18 @@ class LandingPage extends Component {
       draggable: true,
       onDragStateChange: (event) => {
         if (event.state === 'idle') {
-          this.setState({
-            annotations: [this.createAnnotation(event.longitude, event.latitude)]
-          });
+          let newAnnotation= this.createAnnotation(event.longitude, event.latitude);
+          this.props.setAnnotations(newAnnotation);
+          // this.setState({
+          //   annotations: [this.createAnnotation(event.longitude, event.latitude)]
+          // });
         }
       },
     };
   }
 
   renderLeavePackageButton() {
-    if (this.state.annotations.length) {
+    if (this.props.annotations.length) {
       return (
         <Button onPress={this.onAddNodeButtonPress.bind(this)}>
         Leave an egg at the current pin
@@ -110,7 +89,7 @@ class LandingPage extends Component {
 
   render() {
     const position = this.state.currentPosition;
-    const annotations = this.state.annotations;
+    const annotations = this.props.annotations;
 
     return (
       <View>
@@ -125,15 +104,19 @@ class LandingPage extends Component {
         
         {this.renderLeavePackageButton()}
 
-        <AddNodeForm
-          visible={ this.state.showAddNodeModal }
-          onSubmitNode={ this.onSubmitNode }
-          onCancelSubmitNode={ this.onCancelSubmitNode }
-          handleInputChange={this.handleInputChange}
-          {...this.state}
+        <Modal
+            visible={this.props.showAddNodeModal}
+            transparent
+            animationType="fade"
+            onRequestClose={() => {
+            }}
         >
-          BUK BUK BUK...
-        </AddNodeForm>
+          <AddNodeForm
+              {...this.state}>
+          </AddNodeForm>
+        </Modal>
+
+
         
 
       </View>
@@ -149,7 +132,10 @@ const styles = StyleSheet.create({
 
 
 const mapStateToProps = (state, ownProps) => {
+  console.log('landing page, mstp, state', state)
     return {
+        showAddNodeModal: state.addNodeModal.showAddNodeModal,
+        annotations: state.map.annotations
     };
 }
 
@@ -157,9 +143,15 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
     return {
-        addUToDb: function(user){
-            dispatch(addUToDb(user));
+        showModal: function(boolean){
+            dispatch(showModal(boolean));
         },
+        setAnnotations: function(annotations){
+          dispatch(setAnnotations(annotations))
+        },
+        addAnnotation: function(annotation){
+          dispatch(addAnnotation(annotation))
+        }
     }
 }
 
