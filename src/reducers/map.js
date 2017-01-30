@@ -1,7 +1,7 @@
 import React from 'react'
 
 const SET_ANNOTATIONS = 'SET_ANNOTATIONS';
-const ADD_ANNOTATION = 'ADD_ANNOTATION';
+const CLEAR_ANNOTATIONS = 'CLEAR_ANNOTATIONS';
 
 
 const initialState = {
@@ -16,10 +16,9 @@ export const setAnnotations = function (annotations) {
     };
 };
 
-export const addAnnotation = function (annotation) {
+export const clearAnnotations = function () {
     return {
-        type: ADD_ANNOTATION,
-        annotation: annotation
+        type: CLEAR_ANNOTATIONS
     };
 };
 
@@ -32,8 +31,8 @@ export default function (state = initialState, action) {
         case SET_ANNOTATIONS:
             newState.annotations = [action.annotations];
             break;
-        case ADD_ANNOTATION:
-            newState.annotations = [...newState.annotations, action.annotation];
+        case CLEAR_ANNOTATIONS:
+            newState.annotations = [];
             break;
         default:
             return state;

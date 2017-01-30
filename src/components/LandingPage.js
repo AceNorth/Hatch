@@ -3,10 +3,10 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, MapView, TextInput, TouchableWithoutFeedback, Modal } from 'react-native';
 import { Button } from './common';
-import  AddNodeForm  from './AddNodeForm';
+import  AddNodeForm  from './AddEgg';
 import { connect } from 'react-redux';
 import {showModal} from '../reducers/addNodeModal'
-import {setAnnotations, addAnnotation} from '../reducers/map'
+import {setAnnotations, clearAnnotations} from '../reducers/map'
 
 
 class LandingPage extends Component {
@@ -52,9 +52,6 @@ class LandingPage extends Component {
         (position) => {
           let newA = this.createAnnotation(position.coords.longitude, position.coords.latitude);
           this.props.setAnnotations(newA);
-          // this.setState({
-          //     annotations: [this.createAnnotation(position.coords.longitude, position.coords.latitude)]
-          //   })
         }
         , null, options);
     }
@@ -69,9 +66,6 @@ class LandingPage extends Component {
         if (event.state === 'idle') {
           let newAnnotation= this.createAnnotation(event.longitude, event.latitude);
           this.props.setAnnotations(newAnnotation);
-          // this.setState({
-          //   annotations: [this.createAnnotation(event.longitude, event.latitude)]
-          // });
         }
       },
     };
@@ -149,8 +143,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         setAnnotations: function(annotations){
           dispatch(setAnnotations(annotations))
         },
-        addAnnotation: function(annotation){
-          dispatch(addAnnotation(annotation))
+        clearAnnotations: function(){
+          dispatch(clearAnnotations())
         }
     }
 }
