@@ -1,15 +1,16 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, MapView, TextInput, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, StyleSheet, MapView, TextInput, TouchableWithoutFeedback, Modal } from 'react-native';
 import { Button } from './common';
-import  AddNodeForm  from './AddNodeForm';
+import  AddNodeForm  from './AddEgg';
 import { connect } from 'react-redux';
 import axios from 'axios';
 import { Actions } from 'react-native-router-flux';
 import { setSelectedEgg } from '../reducers/eggs';
-import tunnelIP from '../TUNNELIP';
-
+import { tunnelIP } from '../TUNNELIP';
+import {showModal} from '../reducers/addNodeModal';
+import {setAnnotations, clearAnnotations} from '../reducers/map';
 
 class LandingPage extends Component {
 
@@ -17,15 +18,9 @@ class LandingPage extends Component {
     super(props);
     this.state = {
       currentPosition: { timestamp: 0, coords: { latitude: 1, longitude: 1 } },
-      showAddNodeModal: false,
-      annotations: [],
-      text: 'placeholder'
     };
 
-    this.onSubmitNode = this.onSubmitNode.bind(this);
-    this.onCancelSubmitNode = this.onCancelSubmitNode.bind(this);
     this.onMapLongPress = this.onMapLongPress.bind(this);
-    this.handleInputChange = this.handleInputChange.bind(this); 
 }
 
 //--------------TEMPORARY STUFF FOR TESTING PURPOSES--------------------
@@ -67,29 +62,7 @@ class LandingPage extends Component {
 //----------------------END TESTING DATA-----------------
 
   onAddNodeButtonPress() {
-    this.setState({ showAddNodeModal: true })
-  }
-
-  onSubmitNode() {
-    //send data to DB
-    const egg = {
-      goHereText: this.state.goHereText,
-      payload: this.state.payload,
-      payloadType: 'Text',
-      latitude: this.state.annotations[0].latitude,
-      longitude: this.state.annotations[0].longitude
-    }
-    axios.post(`${tunnelIP}/api/egg`, egg)
-    .catch(err => console.error('Problem laying egg', err));
-    this.setState({ showAddNodeModal: false, annotations: [] });
-  }
-
-  onCancelSubmitNode() {
-    this.setState({ showAddNodeModal: false });
-  }
-
-  handleInputChange(e){
-      this.setState({text: e });
+    this.props.showModal(true);
   }
 
   updateCurrentPosition() {
@@ -105,7 +78,7 @@ class LandingPage extends Component {
   }
 
   onMapLongPress(event) {
-    if (!this.state.annotations.length) {
+    if (!this.props.annotations.length) {
       let options = {
         enableHighAccuracy: true,
         timeout: 5000,
@@ -114,9 +87,8 @@ class LandingPage extends Component {
 
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          this.setState({
-              annotations: [this.createAnnotation(position.coords.longitude, position.coords.latitude)]
-            });
+          let newA = this.createAnnotation(position.coords.longitude, position.coords.latitude);
+          this.props.setAnnotations(newA);
         }
         , null, options);
     }
@@ -129,16 +101,15 @@ class LandingPage extends Component {
       draggable: true,
       onDragStateChange: (event) => {
         if (event.state === 'idle') {
-          this.setState({
-            annotations: [this.createAnnotation(event.longitude, event.latitude)]
-          });
+          let newAnnotation= this.createAnnotation(event.longitude, event.latitude);
+          this.props.setAnnotations(newAnnotation);
         }
       },
     };
   }
 
   renderLeaveEggButton() {
-    if (this.state.annotations.length) {
+    if (this.props.annotations.length) {
       return (
         <Button onPress={this.onAddNodeButtonPress.bind(this)}>
         Leave an egg at the current pin
@@ -149,7 +120,7 @@ class LandingPage extends Component {
 
   render() {
     const position = this.state.currentPosition;
-    const annotations = this.state.annotations;
+    const annotations = this.props.annotations;
 
     return (
       <View>
@@ -165,15 +136,17 @@ class LandingPage extends Component {
         {this.renderLeaveEggButton()}
         {this.renderPickupEggButton()}
 
-        <AddNodeForm
-          visible={ this.state.showAddNodeModal }
-          onSubmitNode={ this.onSubmitNode }
-          onCancelSubmitNode={ this.onCancelSubmitNode }
-          handleInputChange={this.handleInputChange}
-          {...this.state}
+        <Modal
+            visible={this.props.showAddNodeModal}
+            transparent
+            animationType="fade"
+            onRequestClose={() => {
+            }}
         >
-          BUK BUK BUK...
-        </AddNodeForm>
+          <AddNodeForm
+              {...this.state}>
+          </AddNodeForm>
+        </Modal>
       </View>
     );
   }
@@ -187,17 +160,29 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state, ownProps) => {
     let selectedEgg = state.eggs.selectedEgg;
+
     return {
-      selectedEgg
+        showAddNodeModal: state.addNodeModal.showAddNodeModal,
+        annotations: state.map.annotations,
+        selectedEgg
     };
-}
+};
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-    return {
-        setSelectedEgg: function(eggId){
-            dispatch(setSelectedEgg(eggId));
-        },
+  return {
+    setSelectedEgg: function(eggId) {
+        dispatch(setSelectedEgg(eggId));
+      },
+    showModal: function(boolean) {
+        dispatch(showModal(boolean));
+    },
+    setAnnotations: function(annotations) {
+      dispatch(setAnnotations(annotations));
+    },
+    clearAnnotations: function() {
+      dispatch(clearAnnotations());
     }
-}
+  };
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(LandingPage);

@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import tunnelIP from '../TUNNELIP';
+import { tunnelIP } from '../TUNNELIP';
 
 /* --------------    ACTION CONSTANTS    ---------------- */
 
@@ -15,7 +15,7 @@ const selectEgg = egg => ({ type: SELECT_EGG, egg });
 
 const initialState = {
     allEggs: [],
-    selectedEgg: {}
+    selectedEgg: {},
 }
 
 export default function (state = initialState, action) {
