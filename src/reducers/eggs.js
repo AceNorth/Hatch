@@ -6,10 +6,12 @@ import { tunnelIP } from '../TUNNELIP';
 
 const ADD_EGG = 'ADD_EGG';
 const SELECT_EGG = 'SELECT_EGG';
+const FETCH_EGGS = 'FETCH_EGGS';
 
 /* --------------    ACTION CREATORS    ----------------- */
 
 const selectEgg = egg => ({ type: SELECT_EGG, egg });
+const fetchEggs = eggs => ({ type: FETCH_EGGS, eggs });
 
 /* ------------------    REDUCER    --------------------- */
 
@@ -27,6 +29,9 @@ export default function (state = initialState, action) {
         case SELECT_EGG:
             newState.selectedEgg = action.egg;
             break;
+        case FETCH_EGGS:
+            newState.allEggs = action.eggs;
+            break;
         default:
             return state;
     }
@@ -38,5 +43,11 @@ export default function (state = initialState, action) {
 export const setSelectedEgg = eggId => dispatch => {
   axios.get(`${tunnelIP}/api/egg/${eggId}`)
   .then(res => dispatch(selectEgg(res.data)))
-  .catch(err => console.error('Problem fetching egg', err));
+  .catch(err => console.error('Problem setting egg', err));
 };
+
+export const fetchAllEggs = userId => dispatch => {
+    axios.get(`${tunnelIP}/api/egg/user/${userId}`)
+    .then(res => dispatch(fetchEggs(res.data)))
+    .catch(err => console.error('Problem fetching eggs', err));
+}

@@ -7,44 +7,47 @@ import  AddNodeForm  from './AddEgg';
 import { connect } from 'react-redux';
 import axios from 'axios';
 import { Actions } from 'react-native-router-flux';
-import { setSelectedEgg } from '../reducers/eggs';
+import { setSelectedEgg, fetchAllEggs } from '../reducers/eggs';
 import { tunnelIP } from '../TUNNELIP';
 import {showModal} from '../reducers/addNodeModal';
-import {setAnnotations, clearAnnotations} from '../reducers/map';
+import {setAnnotations, addAnnotation, clearAnnotations} from '../reducers/map';
 
 class LandingPage extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
+    // user's current position
       currentPosition: { timestamp: 0, coords: { latitude: 1, longitude: 1 } },
+    // locations of eggs waiting to be picked up
+      pickups: []
     };
 
     this.onMapLongPress = this.onMapLongPress.bind(this);
   }
 
   componentWillMount() {
-  // update "current position" on state every second
+  // set timer to update "current position" on state every second
     this.timerID = setInterval(
       () => this.updateCurrentPosition(),
       1000
     );
 
-    // replace this hardcode later
-    this.props.setSelectedEgg(3);
+  // fetch all eggs belonging to the current user
+    this.props.fetchAllEggs(this.props.user.id);
   }
 
-  // isWithinFence(coordinatesObject, egg) {
-  //   if (!egg) { return false };
-  //   let latitudeMin = egg.latitude - 0.0001;
-  //   let latitudeMax = egg.latitude + 0.0001;
-  //   let longitudeMin = egg.longitude - 0.0001;
-  //   let longitudeMax = egg.longitude + 0.0001;
-  //   let isWithinLat = (latitudeMin <= coordinatesObject.latitude);
-  //   let isWithinLong = (longitudeMin <= coordinatesObject.longitude);
-  //   let evaluation = (isWithinLong && isWithinLat);
-  //   return evaluation;
-  // }
+  componentWillReceiveProps(nextProps) {
+    // loop through all the user's eggs and turn them into map annotations
+    let pickups = this.state.pickups;
+
+    nextProps.allEggs.forEach(egg => {
+      let newAnnotation = this.createStaticAnnotation(egg.longitude, egg.latitude);
+      pickups.push(newAnnotation);
+    });
+
+    this.setState({ pickups }); 
+  };
 
   isWithinFence(coordinatesObject, egg){
    if(!egg) { return false }
@@ -105,6 +108,14 @@ class LandingPage extends Component {
     };
   }
 
+  createStaticAnnotation(longitude, latitude) {
+    return {
+      longitude,
+      latitude,
+      draggable: false
+    };
+  };
+
   renderLeaveEggButton() {
     if (this.props.annotations.length) {
       return (
@@ -128,7 +139,11 @@ class LandingPage extends Component {
 
   render() {
     const position = this.state.currentPosition;
-    const annotations = this.props.annotations;
+
+    // the annotations on the map are a combination of packages waiting for pickup
+    // + new eggs waiting to be dropped (from the AddEgg modal)
+
+    const annotations = this.props.annotations.concat(this.state.pickups);
 
     return (
       <View>
@@ -167,13 +182,20 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state, ownProps) => {
-    let selectedEgg = state.eggs.selectedEgg;
+  //fake user for testing:
 
-    return {
-        showAddNodeModal: state.addNodeModal.showAddNodeModal,
-        annotations: state.map.annotations,
-        selectedEgg
-    };
+  const user = { id: 225 };
+
+  let selectedEgg = state.eggs.selectedEgg;
+  let allEggs = state.eggs.allEggs;
+
+  return {
+    showAddNodeModal: state.addNodeModal.showAddNodeModal,
+    annotations: state.map.annotations,
+    selectedEgg,
+    allEggs,
+    user
+  };
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
@@ -181,11 +203,17 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     setSelectedEgg: function(eggId) {
         dispatch(setSelectedEgg(eggId));
       },
+    fetchAllEggs: function(userId) {
+      dispatch(fetchAllEggs(userId));
+    },
     showModal: function(boolean) {
         dispatch(showModal(boolean));
     },
     setAnnotations: function(annotations) {
       dispatch(setAnnotations(annotations));
+    },
+    addAnnotation: function(annotation) {
+      dispatch(addAnnotation(annotation))
     },
     clearAnnotations: function() {
       dispatch(clearAnnotations());
