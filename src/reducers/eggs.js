@@ -4,7 +4,7 @@ const ADD_EGG = 'ADD_EGG';
 
 const initialState = {
     allEggs: [],
-    selectedEgg: {}
+    selectedEgg: {},
 }
 
 
