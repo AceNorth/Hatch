@@ -1,0 +1,1 @@
+export default const tunnelIP = "https://fsbkauglio.localtunnel.me"

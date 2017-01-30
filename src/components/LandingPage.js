@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 import axios from 'axios';
 import { Actions } from 'react-native-router-flux';
 import { setSelectedEgg } from '../reducers/eggs';
+import tunnelIP from '../TUNNELIP';
 
 
 class LandingPage extends Component {
@@ -59,6 +60,8 @@ class LandingPage extends Component {
       1000
     );
 
+    this.props.setSelectedEgg(3);
+
   }
 
 //----------------------END TESTING DATA-----------------
@@ -76,7 +79,7 @@ class LandingPage extends Component {
       latitude: this.state.annotations[0].latitude,
       longitude: this.state.annotations[0].longitude
     }
-    axios.post('http://localhost:1333/api/egg', egg)
+    axios.post(`${tunnelIP}/api/egg`, egg)
     .catch(err => console.error('Problem laying egg', err));
     this.setState({ showAddNodeModal: false, annotations: [] });
   }

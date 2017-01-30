@@ -1,5 +1,6 @@
 import React from 'react';
 import axios from 'axios';
+import tunnelIP from '../TUNNELIP';
 
 /* --------------    ACTION CONSTANTS    ---------------- */
 
@@ -35,7 +36,7 @@ export default function (state = initialState, action) {
 
 /* --------------    THUNKS/DISPATCHERS    -------------- */
 export const setSelectedEgg = eggId => dispatch => {
-  axios.get(`http://localhost:1333/api/egg/${eggId}`)
+  axios.get(`${tunnelIP}/api/egg/${eggId}`)
   .then(res => dispatch(selectEgg(res.data)))
   .catch(err => console.error('Problem fetching egg', err));
 };
