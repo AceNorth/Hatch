@@ -29,7 +29,7 @@ class LandingPage extends Component {
   componentWillMount() {
   // set timer to update "current position" on state every second
     this.timerID = setInterval(
-      () => this.updateCurrentPosition(),
+      () => this.checkFences(),
       1000
     );
 
@@ -42,7 +42,7 @@ class LandingPage extends Component {
     let pickups = this.state.pickups;
 
     nextProps.allEggs.forEach(egg => {
-      let newAnnotation = this.createStaticAnnotation(egg.longitude, egg.latitude);
+      let newAnnotation = this.createStaticAnnotation(egg.longitude, egg.latitude, egg.id);
       pickups.push(newAnnotation);
     });
 
@@ -64,6 +64,15 @@ class LandingPage extends Component {
   onAddNodeButtonPress() {
     this.props.showModal(true);
   }
+
+  checkFences() {
+    this.updateCurrentPosition();
+    this.props.allEggs.forEach(egg => {
+      if (this.isWithinFence(this.state.currentPosition.coords, egg)) {
+        this.props.setSelectedEgg(egg.id);
+      }
+    })
+  };
 
   updateCurrentPosition() {
     let options = {
@@ -108,10 +117,11 @@ class LandingPage extends Component {
     };
   }
 
-  createStaticAnnotation(longitude, latitude) {
+  createStaticAnnotation(longitude, latitude, eggId) {
     return {
       longitude,
       latitude,
+      eggId,
       draggable: false
     };
   };
