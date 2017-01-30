@@ -159,7 +159,7 @@ class LandingPage extends Component {
       <View>
         <TouchableWithoutFeedback onLongPress={ this.onMapLongPress }>
           <MapView
-            style={{height: 500, width: 400, margin: 0}}
+            style={{height: 400, width: 400, margin: 0}}
             showsUserLocation={true}
             region={{latitude: position.coords.latitude, longitude: position.coords.longitude, latitudeDelta: .01, longitudeDelta: .01}}
             annotations={ annotations }
