@@ -6,14 +6,13 @@ import {Input} from './common/Input';
 import { connect } from 'react-redux';
 import axios from 'axios';
 import {showModal} from '../reducers/addNodeModal'
-
+import {setAnnotations, addAnnotation} from '../reducers/map'
 
 
 class AddNodeForm extends Component {
     constructor(props){
         super(props);
         this.state = {
-            annotations:[],
             text: 'placeholder'
         };
 
@@ -40,9 +39,15 @@ class AddNodeForm extends Component {
             latitude: this.props.annotations[0].latitude,
             longitude: this.props.annotations[0].longitude
         }
-        axios.post('http://localhost:1333/api/egg', egg);
-        this.setState({ annotations: [],  text:'placeholder' });
-        this.props.showModal(false);
+        axios.post('http://localhost:1333/api/egg', egg)
+            .then(()=>{
+                this.setState({ text:'placeholder' });
+                this.props.showModal(false);
+                //this line below causes the app to crash, possibly an async issue with the axios post above
+                // this.props.setAnnotations([]);
+            })
+
+
     }
 
     onCancelSubmitNode() {
@@ -95,7 +100,8 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state, ownProps) => {
     return {
-        showAddNodeModal: state.addNodeModal.showAddNodeModal
+        showAddNodeModal: state.addNodeModal.showAddNodeModal,
+        annotations: state.map.annotations
     };
 }
 
@@ -105,6 +111,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         showModal: function(boolean){
             dispatch(showModal(boolean));
         },
+        setAnnotations: function(annotations){
+            dispatch(setAnnotations(annotations))
+        },
+        addAnnotation: function(annotation){
+            dispatch(addAnnotation(annotation))
+        }
     }
 }
 
