@@ -21,45 +21,42 @@ class LandingPage extends Component {
     };
 
     this.onMapLongPress = this.onMapLongPress.bind(this);
-}
-
-//--------------TEMPORARY STUFF FOR TESTING PURPOSES--------------------
-
-  renderPickupEggButton() {
-    // if you're within the fence of an egg, render the button
-    if (this.isWithinFence(this.state.currentPosition.coords, this.props.selectedEgg)) { 
-      return (
-        <Button onPress={Actions.viewPayload}>
-          FOUND AN EGG! PRESS HERE TO PICK IT UP!
-        </Button>
-      )
-    }
-  }
-
-  isWithinFence(coordinatesObject, egg) {
-    if (!egg) { return false };
-    let latitudeMin = egg.latitude - 0.0001;
-    let latitudeMax = egg.latitude + 0.0001;
-    let longitudeMin = egg.longitude - 0.0001;
-    let longitudeMax = egg.longitude + 0.0001;
-    let isWithinLat = (latitudeMin <= coordinatesObject.latitude);
-    let isWithinLong = (longitudeMin <= coordinatesObject.longitude);
-    let evaluation = (isWithinLong && isWithinLat);
-    return evaluation;
   }
 
   componentWillMount() {
-    // update "current position" on state every second
+  // update "current position" on state every second
     this.timerID = setInterval(
       () => this.updateCurrentPosition(),
       1000
     );
 
+    // replace this hardcode later
     this.props.setSelectedEgg(3);
-
   }
 
-//----------------------END TESTING DATA-----------------
+  // isWithinFence(coordinatesObject, egg) {
+  //   if (!egg) { return false };
+  //   let latitudeMin = egg.latitude - 0.0001;
+  //   let latitudeMax = egg.latitude + 0.0001;
+  //   let longitudeMin = egg.longitude - 0.0001;
+  //   let longitudeMax = egg.longitude + 0.0001;
+  //   let isWithinLat = (latitudeMin <= coordinatesObject.latitude);
+  //   let isWithinLong = (longitudeMin <= coordinatesObject.longitude);
+  //   let evaluation = (isWithinLong && isWithinLat);
+  //   return evaluation;
+  // }
+
+  isWithinFence(coordinatesObject, egg){
+   if(!egg) { return false }
+     
+   let fence = Math.pow((coordinatesObject.longitude-egg.longitude), 2) + Math.pow((coordinatesObject.latitude-egg.latitude), 2);
+
+   if (fence < Math.pow(0.0001, 2)) {
+     return true;
+   }
+
+   return false;
+ }
 
   onAddNodeButtonPress() {
     this.props.showModal(true);
@@ -115,6 +112,17 @@ class LandingPage extends Component {
         Leave an egg at the current pin
         </Button>
         )
+    }
+  }
+
+  renderPickupEggButton() {
+    // if you're within the fence of an egg, render the button
+    if (this.isWithinFence(this.state.currentPosition.coords, this.props.selectedEgg)) { 
+      return (
+        <Button onPress={Actions.viewPayload}>
+          FOUND AN EGG! PRESS HERE TO PICK IT UP!
+        </Button>
+      )
     }
   }
 
