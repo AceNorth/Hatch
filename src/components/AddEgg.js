@@ -13,13 +13,16 @@ class AddEgg extends Component {
     constructor(props){
         super(props);
         this.state = {
-            text: 'placeholder'
+            text: 'placeholder',
+            avatarSource: {}
         };
 
         this.handleInputChange=this.handleInputChange.bind(this);
         this.clearInput=this.clearInput.bind(this);
         this.onSubmitNode = this.onSubmitNode.bind(this);
         this.onCancelSubmitNode = this.onCancelSubmitNode.bind(this);
+        this.showImagePicker = this.showImagePicker.bind(this);
+
     }
 
 
@@ -55,6 +58,61 @@ class AddEgg extends Component {
         this.props.clearAnnotations();
     }
 
+    showImagePicker(){
+        const options = {
+            title: 'Select Avatar',
+            customButtons: [
+                {name: 'fb', title: 'Choose Photo from Facebook'},
+            ],
+            storageOptions: {
+                skipBackup: true,
+                path: 'images'
+            }
+        };
+
+        const ImagePicker = require('react-native-image-picker');
+        const Platform = require('react-native').Platform;
+        /**
+         * The first arg is the options object for customization (it can also be null or omitted for default options),
+         * The second arg is the callback which sends object: response (more info below in README)
+         */
+
+        ImagePicker.showImagePicker(options, (response) => {
+            console.log('Response = ', response);
+
+            if (response.didCancel) {
+                console.log('User cancelled image picker');
+            }
+            else if (response.error) {
+                console.log('ImagePicker Error: ', response.error);
+            }
+            // else if (response.customButton) {
+            //     console.log('User tapped custom button: ', response.customButton);
+            // }
+            else {
+                let source;
+
+                // display the image using either data...
+                source = { uri: 'data:image/jpeg;base64,' + response.data };
+
+                // ...or a reference to the platform specific asset location
+                if (Platform.OS === 'android') {
+                    source = { uri: response.uri };
+                } else {
+                    source = { uri: response.uri.replace('file://', '') };
+                }
+
+                this.setState({
+                    avatarSource: source
+                });
+            }
+        });
+
+
+    }
+
+
+
     render(){
         const { containerStyle, textStyle, cardSectionStyle} = styles;
 
@@ -65,9 +123,8 @@ class AddEgg extends Component {
                         label="GoHere Image"
                         onChangeText={e => this.handleInputChange(e)}
                         value={this.state.text}
-                        onFocus={this.clearInput}
+                        onFocus={this.showImagePicker}
                     />
-
                 </CardSection>
                 <CardSection>
                     <Input
@@ -121,6 +178,8 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
 });
+
+
 
 
 const mapStateToProps = (state, ownProps) => {

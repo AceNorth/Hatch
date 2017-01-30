@@ -5,7 +5,6 @@
 	};
 	objectVersion = 46;
 	objects = {
-
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -31,6 +30,7 @@
 		DEE78CFEF0954367BFBF42AD /* libCocoaLumberjack.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 223178D94F21457BAB2E2B23 /* libCocoaLumberjack.a */; };
 		ED80AD346C4744A5B5FC6735 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A38F3E195FF46E2B1E45D7F /* libsqlite3.tbd */; };
 		FCD4A41BBCD94A049937856C /* libRNBackgroundFetch.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EA5EC40A59634E3FA59D38A9 /* libRNBackgroundFetch.a */; };
+		95109C7CE9734A4ABFFF8CB5 /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E31E87335A594C8A81942BD0 /* libRNImagePicker.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -335,6 +335,8 @@
 		CE98E431502A4604BF2ED515 /* RNBackgroundGeolocation.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNBackgroundGeolocation.xcodeproj; path = "../node_modules/react-native-background-geolocation/ios/RNBackgroundGeolocation.xcodeproj"; sourceTree = "<group>"; };
 		D7E8AB5E4A154C9083E2B6D2 /* libRNBackgroundGeolocation.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNBackgroundGeolocation.a; sourceTree = "<group>"; };
 		EA5EC40A59634E3FA59D38A9 /* libRNBackgroundFetch.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNBackgroundFetch.a; sourceTree = "<group>"; };
+		B797FFE3B62C49BDAC1C4EF8 /* RNImagePicker.xcodeproj */ = {isa = PBXFileReference; name = "RNImagePicker.xcodeproj"; path = "../node_modules/react-native-image-picker/ios/RNImagePicker.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		E31E87335A594C8A81942BD0 /* libRNImagePicker.a */ = {isa = PBXFileReference; name = "libRNImagePicker.a"; path = "libRNImagePicker.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -367,6 +369,7 @@
 				ED80AD346C4744A5B5FC6735 /* libsqlite3.tbd in Frameworks */,
 				FCD4A41BBCD94A049937856C /* libRNBackgroundFetch.a in Frameworks */,
 				DEE78CFEF0954367BFBF42AD /* libCocoaLumberjack.a in Frameworks */,
+				95109C7CE9734A4ABFFF8CB5 /* libRNImagePicker.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -548,6 +551,7 @@
 				CE98E431502A4604BF2ED515 /* RNBackgroundGeolocation.xcodeproj */,
 				96769CBEC95742B69C63D881 /* RNBackgroundFetch.xcodeproj */,
 				39DF7EEC90E7448EBECA226F /* Lumberjack.xcodeproj */,
+				B797FFE3B62C49BDAC1C4EF8 /* RNImagePicker.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1090,6 +1094,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/leftYouNative.app/leftYouNative";
@@ -1107,6 +1112,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
