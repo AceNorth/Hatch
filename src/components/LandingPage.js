@@ -27,7 +27,7 @@ class LandingPage extends Component {
     this.handleInputChange = this.handleInputChange.bind(this); 
 }
 
-//----------------------TESTING DATA, NOT PERMANENT--------------------
+//--------------TEMPORARY STUFF FOR TESTING PURPOSES--------------------
 
   renderPickupEggButton() {
     // if you're within the fence of an egg, render the button
@@ -52,8 +52,6 @@ class LandingPage extends Component {
     return evaluation;
   }
 
-//----------------------END TESTING DATA-----------------
-
   componentWillMount() {
     // update "current position" on state every second
     this.timerID = setInterval(
@@ -61,8 +59,9 @@ class LandingPage extends Component {
       1000
     );
 
-    this.props.setSelectedEgg(3);
   }
+
+//----------------------END TESTING DATA-----------------
 
   onAddNodeButtonPress() {
     this.setState({ showAddNodeModal: true })
@@ -77,7 +76,8 @@ class LandingPage extends Component {
       latitude: this.state.annotations[0].latitude,
       longitude: this.state.annotations[0].longitude
     }
-    axios.post('http://localhost:1333/api/egg', egg);
+    axios.post('http://localhost:1333/api/egg', egg)
+    .catch(err => console.error('Problem laying egg', err));
     this.setState({ showAddNodeModal: false, annotations: [] });
   }
 
@@ -113,7 +113,7 @@ class LandingPage extends Component {
         (position) => {
           this.setState({
               annotations: [this.createAnnotation(position.coords.longitude, position.coords.latitude)]
-            })
+            });
         }
         , null, options);
     }
