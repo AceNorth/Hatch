@@ -6,7 +6,7 @@ import {Input} from './common/Input';
 import { connect } from 'react-redux';
 import axios from 'axios';
 import {showModal} from '../reducers/addNodeModal'
-import {setAnnotations, addAnnotation} from '../reducers/map'
+import {setAnnotations, clearAnnotations} from '../reducers/map'
 
 
 class AddNodeForm extends Component {
@@ -44,7 +44,7 @@ class AddNodeForm extends Component {
                 this.setState({ text:'placeholder' });
                 this.props.showModal(false);
                 //this line below causes the app to crash, possibly an async issue with the axios post above
-                // this.props.setAnnotations([]);
+                this.props.clearAnnotations();
             })
 
 
@@ -63,7 +63,7 @@ class AddNodeForm extends Component {
             <View style={containerStyle}>
                 <CardSection>
                     <Input
-                        label="Directions to your new Egg"
+                        label="GoHereText"
                         onChangeText={e => this.handleInputChange(e)}
                         value={this.state.text}
                         onFocus={this.clearInput}
@@ -114,8 +114,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         setAnnotations: function(annotations){
             dispatch(setAnnotations(annotations))
         },
-        addAnnotation: function(annotation){
-            dispatch(addAnnotation(annotation))
+        clearAnnotations: function(){
+            dispatch(clearAnnotations())
         }
     }
 }
