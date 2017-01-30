@@ -1,11 +1,11 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, MapView, TextInput, TouchableWithoutFeedback } from 'react-native';
-import { Button, Input } from './common';
+import { View, Text, StyleSheet, MapView, TextInput, TouchableWithoutFeedback, Modal } from 'react-native';
+import { Button } from './common';
 import  AddNodeForm  from './AddNodeForm';
 import { connect } from 'react-redux';
-import axios from 'axios';
+import {showModal} from '../reducers/addNodeModal'
 
 
 class LandingPage extends Component {
@@ -14,16 +14,10 @@ class LandingPage extends Component {
     super(props);
     this.state = {
       currentPosition: { timestamp: 0, coords: { latitude: 1, longitude: 1 } },
-      showAddNodeModal: false,
       annotations: [],
-      text: 'placeholder'
     };
 
-    this.onSubmitNode = this.onSubmitNode.bind(this);
-    this.onCancelSubmitNode = this.onCancelSubmitNode.bind(this);
     this.onMapLongPress = this.onMapLongPress.bind(this);
-    this.handleInputChange = this.handleInputChange.bind(this);
-    this.clearInput=this.clearInput.bind(this);
 }
 
   componentDidMount() {
@@ -31,31 +25,7 @@ class LandingPage extends Component {
   }
 
   onAddNodeButtonPress() {
-    this.setState({ showAddNodeModal: true })
-  }
-
-  onSubmitNode() {
-    console.log("submitted");
-    //send data to DB
-    const egg = {
-      goHereText: this.state.text,
-      latitude: this.state.annotations[0].latitude,
-      longitude: this.state.annotations[0].longitude
-    }
-    axios.post('http://localhost:1333/api/egg', egg);
-    this.setState({ showAddNodeModal: false, annotations: [],  text:'placeholder' });
-  }
-
-  onCancelSubmitNode() {
-    this.setState({ showAddNodeModal: false, text:'placeholder' });
-  }
-
-  handleInputChange(e){
-      this.setState({text: e });
-  }
-
-  clearInput(){
-    this.setState({text:''});
+    this.props.showModal(true);
   }
 
   updateCurrentPosition() {
@@ -130,16 +100,19 @@ class LandingPage extends Component {
         
         {this.renderLeavePackageButton()}
 
-        <AddNodeForm
-          visible={ this.state.showAddNodeModal }
-          onSubmitNode={ this.onSubmitNode }
-          onCancelSubmitNode={ this.onCancelSubmitNode }
-          handleInputChange={this.handleInputChange}
-          clearInput={this.clearInput}
-          {...this.state}
+        <Modal
+            visible={this.props.showAddNodeModal}
+            transparent
+            animationType="fade"
+            onRequestClose={() => {
+            }}
         >
+          <AddNodeForm
+              {...this.state}>
+          </AddNodeForm>
+        </Modal>
 
-        </AddNodeForm>
+
         
 
       </View>
@@ -155,7 +128,9 @@ const styles = StyleSheet.create({
 
 
 const mapStateToProps = (state, ownProps) => {
+  console.log('landing page, mstp, state', state)
     return {
+        showAddNodeModal: state.addNodeModal.showAddNodeModal
     };
 }
 
@@ -163,8 +138,8 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
     return {
-        addUToDb: function(user){
-            dispatch(addUToDb(user));
+        showModal: function(boolean){
+            dispatch(showModal(boolean));
         },
     }
 }
