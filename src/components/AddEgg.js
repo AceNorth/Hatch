@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Text, View, Modal, TextInput, StyleSheet} from 'react-native';
+import {Text, View, Modal, TextInput, StyleSheet, Image} from 'react-native';
 import {CardSection} from './common/CardSection';
 import {Button} from './common/Button';
 import {Input} from './common/Input';
@@ -9,12 +9,13 @@ import {showModal} from '../reducers/addNodeModal'
 import {setAnnotations, clearAnnotations} from '../reducers/map'
 
 
+
 class AddEgg extends Component {
     constructor(props){
         super(props);
         this.state = {
             text: 'placeholder',
-            avatarSource: {}
+            goHereImageSource: {uri: 'https://facebook.github.io/react/img/logo_og.png'}
         };
 
         this.handleInputChange=this.handleInputChange.bind(this);
@@ -43,11 +44,13 @@ class AddEgg extends Component {
             longitude: this.props.annotations[0].longitude
         }
         axios.post('http://localhost:1333/api/egg', egg)
-            .then(()=>{
+            .then((egg)=>{
+            console.log('axios post returned egg', egg)
                 this.setState({ text:'placeholder' });
                 this.props.showModal(false);
                 this.props.clearAnnotations();
             })
+            .catch(err => console.log('AddEgg onSubmitNode error', err))
 
 
     }
@@ -103,7 +106,7 @@ class AddEgg extends Component {
                 }
 
                 this.setState({
-                    avatarSource: source
+                    goHereImageSource: source
                 });
             }
         });
@@ -121,10 +124,12 @@ class AddEgg extends Component {
                 <CardSection>
                     <Input
                         label="GoHere Image"
-                        onChangeText={e => this.handleInputChange(e)}
-                        value={this.state.text}
+                        value='Click here to change the GoHere Image'
                         onFocus={this.showImagePicker}
                     />
+                </CardSection>
+                <CardSection>
+                    <Image source={this.state.goHereImageSource} style={{width: 50, height: 50}}  />
                 </CardSection>
                 <CardSection>
                     <Input
