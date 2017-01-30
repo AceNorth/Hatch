@@ -5,8 +5,9 @@ import {Button} from './common/Button';
 import {Input} from './common/Input';
 import { connect } from 'react-redux';
 import axios from 'axios';
-import {showModal} from '../reducers/addNodeModal'
-import {setAnnotations, clearAnnotations} from '../reducers/map'
+import {showModal} from '../reducers/addNodeModal';
+import {setAnnotations, clearAnnotations} from '../reducers/map';
+import { tunnelIP } from '../TUNNELIP';
 
 
 
@@ -15,7 +16,8 @@ class AddEgg extends Component {
         super(props);
         this.state = {
             text: 'placeholder',
-            goHereImageSource: {uri: 'https://facebook.github.io/react/img/logo_og.png'}
+            goHereImageSource: {uri: 'https://facebook.github.io/react/img/logo_og.png'},
+            eggs: []
         };
 
         this.handleInputChange=this.handleInputChange.bind(this);
@@ -41,17 +43,18 @@ class AddEgg extends Component {
         const egg = {
             goHereText: this.state.text,
             latitude: this.props.annotations[0].latitude,
-            longitude: this.props.annotations[0].longitude
+            longitude: this.props.annotations[0].longitude,
+            payloadType: 'Text',
+            receiverId: 225
         }
-        axios.post('http://localhost:1333/api/egg', egg)
-            .then((egg)=>{
-            console.log('axios post returned egg', egg)
+
+        axios.post(`${tunnelIP}/api/egg`, egg)
+            .then(()=>{
                 this.setState({ text:'placeholder' });
                 this.props.showModal(false);
                 this.props.clearAnnotations();
             })
             .catch(err => console.log('AddEgg onSubmitNode error', err))
-
 
     }
 
