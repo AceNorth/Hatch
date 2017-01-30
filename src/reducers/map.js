@@ -1,8 +1,7 @@
-import React from 'react'
+import React from 'react';
 
 const SET_ANNOTATIONS = 'SET_ANNOTATIONS';
 const CLEAR_ANNOTATIONS = 'CLEAR_ANNOTATIONS';
-
 
 const initialState = {
     annotations: []

@@ -14,7 +14,8 @@ class AddNodeForm extends Component {
     constructor(props){
         super(props);
         this.state = {
-            text: 'placeholder'
+            text: 'placeholder',
+            eggs: []
         };
 
         this.handleInputChange=this.handleInputChange.bind(this);
@@ -39,7 +40,8 @@ class AddNodeForm extends Component {
             goHereText: this.state.text,
             latitude: this.props.annotations[0].latitude,
             longitude: this.props.annotations[0].longitude,
-            payloadType: 'Text'
+            payloadType: 'Text',
+            receiverId: 225
         }
         axios.post(`${tunnelIP}/api/egg`, egg)
             .then(()=>{
