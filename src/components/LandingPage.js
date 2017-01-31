@@ -42,7 +42,7 @@ class LandingPage extends Component {
     let pickups = this.state.pickups;
 
     nextProps.allEggs.forEach(egg => {
-      let newAnnotation = this.createStaticAnnotation(egg.longitude, egg.latitude, egg.id);
+      let newAnnotation = this.createStaticAnnotation(egg.longitude, egg.latitude, egg.senderId, egg.id, egg.goHereText);
       pickups.push(newAnnotation);
     });
 
@@ -117,11 +117,17 @@ class LandingPage extends Component {
     };
   }
 
-  createStaticAnnotation(longitude, latitude, eggId) {
+  createStaticAnnotation(longitude, latitude, senderId, eggId, goHereText) {
+    // we might want to change what's displayed here later, this is just
+    // a placeholder example fo the info we can put on pins
+    let pinSubtitle = "Egg from user " + senderId;
     return {
       longitude,
       latitude,
       eggId,
+      title: goHereText,
+      subtitle: pinSubtitle,
+      tintColor: MapView.PinColors.PURPLE,
       draggable: false
     };
   };
