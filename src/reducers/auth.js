@@ -29,7 +29,7 @@ export const redirectToFacebook = () =>
     // Redirects to the Facebook sign-in page
     firebase.auth().signInWithRedirect(provider)
       .then(() => dispatch(facebookLoginSuccess()))
-      .catch(err => console.error('couldnt log in', err));
+      .catch(err => console.error('uh oh couldnt log in', err));
 
 const facebookLoginSuccess = () =>
   // Retrieve the Facebook provider's OAuth token
