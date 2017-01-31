@@ -1,39 +1,16 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
 import { View, Text, TouchableHighlight } from 'react-native';
-import { LoginManager, AccessToken } from 'react-native-fbsdk';
-import firebase from 'firebase';
+import { redirectToFacebook } from '../reducers/auth';
 
-const provider = firebase.auth.FacebookAuthProvider;
-
-const redirectToFacebook = () => {
-  LoginManager.logInWithReadPermissions(['public_profile', 'email', 'user_friends'])
-    .then((loginResult) => {
-      if (loginResult.isCancelled) {
-        console.log('user cancelled');
-        return;
-      }
-      AccessToken.getCurrentAccessToken()
-      .then((accessTokenData) => {
-        const credential = provider.credential(accessTokenData.accessToken);
-        return firebase.auth().signInWithCredential(credential);
-      })
-      .then(credData => {
-        console.log('cred data', credData);
-      })
-      .catch(err => {
-        console.log('uh oh err', err);
-      });
-    });
-};
-
-const Login = () => {
+const Login = (props) => {
   const { container, loginButton, text } = styles;
 
   return (
     <View style={container}>
       <TouchableHighlight
         style={loginButton}
-        onPress={redirectToFacebook}
+        onPress={() => props.redirectToFacebook()}
       >
         <Text style={text}>Log in with Facebook</Text>
       </TouchableHighlight>
@@ -60,4 +37,8 @@ const styles = {
   }
 };
 
-export default Login;
+Login.propTypes = {
+  redirectToFacebook: PropTypes.func,
+};
+
+export default connect(() => ({}), { redirectToFacebook })(Login);
