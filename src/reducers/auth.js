@@ -1,35 +1,57 @@
 import firebase from 'firebase';
 
-const provider = new firebase.auth.FacebookAuthProvider();
-// Scopes: things we want permissions to access
-provider.addScope('user_friends');
-provider.addScope('email');
+// const provider = new firebase.auth.FacebookAuthProvider();
+// // Scopes: things we want permissions to access
+// provider.addScope('user_friends');
+// provider.addScope('email');
 
 /* --------------    ACTION CONSTANTS    ---------------- */
 const WHOAMI = 'WHOAMI';
 
-/* --------------    ACTION CREATORS    ----------------- */
-export const whoami = user =>
-  (dispatch) => {
-    if (user) {
-      firebase.database().ref(`users/${user.uid}`)
-        .on('value', snapshot =>
-          dispatch({
-            type: WHOAMI,
-            user: { ...user, ...snapshot.val() }
-          })
-        );
-    } else {
-      dispatch({ type: WHOAMI, user });
-    }
-  };
+// /* --------------    ACTION CREATORS    ----------------- */
+// export const whoami = user =>
+//   (dispatch) => {
+//     if (user) {
+//       firebase.database().ref(`users/${user.uid}`)
+//         .on('value', snapshot =>
+//           dispatch({
+//             type: WHOAMI,
+//             user: { ...user, ...snapshot.val() }
+//           })
+//         );
+//     } else {
+//       dispatch({ type: WHOAMI, user });
+//     }
+//   };
 
-export const redirectToFacebook = () =>
-  dispatch =>
-    // Redirects to the Facebook sign-in page
-    firebase.auth().signInWithRedirect(provider)
-      .then(() => dispatch(facebookLoginSuccess()))
-      .catch(err => console.error('uh oh couldnt log in', err));
+// export const redirectToFacebook = () => {
+//   dispatch =>
+//     LoginManager.logInWithReadPermissions(['public_profile', 'email', 'user_friends'])
+//       .then((loginResult) => {
+//         if (loginResult.isCancelled) {
+//           console.log('user cancelled');
+//           return;
+//         }
+//         AccessToken.getCurrentAccessToken()
+//         .then((accessTokenData) => {
+//           const credential = provider.credential(accessTokenData.accessToken);
+//           return auth.signInWithCredential(credential);
+//         })
+//         .then(credData => {
+//           console.log('cred data', credData);
+//         })
+//         .catch(err => {
+//           console.log('uh oh err', err);
+//         });
+//       });
+// };
+
+// export const redirectToFacebook = () =>
+//   dispatch =>
+//     // Redirects to the Facebook sign-in page
+//     firebase.auth().signInWithRedirect(provider)
+//       .then(() => dispatch(facebookLoginSuccess()))
+//       .catch(err => console.error('uh oh couldnt log in', err));
 
 const facebookLoginSuccess = () =>
   // Retrieve the Facebook provider's OAuth token
@@ -65,7 +87,7 @@ const addUserToDb = userInfo =>
   };
 
 /* ------------------    REDUCER    --------------------- */
-const auth = (state = null, action) => {
+const authReducer = (state = null, action) => {
   let newState;
   switch (action.type) {
     case WHOAMI:
@@ -77,4 +99,4 @@ const auth = (state = null, action) => {
   return newState;
 };
 
-export default auth;
+export default authReducer;

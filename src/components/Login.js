@@ -1,19 +1,29 @@
 import React from 'react';
 import { View, Text, TouchableHighlight } from 'react-native';
-import { redirectToFacebook } from '../reducers/auth';
-
+import { LoginManager, AccessToken } from 'react-native-fbsdk';
 import firebase from 'firebase';
 
-const provider = new firebase.auth.FacebookAuthProvider();
-// Scopes: things we want permissions to access
-provider.addScope('user_friends');
-provider.addScope('email');
+const provider = firebase.auth.FacebookAuthProvider;
 
-const facebookLogin = () => {
-  console.log('i hit');
-  firebase.auth().signInWithRedirect(provider)
-    .then(() => console.log('yay we did it'))
-    .catch(err => console.error('uh oh couldnt log in', err));
+const redirectToFacebook = () => {
+  LoginManager.logInWithReadPermissions(['public_profile', 'email', 'user_friends'])
+    .then((loginResult) => {
+      if (loginResult.isCancelled) {
+        console.log('user cancelled');
+        return;
+      }
+      AccessToken.getCurrentAccessToken()
+      .then((accessTokenData) => {
+        const credential = provider.credential(accessTokenData.accessToken);
+        return firebase.auth().signInWithCredential(credential);
+      })
+      .then(credData => {
+        console.log('cred data', credData);
+      })
+      .catch(err => {
+        console.log('uh oh err', err);
+      });
+    });
 };
 
 const Login = () => {
@@ -23,7 +33,7 @@ const Login = () => {
     <View style={container}>
       <TouchableHighlight
         style={loginButton}
-        onPress={facebookLogin}
+        onPress={redirectToFacebook}
       >
         <Text style={text}>Log in with Facebook</Text>
       </TouchableHighlight>
@@ -34,7 +44,7 @@ const Login = () => {
 const styles = {
   container: {
     flex: 1,
-    backgroundColor: '#4bbaea',
+    backgroundColor: '#f4f281',
     justifyContent: 'center',
   },
   loginButton: {
