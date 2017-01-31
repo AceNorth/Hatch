@@ -73,9 +73,9 @@ class AddEgg extends Component {
                 skipBackup: true,
                 path: 'images'
             },
-            quality: 0,
-            maxWidth: 10,
-            maxHeight: 10,
+            quality: 1,
+            maxWidth: 125,
+            maxHeight: 125,
         };
 
         const ImagePicker = require('react-native-image-picker');
