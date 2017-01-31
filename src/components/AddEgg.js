@@ -17,7 +17,8 @@ class AddEgg extends Component {
         this.state = {
             text: 'placeholder',
             goHereImageSource: {uri: 'https://facebook.github.io/react/img/logo_og.png'},
-            eggs: []
+            goHereImageBuffer: null,
+            eggs: [],
         };
 
         this.handleInputChange=this.handleInputChange.bind(this);
@@ -42,6 +43,8 @@ class AddEgg extends Component {
         //send data to DB
         const egg = {
             goHereText: this.state.text,
+            goHereImage: this.state.goHereImageSource,
+            goHereImageBuffer: this.state.goHereImageBuffer,
             latitude: this.props.annotations[0].latitude,
             longitude: this.props.annotations[0].longitude,
             payloadType: 'Text',
@@ -66,14 +69,13 @@ class AddEgg extends Component {
 
     showImagePicker(){
         const options = {
-            title: 'Select Avatar',
-            customButtons: [
-                {name: 'fb', title: 'Choose Photo from Facebook'},
-            ],
             storageOptions: {
                 skipBackup: true,
                 path: 'images'
-            }
+            },
+            quality: 0,
+            maxWidth: 10,
+            maxHeight: 10,
         };
 
         const ImagePicker = require('react-native-image-picker');
@@ -97,9 +99,11 @@ class AddEgg extends Component {
             // }
             else {
                 let source;
+                let buffer;
 
                 // display the image using either data...
                 source = { uri: 'data:image/jpeg;base64,' + response.data };
+                buffer = response.data;
 
                 // ...or a reference to the platform specific asset location
                 if (Platform.OS === 'android') {
@@ -109,7 +113,8 @@ class AddEgg extends Component {
                 }
 
                 this.setState({
-                    goHereImageSource: source
+                    goHereImageSource: source,
+                    goHereImageBuffer: buffer
                 });
             }
         });
