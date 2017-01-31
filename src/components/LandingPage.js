@@ -18,7 +18,7 @@ class LandingPage extends Component {
     super(props);
     this.state = {
     // user's current position
-      currentPosition: { timestamp: 0, coords: { latitude: 1, longitude: 1 } },
+      currentPosition: { timestamp: 0, coords: { latitude: 1, longitude: 1 } },  // Why 1 as deault?
     // locations of eggs waiting to be picked up
       pickups: []
     };
@@ -41,19 +41,21 @@ class LandingPage extends Component {
     // loop through all the user's eggs and turn them into map annotations
     let pickups = this.state.pickups;
 
+    // nextProps.allEggs.map().concat(this.state.pickups)?
     nextProps.allEggs.forEach(egg => {
       let newAnnotation = this.createStaticAnnotation(egg.longitude, egg.latitude, egg.id);
       pickups.push(newAnnotation);
     });
 
-    this.setState({ pickups }); 
+    this.setState({ pickups });
   };
 
   isWithinFence(coordinatesObject, egg){
    if(!egg) { return false }
-     
+
    let fence = Math.pow((coordinatesObject.longitude-egg.longitude), 2) + Math.pow((coordinatesObject.latitude-egg.latitude), 2);
 
+   //Why not hard code  Math.pow(0.0001, 2)
    if (fence < Math.pow(0.0001, 2)) {
      return true;
    }
@@ -68,6 +70,7 @@ class LandingPage extends Component {
   checkFences() {
     this.updateCurrentPosition();
     this.props.allEggs.forEach(egg => {
+      // very clean
       if (this.isWithinFence(this.state.currentPosition.coords, egg)) {
         this.props.setSelectedEgg(egg.id);
       }
@@ -138,7 +141,7 @@ class LandingPage extends Component {
 
   renderPickupEggButton() {
     // if you're within the fence of an egg, render the button
-    if (this.isWithinFence(this.state.currentPosition.coords, this.props.selectedEgg)) { 
+    if (this.isWithinFence(this.state.currentPosition.coords, this.props.selectedEgg)) {
       return (
         <Button onPress={Actions.viewPayload}>
           FOUND AN EGG! PRESS HERE TO PICK IT UP!
@@ -165,7 +168,7 @@ class LandingPage extends Component {
             annotations={ annotations }
           />
         </TouchableWithoutFeedback>
-        
+
         {this.renderLeaveEggButton()}
         {this.renderPickupEggButton()}
 

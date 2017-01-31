@@ -13,6 +13,9 @@ const Button = (props) => {
 		);
 };
 
+// How would we perform sweeping styling changes to accomodate a new theme?
+// Would we need to modify every component? Just something to ponder.
+// Also, how much styling is shared across files? Do any react libraries provide a better solution?
 const styles = {
 	buttonStyle: {
 	//expand to fill as much content as it possibly can

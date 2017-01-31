@@ -12,6 +12,8 @@ import Router from './components/Router';
 // Disables yellow warnings! Yay!
 console.disableYellowBox = true;
 
+
+//where am I used?
 const config = {
   identifier: 'jeans geofence',
   latitude: 0,

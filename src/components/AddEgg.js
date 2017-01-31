@@ -1,3 +1,6 @@
+// I like to separate imports from my app and dependencies.
+// I generally put dependencies first. Just helps with readability.
+
 import React, {Component} from 'react';
 import {Text, View, Modal, TextInput, StyleSheet, Image} from 'react-native';
 import {CardSection} from './common/CardSection';

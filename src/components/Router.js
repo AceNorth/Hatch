@@ -3,6 +3,7 @@ import {Scene, Router, Actions } from 'react-native-router-flux';
 import LandingPage from './LandingPage';
 import ViewPayload from './ViewPayload';
 
+// Why are there two routers?
 const RouterComponent = () => {
     return(
         <Router>

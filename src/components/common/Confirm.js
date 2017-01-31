@@ -3,6 +3,8 @@ import { Text, View, Modal } from 'react-native';
 import { CardSection } from './CardSection';
 import { Button } from './Button';
 
+// This style of function defintioin where you specify and destructure parameters is awesome.
+// I would do it everywhere. It's self-documenting and ensures stylistic consistency
 const Confirm = ({ children, visible, onAccept, onDecline }) => {
   const { containerStyle, textStyle, cardSectionStyle } = styles;
 

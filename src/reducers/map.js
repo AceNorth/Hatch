@@ -28,6 +28,7 @@ export default function (state = initialState, action) {
     let newState = Object.assign({}, state)
     switch (action.type) {
         case SET_ANNOTATIONS:
+            // Is annotations a list? [].concat(action.annotations) maybe?
             newState.annotations = [action.annotations];
             break;
         case CLEAR_ANNOTATIONS:
