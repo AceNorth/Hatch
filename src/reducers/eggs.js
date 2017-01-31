@@ -16,8 +16,8 @@ const fetchEggs = eggs => ({ type: FETCH_EGGS, eggs });
 /* ------------------    REDUCER    --------------------- */
 
 const initialState = {
-    allEggs: [],
-    selectedEgg: {},
+    allEggs: [], // Make an object where keys are DB ids and values are eggs
+    selectedEgg: {}, //Just use a DB ID
 }
 
 export default function (state = initialState, action) {
