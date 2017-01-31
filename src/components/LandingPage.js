@@ -3,7 +3,7 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, MapView, TextInput, TouchableWithoutFeedback, Modal } from 'react-native';
 import { Button } from './common';
-import  AddNodeForm  from './AddEgg';
+import  AddEgg  from './AddEgg';
 import { connect } from 'react-redux';
 import axios from 'axios';
 import { Actions } from 'react-native-router-flux';
@@ -159,7 +159,7 @@ class LandingPage extends Component {
       <View>
         <TouchableWithoutFeedback onLongPress={ this.onMapLongPress }>
           <MapView
-            style={{height: 500, width: 400, margin: 0}}
+            style={{height: 400, width: 400, margin: 0}}
             showsUserLocation={true}
             region={{latitude: position.coords.latitude, longitude: position.coords.longitude, latitudeDelta: .01, longitudeDelta: .01}}
             annotations={ annotations }
@@ -176,9 +176,9 @@ class LandingPage extends Component {
             onRequestClose={() => {
             }}
         >
-          <AddNodeForm
+          <AddEgg
               {...this.state}>
-          </AddNodeForm>
+          </AddEgg>
         </Modal>
       </View>
     );

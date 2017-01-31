@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Text, View, Modal, TextInput, StyleSheet} from 'react-native';
+import {Text, View, Modal, TextInput, StyleSheet, Image} from 'react-native';
 import {CardSection} from './common/CardSection';
 import {Button} from './common/Button';
 import {Input} from './common/Input';
@@ -10,11 +10,13 @@ import {setAnnotations, clearAnnotations} from '../reducers/map';
 import { tunnelIP } from '../TUNNELIP';
 
 
-class AddNodeForm extends Component {
+
+class AddEgg extends Component {
     constructor(props){
         super(props);
         this.state = {
             text: 'placeholder',
+            goHereImageSource: {uri: 'https://facebook.github.io/react/img/logo_og.png'},
             eggs: []
         };
 
@@ -22,6 +24,8 @@ class AddNodeForm extends Component {
         this.clearInput=this.clearInput.bind(this);
         this.onSubmitNode = this.onSubmitNode.bind(this);
         this.onCancelSubmitNode = this.onCancelSubmitNode.bind(this);
+        this.showImagePicker = this.showImagePicker.bind(this);
+
     }
 
 
@@ -43,20 +47,77 @@ class AddNodeForm extends Component {
             payloadType: 'Text',
             receiverId: 225
         }
+
         axios.post(`${tunnelIP}/api/egg`, egg)
             .then(()=>{
                 this.setState({ text:'placeholder' });
                 this.props.showModal(false);
-                //this line below causes the app to crash, possibly an async issue with the axios post above
                 this.props.clearAnnotations();
             })
+            .catch(err => console.log('AddEgg onSubmitNode error', err))
+
     }
 
     onCancelSubmitNode() {
         this.setState({ text:'placeholder' });
         this.props.showModal(false);
+        this.props.clearAnnotations();
+    }
+
+    showImagePicker(){
+        const options = {
+            title: 'Select Avatar',
+            customButtons: [
+                {name: 'fb', title: 'Choose Photo from Facebook'},
+            ],
+            storageOptions: {
+                skipBackup: true,
+                path: 'images'
+            }
+        };
+
+        const ImagePicker = require('react-native-image-picker');
+        const Platform = require('react-native').Platform;
+        /**
+         * The first arg is the options object for customization (it can also be null or omitted for default options),
+         * The second arg is the callback which sends object: response (more info below in README)
+         */
+
+        ImagePicker.showImagePicker(options, (response) => {
+            console.log('Response = ', response);
+
+            if (response.didCancel) {
+                console.log('User cancelled image picker');
+            }
+            else if (response.error) {
+                console.log('ImagePicker Error: ', response.error);
+            }
+            // else if (response.customButton) {
+            //     console.log('User tapped custom button: ', response.customButton);
+            // }
+            else {
+                let source;
+
+                // display the image using either data...
+                source = { uri: 'data:image/jpeg;base64,' + response.data };
+
+                // ...or a reference to the platform specific asset location
+                if (Platform.OS === 'android') {
+                    source = { uri: response.uri };
+                } else {
+                    source = { uri: response.uri.replace('file://', '') };
+                }
+
+                this.setState({
+                    goHereImageSource: source
+                });
+            }
+        });
+
 
     }
+
+
 
     render(){
         const { containerStyle, textStyle, cardSectionStyle} = styles;
@@ -65,12 +126,39 @@ class AddNodeForm extends Component {
             <View style={containerStyle}>
                 <CardSection>
                     <Input
-                        label="GoHereText"
+                        label="GoHere Image"
+                        value='Click here to change the GoHere Image'
+                        onFocus={this.showImagePicker}
+                    />
+                </CardSection>
+                <CardSection>
+                    <Image source={this.state.goHereImageSource} style={{width: 50, height: 50}}  />
+                </CardSection>
+                <CardSection>
+                    <Input
+                        label="GoHere Text"
                         onChangeText={e => this.handleInputChange(e)}
                         value={this.state.text}
                         onFocus={this.clearInput}
                     />
                 </CardSection>
+                <CardSection>
+                    <Input
+                        label="Payload Type"
+                        onChangeText={e => this.handleInputChange(e)}
+                        value={this.state.text}
+                        onFocus={this.clearInput}
+                    />
+                </CardSection>
+                <CardSection>
+                    <Input
+                        label="Payload"
+                        onChangeText={e => this.handleInputChange(e)}
+                        value={this.state.text}
+                        onFocus={this.clearInput}
+                    />
+                </CardSection>
+
                 <CardSection>
                     <Button onPress={this.onSubmitNode}>Submit</Button>
                     <Button onPress={this.onCancelSubmitNode}>Cancel</Button>
@@ -100,6 +188,8 @@ const styles = StyleSheet.create({
 });
 
 
+
+
 const mapStateToProps = (state, ownProps) => {
     return {
         showAddNodeModal: state.addNodeModal.showAddNodeModal,
@@ -122,4 +212,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AddNodeForm);
+export default connect(mapStateToProps, mapDispatchToProps)(AddEgg);
