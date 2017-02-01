@@ -233,8 +233,8 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state, ownProps) => {
   //fake user for testing:
 
-  // const user = { id: 225 };
-  const user = { id: 1 };
+  const user = { id: 225 };
+  // const user = { id: 1 };
 
   let selectedEgg = state.eggs.selectedEgg;
   let allEggs = state.eggs.allEggs;
