@@ -140,7 +140,7 @@ class AddEgg extends Component {
                 </CardSection>
                 <CardSection>
                     <Input
-                        label="GoHere Text"
+                        placeholder="Egg Text"
                         onChangeText={e => this.handleInputChange(e)}
                         value={this.state.text}
                         onFocus={this.clearInput}
@@ -148,7 +148,7 @@ class AddEgg extends Component {
                 </CardSection>
                 <CardSection>
                     <Input
-                        label="Payload Type"
+                        placeholder="Egg Type"
                         onChangeText={e => this.handleInputChange(e)}
                         value={this.state.text}
                         onFocus={this.clearInput}
@@ -156,7 +156,7 @@ class AddEgg extends Component {
                 </CardSection>
                 <CardSection>
                     <Input
-                        label="Payload"
+                        placeholder="Egg Fill"
                         onChangeText={e => this.handleInputChange(e)}
                         value={this.state.text}
                         onFocus={this.clearInput}
