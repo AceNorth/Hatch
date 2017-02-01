@@ -8,11 +8,29 @@ import { tunnelIP } from '../TUNNELIP';
 const provider = firebase.auth.FacebookAuthProvider;
 
 /* --------------    ACTION CONSTANTS    ---------------- */
+
 const WHOAMI = 'WHOAMI';
 
 /* --------------    ACTION CREATORS    ----------------- */
+
 export const whoami = ({ uid, email, displayName, photoURL, refreshToken }) =>
   ({ type: WHOAMI, user: { id: uid, email, displayName, photoURL, refreshToken } });
+
+/* ------------------    REDUCER    --------------------- */
+
+export default (state = null, action) => {
+  let newState;
+  switch (action.type) {
+    case WHOAMI:
+      newState = action.user;
+      break;
+    default:
+      return state;
+  }
+  return newState;
+};
+
+/* --------------    THUNKS/DISPATCHERS    -------------- */
 
 export const redirectToFacebook = () =>
   dispatch =>
@@ -29,27 +47,13 @@ export const redirectToFacebook = () =>
         .then(({ uid, email, displayName, photoURL, refreshToken }) => {
           addUserToDb({ uid, displayName, email });
           dispatch(whoami({ uid, email, displayName, photoURL, refreshToken }));
+          Actions.landingPage();
         })
-        .catch(err => {
-          console.log('uh oh err', err);
-        });
+        .catch(err => console.log('uh oh err', err));
       });
+
+/* ------------------    HELPERS    --------------------- */
 
 const addUserToDb = ({ uid, displayName, email }) =>
   axios.post(`${tunnelIP}/api/user`, { uid, displayName, email })
     .catch(err => console.error('ruh roh auth reducer', err));
-
-/* ------------------    REDUCER    --------------------- */
-const authReducer = (state = null, action) => {
-  let newState;
-  switch (action.type) {
-    case WHOAMI:
-      newState = action.user;
-      break;
-    default:
-      return state;
-  }
-  return newState;
-};
-
-export default authReducer;
