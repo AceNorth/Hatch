@@ -16,26 +16,27 @@ const fetchEggs = eggs => ({ type: FETCH_EGGS, eggs });
 /* ------------------    REDUCER    --------------------- */
 
 const initialState = {
-    allEggs: [],
-    selectedEgg: {},
+    allEggs: {},
+    selectedEgg: -1,
 }
 
 export default function (state = initialState, action) {
     let newState = Object.assign({}, state);
     switch (action.type) {
         case ADD_EGG:
-            newState.allEggs = [...newState.allEggs, action.egg];
+            newState.allEggs[action.egg.id] = action.egg;
             break;
         case SELECT_EGG:
-            newState.selectedEgg = action.egg;
+            newState.selectedEgg = action.egg.id;
             break;
         case FETCH_EGGS:
-            newState.allEggs = action.eggs;
+            action.eggs.map(function(egg) {
+                newState.allEggs[egg.id] = egg;
+            })
             break;
         default:
             return state;
     }
-
     return newState;
 }
 
@@ -49,5 +50,5 @@ export const setSelectedEgg = eggId => dispatch => {
 export const fetchAllEggs = userId => dispatch => {
     axios.get(`${tunnelIP}/api/egg/user/${userId}`)
     .then(res => dispatch(fetchEggs(res.data)))
-    .catch(err => console.error('Problem fetching eggs', err));
+    .catch(err => console.error('Problem fetching eggs', err.message));
 }

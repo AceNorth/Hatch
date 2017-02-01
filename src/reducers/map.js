@@ -1,23 +1,23 @@
 import React from 'react';
 
-const SET_ANNOTATIONS = 'SET_ANNOTATIONS';
-const CLEAR_ANNOTATIONS = 'CLEAR_ANNOTATIONS';
+const SET_ANNOTATION = 'SET_ANNOTATION';
+const CLEAR_ANNOTATION = 'CLEAR_ANNOTATION';
 
 const initialState = {
-    annotations: []
+    annotation: []
 }
 
 //Action
-export const setAnnotations = function (annotations) {
+export const setAnnotation = function (annotation) {
     return {
-        type: SET_ANNOTATIONS,
-        annotations: annotations
+        type: SET_ANNOTATION,
+        annotation: annotation
     };
 };
 
-export const clearAnnotations = function () {
+export const clearAnnotation = function () {
     return {
-        type: CLEAR_ANNOTATIONS
+        type: CLEAR_ANNOTATION
     };
 };
 
@@ -27,11 +27,11 @@ export const clearAnnotations = function () {
 export default function (state = initialState, action) {
     let newState = Object.assign({}, state)
     switch (action.type) {
-        case SET_ANNOTATIONS:
-            newState.annotations = [action.annotations];
+        case SET_ANNOTATION:
+            newState.annotation = [action.annotation];
             break;
-        case CLEAR_ANNOTATIONS:
-            newState.annotations = [];
+        case CLEAR_ANNOTATION:
+            newState.annotation = [];
             break;
         default:
             return state;
