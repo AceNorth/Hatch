@@ -11,6 +11,7 @@ import { setSelectedEgg, fetchAllEggs } from '../reducers/eggs';
 import { tunnelIP } from '../TUNNELIP';
 import {showModal} from '../reducers/addNodeModal';
 import { setAnnotation, clearAnnotation } from '../reducers/map';
+import Photo from './Photo';
 
 class LandingPage extends Component {
 

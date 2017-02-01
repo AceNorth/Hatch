@@ -41,8 +41,8 @@ class AddEgg extends Component {
     onSubmitNode() {
 
         const egg = {
-            goHereText: this.state.text,
             goHereImage: this.state.goHereImageSource,
+            goHereText: this.state.text,
             goHereImageBuffer: this.state.goHereImageBuffer,
             latitude: this.props.annotation[0].latitude,
             longitude: this.props.annotation[0].longitude,
