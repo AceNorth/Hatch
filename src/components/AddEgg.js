@@ -47,7 +47,8 @@ class AddEgg extends Component {
             latitude: this.props.annotation[0].latitude,
             longitude: this.props.annotation[0].longitude,
             payloadType: 'Text',
-            payload: 'Hey everybody'
+            payload: 'Hey everybody',
+            senderId: 1,
         }
 
         axios.post(`${tunnelIP}/api/egg`, egg)
