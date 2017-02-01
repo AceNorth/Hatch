@@ -1,10 +1,13 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { Actions } from 'react-native-router-flux';
 import { View, Text, TouchableHighlight } from 'react-native';
 import { redirectToFacebook } from '../reducers/auth';
 
-const Login = (props) => {
+const Login = ({ auth }) => {
   const { container, loginButton, text } = styles;
+
+  auth ? Actions.landingPage() : null;
 
   return (
     <View style={container}>
@@ -38,7 +41,10 @@ const styles = {
 };
 
 Login.propTypes = {
+  auth: PropTypes.object,
   redirectToFacebook: PropTypes.func,
 };
 
-export default connect(() => ({}), { redirectToFacebook })(Login);
+const mapStateToProps = ({ auth }) => ({ auth });
+
+export default connect(mapStateToProps, { redirectToFacebook })(Login);
