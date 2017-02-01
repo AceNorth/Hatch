@@ -6,7 +6,7 @@ import {Input} from './common/Input';
 import { connect } from 'react-redux';
 import axios from 'axios';
 import {showModal} from '../reducers/addNodeModal';
-import {setAnnotations, clearAnnotations} from '../reducers/map';
+import {setAnnotation, clearAnnotation} from '../reducers/map';
 import { tunnelIP } from '../TUNNELIP';
 
 
@@ -44,8 +44,8 @@ class AddEgg extends Component {
             goHereText: this.state.text,
             goHereImage: this.state.goHereImageSource,
             goHereImageBuffer: this.state.goHereImageBuffer,
-            latitude: this.props.annotations[0].latitude,
-            longitude: this.props.annotations[0].longitude,
+            latitude: this.props.annotation[0].latitude,
+            longitude: this.props.annotation[0].longitude,
             payloadType: 'Text',
             payload: 'Hey everybody'
         }
@@ -54,7 +54,7 @@ class AddEgg extends Component {
             .then(()=>{
                 this.setState({ text:'placeholder' });
                 this.props.showModal(false);
-                this.props.clearAnnotations();
+                this.props.clearAnnotation();
             })
             .catch(err => console.log('AddEgg onSubmitNode error', err))
 
@@ -63,7 +63,7 @@ class AddEgg extends Component {
     onCancelSubmitNode() {
         this.setState({ text:'placeholder' });
         this.props.showModal(false);
-        this.props.clearAnnotations();
+        this.props.clearAnnotation();
     }
 
     showImagePicker(){
@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state, ownProps) => {
     return {
         showAddNodeModal: state.addNodeModal.showAddNodeModal,
-        annotations: state.map.annotations
+        annotation: state.map.annotation
     };
 }
 
@@ -207,11 +207,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         showModal: function(boolean){
             dispatch(showModal(boolean));
         },
-        setAnnotations: function(annotations){
-            dispatch(setAnnotations(annotations))
+        setAnnotation: function(annotation){
+            dispatch(setAnnotation(annotation))
         },
-        clearAnnotations: function(){
-            dispatch(clearAnnotations())
+        clearAnnotation: function(){
+            dispatch(clearAnnotation())
         }
     }
 }

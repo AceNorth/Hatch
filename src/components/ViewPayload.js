@@ -11,10 +11,10 @@ class ViewPayload extends Component {
 	}
 
 	renderPayloadView() {
-		switch (this.props.selectedEgg.payloadType) {
+		switch (this.props.allEggs[this.props.selectedEgg].payload.type) {
 			// conditional render for different payloads
 			case 'Text':
-				return (<Text> { this.props.selectedEgg.payload } </Text>)
+				return (<Text> { this.props.allEggs[this.props.selectedEgg].payload.content } </Text>)
 			default:
 				return (<Text> Something has GONE WRONG </Text>)
 		}
@@ -37,7 +37,8 @@ class ViewPayload extends Component {
 
 const mapStateToProps = (state, ownProps) => {
 	const selectedEgg = state.eggs.selectedEgg;
-    return { selectedEgg };
+	const allEggs = state.eggs.allEggs;
+    return { selectedEgg, allEggs };
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {

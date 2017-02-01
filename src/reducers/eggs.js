@@ -30,16 +30,13 @@ export default function (state = initialState, action) {
             newState.selectedEgg = action.egg.id;
             break;
         case FETCH_EGGS:
-        console.log("ACTION EGGS: ", action);
             action.eggs.map(function(egg) {
-                console.log('EGGGGG: ', egg);
                 newState.allEggs[egg.id] = egg;
             })
             break;
         default:
             return state;
     }
-    console.log("NEWSTATE: ", newState);
     return newState;
 }
 
