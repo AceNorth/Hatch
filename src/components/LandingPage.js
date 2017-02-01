@@ -39,15 +39,15 @@ class LandingPage extends Component {
 
   componentWillReceiveProps(nextProps) {
     // loop through all the user's eggs and turn them into map annotations
-    let pickups = this.state.pickups;
+    let pickups = [];
 
-    nextProps.allEggs.forEach(egg => {
-      let newAnnotation = this.createStaticAnnotation(egg.longitude, egg.latitude, egg.senderId, egg.id, egg.goHereText);
-      pickups.push(newAnnotation);
-    });
-
+    for (let key in nextProps.allEggs) {
+      let egg = nextProps.allEggs[key];
+      let newPickup = this.createStaticAnnotation(egg.longitude, egg.latitude, egg.senderId, egg.id, egg.goHereText);
+      pickups.push(newPickup);
+    }
     this.setState({ pickups }); 
-  };
+  }
 
   isWithinFence(coordinatesObject, egg){
    if(!egg) { return false }
@@ -67,11 +67,12 @@ class LandingPage extends Component {
 
   checkFences() {
     this.updateCurrentPosition();
-    this.props.allEggs.forEach(egg => {
+    for (let key in this.props.allEggs) {
+      let egg = this.props.allEggs[key];
       if (this.isWithinFence(this.state.currentPosition.coords, egg)) {
         this.props.setSelectedEgg(egg.id);
       }
-    })
+    }
   };
 
   updateCurrentPosition() {

@@ -39,8 +39,7 @@ class AddEgg extends Component {
     }
 
     onSubmitNode() {
-        console.log("submitted");
-        //send data to DB
+
         const egg = {
             goHereText: this.state.text,
             goHereImage: this.state.goHereImageSource,
@@ -48,7 +47,7 @@ class AddEgg extends Component {
             latitude: this.props.annotations[0].latitude,
             longitude: this.props.annotations[0].longitude,
             payloadType: 'Text',
-            receiverId: 225
+            payload: 'Hey everybody'
         }
 
         axios.post(`${tunnelIP}/api/egg`, egg)
