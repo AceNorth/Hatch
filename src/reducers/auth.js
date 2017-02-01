@@ -13,8 +13,13 @@ const WHOAMI = 'WHOAMI';
 
 /* --------------    ACTION CREATORS    ----------------- */
 
-export const whoami = ({ uid, email, displayName, photoURL, refreshToken }) =>
-  ({ type: WHOAMI, user: { id: uid, email, displayName, photoURL, refreshToken } });
+export const whoami = (user) => {
+  if (user) {
+    const { uid, email, displayName, photoURL, refreshToken } = user;
+    return { type: WHOAMI, user: { id: uid, email, displayName, photoURL, refreshToken } };
+  } else {
+    return { type: WHOAMI, user: null };
+  }};
 
 /* ------------------    REDUCER    --------------------- */
 
