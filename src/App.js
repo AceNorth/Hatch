@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
 import BackgroundGeolocation from 'react-native-background-geolocation';
 import firebase from 'firebase';
-import Router from './components/Router';
+import { Provider } from 'react-redux';
 
+import store from './store';
+import Router from './components/Router';
+import { whoami } from './reducers/auth';
 
 // Disables yellow warnings! Yay!
 console.disableYellowBox = true;
 
 export default class App extends Component {
   componentWillMount() {
-    // FIREBASE CONFIGURATION
     firebase.initializeApp({
       apiKey: 'AIzaSyC6jKlwHQal-90LFE5qSKEwQhaZDTCgQk0',
       authDomain: 'leftyousomethin-c3438.firebaseapp.com',
@@ -18,7 +20,10 @@ export default class App extends Component {
       messagingSenderId: '921367881342'
     });
 
-    // BACKGROUND GEOLOCATION CONFIGURATION
+    firebase.auth().onAuthStateChanged((user) => {
+      store.dispatch(whoami(user));
+    });
+
     // This handler fires whenever bgGeo receives a location update.
     BackgroundGeolocation.on('location', this.onLocation);
 
@@ -100,7 +105,9 @@ export default class App extends Component {
   }
   render() {
     return (
+    <Provider store={store}>
       <Router />
+    </Provider>
     );
   }
 }

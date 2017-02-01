@@ -1,5 +1,9 @@
+import axios from 'axios';
 import firebase from 'firebase';
 import { LoginManager, AccessToken } from 'react-native-fbsdk';
+import { Actions } from 'react-native-router-flux';
+
+import { tunnelIP } from '../TUNNELIP';
 
 const provider = firebase.auth.FacebookAuthProvider;
 
@@ -7,14 +11,14 @@ const provider = firebase.auth.FacebookAuthProvider;
 const WHOAMI = 'WHOAMI';
 
 /* --------------    ACTION CREATORS    ----------------- */
-export const whoami = user => ({ type: WHOAMI, user });
+export const whoami = ({ uid, email, displayName, photoURL, refreshToken }) =>
+  ({ type: WHOAMI, user: { id: uid, email, displayName, photoURL, refreshToken } });
 
 export const redirectToFacebook = () =>
   dispatch =>
     LoginManager.logInWithReadPermissions(['public_profile', 'email', 'user_friends'])
       .then((loginResult) => {
-        if (loginResult.isCancelled) {
-          console.log('user canceled');
+        if (loginResult.isCancelled) { // User cancels login
           return;
         }
         AccessToken.getCurrentAccessToken()
@@ -22,20 +26,18 @@ export const redirectToFacebook = () =>
           const credential = provider.credential(accessTokenData.accessToken);
           return firebase.auth().signInWithCredential(credential);
         })
-        .then(({ email, uid, displayName, photoURL, refreshToken }) => {
-          dispatch(whoami({ email, uid, displayName, photoURL, refreshToken }));
+        .then(({ uid, email, displayName, photoURL, refreshToken }) => {
+          addUserToDb({ uid, displayName, email });
+          dispatch(whoami({ uid, email, displayName, photoURL, refreshToken }));
         })
         .catch(err => {
           console.log('uh oh err', err);
         });
       });
 
-// const addUserToDb = userInfo =>
-//   (dispatch) => {
-//     const { currentUser } = firebase.auth();
-//     // @todo:
-//     // findOrCreate user in Sequelize
-//   };
+const addUserToDb = ({ uid, displayName, email }) =>
+  axios.post(`${tunnelIP}/api/user`, { uid, displayName, email })
+    .catch(err => console.error('ruh roh auth reducer', err));
 
 /* ------------------    REDUCER    --------------------- */
 const authReducer = (state = null, action) => {
