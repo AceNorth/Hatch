@@ -4,6 +4,7 @@ import { LoginManager, AccessToken } from 'react-native-fbsdk';
 import { Actions } from 'react-native-router-flux';
 
 import { tunnelIP } from '../TUNNELIP';
+import { fetchFriends } from './friends';
 
 const provider = firebase.auth.FacebookAuthProvider;
 
@@ -36,12 +37,15 @@ export const redirectToFacebook = () =>
   dispatch =>
     LoginManager.logInWithReadPermissions(['public_profile', 'email', 'user_friends'])
       .then((loginResult) => {
+        console.log('loginResult', loginResult);
         if (loginResult.isCancelled) { // User cancels login
           return;
         }
         AccessToken.getCurrentAccessToken()
         .then((accessTokenData) => {
+          console.log('accessTokenData', accessTokenData);
           const credential = provider.credential(accessTokenData.accessToken);
+          console.log('credential', credential);
           return firebase.auth().signInWithCredential(credential);
         })
         .then(({ uid, email, displayName, photoURL, refreshToken }) => {
