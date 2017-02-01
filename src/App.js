@@ -23,6 +23,11 @@ export default class App extends Component {
       messagingSenderId: '921367881342'
     });
 
+    firebase.auth().onAuthStateChanged((user) => {
+      console.log('hello auth state changed and here is user', user);
+      // store.dispatch(whoami(user));
+    });
+
     // BACKGROUND GEOLOCATION CONFIGURATION
     // This handler fires whenever bgGeo receives a location update.
     BackgroundGeolocation.on('location', this.onLocation);
