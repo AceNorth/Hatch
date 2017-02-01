@@ -20,7 +20,8 @@ class LandingPage extends Component {
     // user's current position
       currentPosition: { timestamp: 0, coords: { latitude: 1, longitude: 1 } },
     // locations of eggs waiting to be picked up
-      pickups: []
+      pickups: [],
+      pickupRadius: 0.001
     };
 
     this.onMapLongPress = this.onMapLongPress.bind(this);
@@ -33,7 +34,7 @@ class LandingPage extends Component {
       1000
     );
 
-  // fetch all eggs belonging to the current user
+    // fetch all eggs belonging to the current user
     this.props.fetchAllEggs(this.props.user.id);
   }
 
@@ -43,23 +44,24 @@ class LandingPage extends Component {
 
     for (let key in nextProps.allEggs) {
       let egg = nextProps.allEggs[key];
-      let newPickup = this.createStaticAnnotation(egg.longitude, egg.latitude, egg.senderId, egg.id, egg.goHereText);
-      pickups.push(newPickup);
+
+      if (egg.receiverId === this.props.user.id) {
+       let newPickup = this.createStaticAnnotation(egg.longitude, egg.latitude, egg.senderId, egg.id, egg.goHereText);
+       pickups.push(newPickup);
+      }
     }
     this.setState({ pickups }); 
   }
 
-  isWithinFence(coordinatesObject, egg){
-   if(!egg) { return false }
-     
-   let fence = Math.pow((coordinatesObject.longitude-egg.longitude), 2) + Math.pow((coordinatesObject.latitude-egg.latitude), 2);
+  // isWithinFence(coordinatesObject, egg){
+  //  if(!egg) { return false }  
+  //  let fence = Math.pow((coordinatesObject.longitude-egg.longitude), 2) + Math.pow((coordinatesObject.latitude-egg.latitude), 2);
+  //  if (fence < Math.pow(0.0001, 2)) {
+  //    return true;
+  //  }
 
-   if (fence < Math.pow(0.0001, 2)) {
-     return true;
-   }
-
-   return false;
- }
+  //  return false;
+  // }
 
   onAddNodeButtonPress() {
     this.props.showModal(true);
@@ -154,6 +156,21 @@ class LandingPage extends Component {
     }
   }
 
+  isWithinFence(coordinatesObject, egg){
+   
+   let eggLong = Number(egg.longitude)
+   let eggLat = Number(egg.latitude)
+
+   if(!egg) { return false }  
+
+   let fence = Math.pow((coordinatesObject.longitude-eggLong), 2) + Math.pow((coordinatesObject.latitude-eggLat), 2);
+   if (fence < Math.pow(this.state.pickupRadius, 2)) {
+     return true;
+   }
+
+   return false;
+  }
+
   render() {
     const position = this.state.currentPosition;
 
@@ -161,6 +178,21 @@ class LandingPage extends Component {
     // + new eggs waiting to be dropped (from the AddEgg modal)
 
     const annotations = this.props.annotation.concat(this.state.pickups);
+    // console.log('this.state.currentPosition: ', this.state.currentPosition)
+
+    annotations.map(annotation => {
+      if(annotation){
+        if(this.isWithinFence(this.state.currentPosition.coords, annotation)){
+          annotation.rightCalloutView = (
+            <Button 
+              color='#517fa4'
+              onPress={Actions.viewPayload} 
+              >Psst...
+            </Button>
+          );    
+        }
+      }
+    })
 
     return (
       <View>
@@ -174,7 +206,7 @@ class LandingPage extends Component {
         </TouchableWithoutFeedback>
         
         {this.renderLeaveEggButton()}
-        {this.renderPickupEggButton()}
+        {/*this.renderPickupEggButton()*/}
 
         <Modal
             visible={this.props.showAddNodeModal}
@@ -201,7 +233,8 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state, ownProps) => {
   //fake user for testing:
 
-  const user = { id: 225 };
+  // const user = { id: 225 };
+  const user = { id: 1 };
 
   let selectedEgg = state.eggs.selectedEgg;
   let allEggs = state.eggs.allEggs;
