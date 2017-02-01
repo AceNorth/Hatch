@@ -4,10 +4,8 @@ import { Actions } from 'react-native-router-flux';
 import { View, Text, TouchableHighlight } from 'react-native';
 import { redirectToFacebook } from '../reducers/auth';
 
-const Login = ({ auth }) => {
+const Login = (props) => {
   const { container, loginButton, text } = styles;
-
-  auth ? Actions.landingPage() : null;
 
   return (
     <View style={container}>
