@@ -5,9 +5,7 @@ import rootReducer from './reducers/rootReducer';
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
-const store = createStore(rootReducer, composeEnhancers(applyMiddleware(createLogger(), thunkMiddleware)));
-
-// const store = createStore(rootReducer, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
+const store = createStore(rootReducer, composeEnhancers(applyMiddleware(thunkMiddleware, createLogger())));
 
 export default store;
 

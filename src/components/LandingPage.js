@@ -10,7 +10,7 @@ import { Actions } from 'react-native-router-flux';
 import { setSelectedEgg, fetchAllEggs } from '../reducers/eggs';
 import { tunnelIP } from '../TUNNELIP';
 import {showModal} from '../reducers/addNodeModal';
-import {setAnnotations, addAnnotation, clearAnnotations} from '../reducers/map';
+import { setAnnotation, clearAnnotation } from '../reducers/map';
 
 class LandingPage extends Component {
 
@@ -39,15 +39,17 @@ class LandingPage extends Component {
 
   componentWillReceiveProps(nextProps) {
     // loop through all the user's eggs and turn them into map annotations
-    let pickups = this.state.pickups;
+    let pickups = [];
 
-    nextProps.allEggs.forEach(egg => {
-      let newAnnotation = this.createStaticAnnotation(egg.longitude, egg.latitude, egg.senderId, egg.id, egg.goHereText);
-      pickups.push(newAnnotation);
-    });
-
+    for (let key in nextProps.allEggs) {
+      let egg = nextProps.allEggs[key];
+      if (egg.receiverId === this.props.user.id) {
+        let newPickup = this.createStaticAnnotation(egg.longitude, egg.latitude, egg.senderId, egg.id, egg.goHereText);
+        pickups.push(newPickup);
+      }
+    }
     this.setState({ pickups }); 
-  };
+  }
 
   isWithinFence(coordinatesObject, egg){
    if(!egg) { return false }
@@ -67,11 +69,12 @@ class LandingPage extends Component {
 
   checkFences() {
     this.updateCurrentPosition();
-    this.props.allEggs.forEach(egg => {
+    for (let key in this.props.allEggs) {
+      let egg = this.props.allEggs[key];
       if (this.isWithinFence(this.state.currentPosition.coords, egg)) {
         this.props.setSelectedEgg(egg.id);
       }
-    })
+    }
   };
 
   updateCurrentPosition() {
@@ -87,7 +90,7 @@ class LandingPage extends Component {
   }
 
   onMapLongPress(event) {
-    if (!this.props.annotations.length) {
+    if (!this.props.annotation.length) {
       let options = {
         enableHighAccuracy: true,
         timeout: 5000,
@@ -97,7 +100,7 @@ class LandingPage extends Component {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           let newA = this.createAnnotation(position.coords.longitude, position.coords.latitude);
-          this.props.setAnnotations(newA);
+          this.props.setAnnotation(newA);
         }
         , null, options);
     }
@@ -111,7 +114,7 @@ class LandingPage extends Component {
       onDragStateChange: (event) => {
         if (event.state === 'idle') {
           let newAnnotation= this.createAnnotation(event.longitude, event.latitude);
-          this.props.setAnnotations(newAnnotation);
+          this.props.setAnnotation(newAnnotation);
         }
       },
     };
@@ -133,7 +136,7 @@ class LandingPage extends Component {
   };
 
   renderLeaveEggButton() {
-    if (this.props.annotations.length) {
+    if (this.props.annotation.length) {
       return (
         <Button onPress={this.onAddNodeButtonPress.bind(this)}>
         Leave an egg at the current pin
@@ -144,7 +147,7 @@ class LandingPage extends Component {
 
   renderPickupEggButton() {
     // if you're within the fence of an egg, render the button
-    if (this.isWithinFence(this.state.currentPosition.coords, this.props.selectedEgg)) { 
+    if (this.isWithinFence(this.state.currentPosition.coords, this.props.allEggs[this.props.selectedEgg])) { 
       return (
         <Button onPress={Actions.viewPayload}>
           FOUND AN EGG! PRESS HERE TO PICK IT UP!
@@ -159,7 +162,7 @@ class LandingPage extends Component {
     // the annotations on the map are a combination of packages waiting for pickup
     // + new eggs waiting to be dropped (from the AddEgg modal)
 
-    const annotations = this.props.annotations.concat(this.state.pickups);
+    const annotations = this.props.annotation.concat(this.state.pickups);
 
     return (
       <View>
@@ -207,7 +210,7 @@ const mapStateToProps = (state, ownProps) => {
 
   return {
     showAddNodeModal: state.addNodeModal.showAddNodeModal,
-    annotations: state.map.annotations,
+    annotation: state.map.annotation,
     selectedEgg,
     allEggs,
     user
@@ -225,14 +228,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     showModal: function(boolean) {
         dispatch(showModal(boolean));
     },
-    setAnnotations: function(annotations) {
-      dispatch(setAnnotations(annotations));
+    setAnnotation: function(annotation) {
+      dispatch(setAnnotation(annotation));
     },
-    addAnnotation: function(annotation) {
-      dispatch(addAnnotation(annotation))
-    },
-    clearAnnotations: function() {
-      dispatch(clearAnnotations());
+    clearAnnotation: function() {
+      dispatch(clearAnnotation());
     }
   };
 };
