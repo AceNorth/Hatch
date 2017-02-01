@@ -1,13 +1,8 @@
 import React, { Component } from 'react';
 import BackgroundGeolocation from 'react-native-background-geolocation';
-// import { createStore, applyMiddleware } from 'redux';
-// import LandingPage from './components/LandingPage';
-import { Provider } from 'react-redux';
 import firebase from 'firebase';
-import store from './store';
-
 import Router from './components/Router';
-// import reducers from './reducers';
+
 
 // Disables yellow warnings! Yay!
 console.disableYellowBox = true;
@@ -105,9 +100,7 @@ export default class App extends Component {
   }
   render() {
     return (
-      <Provider store={store}>
-        <Router />
-      </Provider>
+      <Router />
     );
   }
 }

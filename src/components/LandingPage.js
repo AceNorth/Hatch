@@ -43,8 +43,10 @@ class LandingPage extends Component {
 
     for (let key in nextProps.allEggs) {
       let egg = nextProps.allEggs[key];
-      let newPickup = this.createStaticAnnotation(egg.longitude, egg.latitude, egg.senderId, egg.id, egg.goHereText);
-      pickups.push(newPickup);
+      if (egg.receiverId === this.props.user.id) {
+        let newPickup = this.createStaticAnnotation(egg.longitude, egg.latitude, egg.senderId, egg.id, egg.goHereText);
+        pickups.push(newPickup);
+      }
     }
     this.setState({ pickups }); 
   }
