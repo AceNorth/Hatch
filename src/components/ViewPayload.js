@@ -6,38 +6,43 @@ import axios from 'axios';
 
 class ViewPayload extends Component {
 
-	constructor(props) {
-		super(props);
-	}
+  constructor(props) {
+    super(props);
 
-	renderPayloadView() {
-		switch (this.props.allEggs[this.props.selectedEgg].payload.type) {
-			// conditional render for different payloads
-			case 'Text':
-				return (<Text> { this.props.allEggs[this.props.selectedEgg].payload.content } </Text>)
-			default:
-				return (<Text> Something has GONE WRONG </Text>)
-		}
-	}
+  }
 
-	render() {
+  renderPayloadView() {
+    let payloadType = this.props.allEggs[this.props.selectedEgg].payload.type
+    
+    switch (payloadType) {
+      // conditional render for different payloads
+      case 'Text':
+        return (<Text> { this.props.allEggs[this.props.selectedEgg].payload.content } </Text>)
+      case 'Image':
+        return (<View> { this.props.allEggs[this.props.selectedEgg].payload.content } </View>)
+      default:
+        return (<Text> Something has GONE WRONG </Text>)
+    }
+  }
 
-		return (
-			<Card>
-				<CardSection style={{flex: 1}}>
-					<Text style={{fontSize: 55, paddingTop: 50}}> Here's your message! </Text>
-				</CardSection>
-				<CardSection>
-					{ this.renderPayloadView() }
-				</CardSection>
-			</Card>
-		);
-	};
+  render() {
+
+    return (
+      <Card>
+        <CardSection style={{flex: 1}}>
+          <Text style={{fontSize: 30, paddingTop: 50}}> Here's your message! </Text>
+        </CardSection>
+        <CardSection>
+          { this.renderPayloadView() }
+        </CardSection>
+      </Card>
+    );
+  };
 }
 
 const mapStateToProps = (state, ownProps) => {
-	const selectedEgg = state.eggs.selectedEgg;
-	const allEggs = state.eggs.allEggs;
+  const selectedEgg = state.eggs.selectedEgg;
+  const allEggs = state.eggs.allEggs;
     return { selectedEgg, allEggs };
 };
 
