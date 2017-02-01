@@ -6,8 +6,8 @@ const FETCH_FRIENDS = 'FETCH_FRIENDS';
 
 /* --------------    ACTION CREATORS    ----------------- */
 
-const fetchFriends = () => {
-  dispatch => {
+export const fetchFriends = () =>
+  (dispatch) => {
     const infoRequest = new GraphRequest(
       '/me/friends',
       null,
@@ -24,7 +24,6 @@ const fetchFriends = () => {
 
     new GraphRequestManager().addRequest(infoRequest).start();
   };
-};
 
 
 /* ------------------    REDUCER    --------------------- */

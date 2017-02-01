@@ -14,13 +14,17 @@ const WHOAMI = 'WHOAMI';
 
 /* --------------    ACTION CREATORS    ----------------- */
 
-export const whoami = (user) => {
-  if (user) {
-    const { uid, email, displayName, photoURL, refreshToken } = user;
-    return { type: WHOAMI, user: { id: uid, email, displayName, photoURL, refreshToken } };
-  } else {
-    return { type: WHOAMI, user: null };
-  }};
+export const whoami = user =>
+  (dispatch) => {
+    if (user) {
+      const { uid, email, displayName, photoURL, refreshToken } = user;
+      // Send user to store
+      dispatch({ type: WHOAMI, user: { id: uid, email, displayName, photoURL, refreshToken } });
+      // Fetch user friends
+      dispatch(fetchFriends());
+    }
+    dispatch({ type: WHOAMI, user: null });
+  };
 
 /* ------------------    REDUCER    --------------------- */
 
