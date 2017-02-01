@@ -1,15 +1,15 @@
 import React from 'react';
-import {Scene, Router, Actions } from 'react-native-router-flux';
+import { Scene, Router, Actions } from 'react-native-router-flux';
 import LandingPage from './LandingPage';
 import ViewPayload from './ViewPayload';
+import Login from './Login';
 
-const RouterComponent = () => {
-    return(
-        <Router>
-            <Scene key="landingPage" component={ LandingPage } title="Left You Somethin"/>
-            <Scene key="viewPayload" component={ ViewPayload } title="Check this out!"/>
-        </Router>
-    )
-}
+const RouterComponent = () => (
+  <Router>
+    <Scene key="landingPage" component={LandingPage} title="Left You Somethin" />
+    <Scene key="viewPayload" component={ViewPayload} title="Check this out!" />
+    <Scene key="login" component={Login} hideNavBar />
+  </Router>
+);
 
 export default RouterComponent;

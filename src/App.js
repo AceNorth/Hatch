@@ -3,7 +3,7 @@ import BackgroundGeolocation from 'react-native-background-geolocation';
 // import { createStore, applyMiddleware } from 'redux';
 // import LandingPage from './components/LandingPage';
 import { Provider } from 'react-redux';
-// import firebase from 'firebase';
+import firebase from 'firebase';
 import store from './store';
 
 import Router from './components/Router';
@@ -12,19 +12,18 @@ import Router from './components/Router';
 // Disables yellow warnings! Yay!
 console.disableYellowBox = true;
 
-const config = {
-  identifier: 'jeans geofence',
-  latitude: 0,
-  longitude: 0,
-  radius: '100', // in meters... is this supposed to be a string??
-  notifyOnEntry: true,
-  notifyOnExit: false,
-  notifyOnDwell: false, // Android only
-  loiteringDelay: '0' // Android only
-};
-
 export default class App extends Component {
   componentWillMount() {
+    // FIREBASE CONFIGURATION
+    firebase.initializeApp({
+      apiKey: 'AIzaSyC6jKlwHQal-90LFE5qSKEwQhaZDTCgQk0',
+      authDomain: 'leftyousomethin-c3438.firebaseapp.com',
+      databaseURL: 'https://leftyousomethin-c3438.firebaseio.com',
+      storageBucket: 'leftyousomethin-c3438.appspot.com',
+      messagingSenderId: '921367881342'
+    });
+
+    // BACKGROUND GEOLOCATION CONFIGURATION
     // This handler fires whenever bgGeo receives a location update.
     BackgroundGeolocation.on('location', this.onLocation);
 
@@ -62,13 +61,15 @@ export default class App extends Component {
         });
       }
     });
+
+// THIS IS A HARD-CODED GEOFENCE FOR PRACTICE PURPOSES
 // 41.888723, -87.637215 is merchandise mart
 // 41.908076, -87.631128 is close to where the fence is
     BackgroundGeolocation.addGeofence({
       identifier: 'jeans geofence',
       latitude: 41.908759,
       longitude: -87.6310154,
-      radius: '100', // in meters... is this supposed to be a string??
+      radius: '100', // in meters; recommended to be >= 100
       notifyOnEntry: true,
       notifyOnExit: false,
       notifyOnDwell: false, // Android only
