@@ -5,7 +5,6 @@ import WelcomePage from './WelcomePage';
 import ViewPayload from './ViewPayload';
 import Login from './Login';
 
-
 const RouterComponent = () => (
   <Router>
   	<Scene key="welcomePage" component={WelcomePage} hideNavBar />

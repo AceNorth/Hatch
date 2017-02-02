@@ -3,21 +3,15 @@ import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 import { View, Text } from 'react-native';
 
-
-class WelcomePage extends Component { 
-  constructor(props) {
-    super(props);
-
-  }
-
+class WelcomePage extends Component {
   componentWillReceiveProps(nextProps) {
   // navigate to either the landing page (if logged in) or
   // the authorization page (if not)
-   nextProps.auth ? Actions.landingPage() : Actions.login();
+    nextProps.auth ? Actions.landingPage() : Actions.login();
   }
 
   render() {
-    const { container, loginButton, text } = styles;
+    const { container, text } = styles;
     return (
       <View style={container}>
         <Text style={text}>HELLO WELCOME TO ANDY'S APP</Text>
@@ -31,11 +25,6 @@ const styles = {
     flex: 1,
     backgroundColor: '#f4f281',
     justifyContent: 'center',
-  },
-  loginButton: {
-    backgroundColor: '#1b55d3',
-    height: 70,
-    justifyContent: 'center'
   },
   text: {
     textAlign: 'center',

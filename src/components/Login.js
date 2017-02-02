@@ -1,20 +1,31 @@
 import React, { PropTypes } from 'react';
-import { connect } from 'react-redux';
+import { View } from 'react-native';
 import { Actions } from 'react-native-router-flux';
-import { View, Text, TouchableHighlight } from 'react-native';
-import { redirectToFacebook } from '../reducers/auth';
+import { connect } from 'react-redux';
+import { LoginButton } from 'react-native-fbsdk';
+
+import { fetchUserInfo } from '../reducers/auth';
 
 const Login = (props) => {
-  const { container, loginButton, text } = styles;
-
+  const { container, loginButton } = styles;
   return (
     <View style={container}>
-      <TouchableHighlight
+      <LoginButton
+        readPermissions={['email', 'user_friends']}
+        onLoginFinished={
+          (error, result) => {
+            if (error) {
+              console.log('Login failed with error: ' + result.error);
+            } else if (result.isCancelled) {
+              console.log('Login was cancelled');
+            } else {
+              props.fetchUserInfo();
+            }
+          }
+        }
+        onLogoutFinished={() => console.log('User logged out')}
         style={loginButton}
-        onPress={() => props.redirectToFacebook()}
-      >
-        <Text style={text}>Log in with Facebook</Text>
-      </TouchableHighlight>
+      />
     </View>
   );
 };
@@ -24,25 +35,19 @@ const styles = {
     flex: 1,
     backgroundColor: '#f4f281',
     justifyContent: 'center',
+    alignItems: 'center'
   },
   loginButton: {
-    backgroundColor: '#1b55d3',
-    height: 70,
-    justifyContent: 'center'
-  },
-  text: {
-    textAlign: 'center',
-    fontSize: 25,
-    color: '#fff',
-    fontWeight: '600',
+    height: 30,
+    width: 200,
   }
 };
 
 Login.propTypes = {
   auth: PropTypes.object,
-  redirectToFacebook: PropTypes.func,
+  fetchUserInfo: PropTypes.func,
 };
 
 const mapStateToProps = ({ auth }) => ({ auth });
 
-export default connect(mapStateToProps, { redirectToFacebook })(Login);
+export default connect(mapStateToProps, { fetchUserInfo })(Login);
