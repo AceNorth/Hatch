@@ -1,7 +1,7 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, MapView, TextInput, TouchableWithoutFeedback, Modal } from 'react-native';
+import { View, Text, StyleSheet, MapView, TextInput, TouchableWithoutFeedback, Modal, Image } from 'react-native';
 import { Button } from './common';
 import  AddEgg  from './AddEgg';
 import { connect } from 'react-redux';
@@ -21,7 +21,10 @@ class LandingPage extends Component {
       currentPosition: { timestamp: 0, coords: { latitude: 1, longitude: 1 } },
     // locations of eggs waiting to be picked up
       pickups: [],
-      pickupRadius: 0.001
+      //demonstrating image rendering on front end
+       goHereImage: {},
+
+      pickupRadius: 0.0003
     };
 
     this.onMapLongPress = this.onMapLongPress.bind(this);
@@ -36,6 +39,14 @@ class LandingPage extends Component {
 
     // fetch all eggs belonging to the current user
     this.props.fetchAllEggs(this.props.user.id);
+
+      //this sets the sample image on the home page, use this as a template for how to get the axios response you will need to render images.
+      let goHereImage2;
+      axios.get(`${tunnelIP}/api/egg/goHereImage/19`)
+          .then(response => {
+              goHereImage2 = response.data
+              this.setState({goHereImage: goHereImage2});
+          })
   }
 
   componentWillReceiveProps(nextProps) {
@@ -53,15 +64,19 @@ class LandingPage extends Component {
     this.setState({ pickups }); 
   }
 
-  // isWithinFence(coordinatesObject, egg){
-  //  if(!egg) { return false }  
-  //  let fence = Math.pow((coordinatesObject.longitude-egg.longitude), 2) + Math.pow((coordinatesObject.latitude-egg.latitude), 2);
-  //  if (fence < Math.pow(0.0001, 2)) {
-  //    return true;
-  //  }
+  isWithinFence(coordinatesObject, egg){
+   if(!egg) { return false }  
+    
+   let eggLong = Number(egg.longitude)
+   let eggLat = Number(egg.latitude)
 
-  //  return false;
-  // }
+   let fence = Math.pow((coordinatesObject.longitude-eggLong), 2) + Math.pow((coordinatesObject.latitude-eggLat), 2);
+   if (fence < Math.pow(this.state.pickupRadius, 2)) {
+     return true;
+   }
+
+   return false;
+  }
 
   onAddNodeButtonPress() {
     this.props.showModal(true);
@@ -156,21 +171,6 @@ class LandingPage extends Component {
     }
   }
 
-  isWithinFence(coordinatesObject, egg){
-   
-   let eggLong = Number(egg.longitude)
-   let eggLat = Number(egg.latitude)
-
-   if(!egg) { return false }  
-
-   let fence = Math.pow((coordinatesObject.longitude-eggLong), 2) + Math.pow((coordinatesObject.latitude-eggLat), 2);
-   if (fence < Math.pow(this.state.pickupRadius, 2)) {
-     return true;
-   }
-
-   return false;
-  }
-
   render() {
     const position = this.state.currentPosition;
 
@@ -178,11 +178,13 @@ class LandingPage extends Component {
     // + new eggs waiting to be dropped (from the AddEgg modal)
 
     const annotations = this.props.annotation.concat(this.state.pickups);
+
     // console.log('this.state.currentPosition: ', this.state.currentPosition)
 
     annotations.map(annotation => {
       if(annotation){
         if(this.isWithinFence(this.state.currentPosition.coords, annotation)){
+          annotation.tintColor= MapView.PinColors.GREEN,
           annotation.rightCalloutView = (
             <Button 
               color='#517fa4'
@@ -207,7 +209,9 @@ class LandingPage extends Component {
         <Button onPress={Actions.eggManager}> Manage Eggs </Button>
         
         {this.renderLeaveEggButton()}
-        {/*this.renderPickupEggButton()*/}
+        {this.renderPickupEggButton()}
+
+          <Image style={{width: 50, height: 50}} source={{uri: this.state.goHereImage.uri}}></Image>
 
         <Modal
             visible={this.props.showAddNodeModal}
@@ -232,10 +236,8 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state, ownProps) => {
-  //fake user for testing:
 
   const user = { id: 225 };
-  // const user = { id: 1 };
 
   let selectedEgg = state.eggs.selectedEgg;
   let allEggs = state.eggs.allEggs;

@@ -1,12 +1,10 @@
 import React, { Component, PropTypes } from 'react';
-import { connect } from 'react-redux';
 import { Scene, Router, Actions } from 'react-native-router-flux';
 import LandingPage from './LandingPage';
 import WelcomePage from './WelcomePage';
 import ViewPayload from './ViewPayload';
 import EggManager from './EggManager';
 import Login from './Login';
-
 
 const RouterComponent = () => (
   <Router>
