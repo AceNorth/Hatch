@@ -15,7 +15,7 @@ export const whoami = user => ({ type: WHOAMI, user });
 
 /* ------------------    REDUCER    --------------------- */
 
-export default (state = null, action) => {
+export default (state = false, action) => {
   let newState;
   switch (action.type) {
     case WHOAMI:
