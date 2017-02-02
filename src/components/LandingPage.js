@@ -17,13 +17,13 @@ class LandingPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-    // user's current position
+      // user's current position
       currentPosition: { timestamp: 0, coords: { latitude: 1, longitude: 1 } },
-    // locations of eggs waiting to be picked up
+      // locations of eggs waiting to be picked up
       pickups: [],
       //demonstrating image rendering on front end
-       goHereImage: {},
-
+      goHereImage: {},
+      //radius around egg
       pickupRadius: 0.0003
     };
 
@@ -37,8 +37,8 @@ class LandingPage extends Component {
       1000
     );
 
-    // fetch all eggs belonging to the current user
-    this.props.fetchAllEggs(this.props.user.id);
+    // // fetch all eggs belonging to the current user
+    this.props.fetchAllEggs(this.props.user.id);    //
 
       //this sets the sample image on the home page, use this as a template for how to get the axios response you will need to render images.
       let goHereImage2;
@@ -238,7 +238,8 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state, ownProps) => {
 
-  const user = { id: 225 };
+  // const user = { id: 225 };  
+  const user = { id: 10201419031655448 } //change to you userId
 
   let selectedEgg = state.eggs.selectedEgg;
   let allEggs = state.eggs.allEggs;
