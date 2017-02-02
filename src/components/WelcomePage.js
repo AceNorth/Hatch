@@ -3,8 +3,7 @@ import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 import { View, Text } from 'react-native';
 
-
-class WelcomePage extends Component { 
+class WelcomePage extends Component {
   constructor(props) {
     super(props);
 

@@ -1,28 +1,26 @@
 import React, { Component } from 'react';
 import BackgroundGeolocation from 'react-native-background-geolocation';
-import firebase from 'firebase';
 import { Provider } from 'react-redux';
+import { AccessToken } from 'react-native-fbsdk';
 
 import store from './store';
 import Router from './components/Router';
-import { whoami } from './reducers/auth';
+import { fetchUserInfo, whoami } from './reducers/auth';
 
 // Disables yellow warnings! Yay!
 console.disableYellowBox = true;
 
 export default class App extends Component {
   componentWillMount() {
-    firebase.initializeApp({
-      apiKey: 'AIzaSyC6jKlwHQal-90LFE5qSKEwQhaZDTCgQk0',
-      authDomain: 'leftyousomethin-c3438.firebaseapp.com',
-      databaseURL: 'https://leftyousomethin-c3438.firebaseio.com',
-      storageBucket: 'leftyousomethin-c3438.appspot.com',
-      messagingSenderId: '921367881342'
-    });
-
-    firebase.auth().onAuthStateChanged((user) => {
-      store.dispatch(whoami(user));
-    });
+    // Check if the user is already logged in
+    AccessToken.getCurrentAccessToken()
+      .then((accessTokenData) => {
+        if (accessTokenData) {
+          store.dispatch(fetchUserInfo());
+        } else {
+          store.dispatch(whoami(null));
+        }
+      });
 
     // This handler fires whenever bgGeo receives a location update.
     BackgroundGeolocation.on('location', this.onLocation);
