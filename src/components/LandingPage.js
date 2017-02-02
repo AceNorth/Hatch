@@ -64,10 +64,12 @@ class LandingPage extends Component {
     this.setState({ pickups }); 
   }
 
-  isWithinFence(coordinatesObject, egg){
+  onAddNodeButtonPress() {
+    this.props.showModal(true);
+  }
 
+  isWithinFence(coordinatesObject, egg){
    if(!egg) { return false }  
-    
    let eggLong = Number(egg.longitude)
    let eggLat = Number(egg.latitude)
 
@@ -77,10 +79,6 @@ class LandingPage extends Component {
    }
 
    return false;
-  }
-
-  onAddNodeButtonPress() {
-    this.props.showModal(true);
   }
 
   checkFences() {
@@ -161,16 +159,16 @@ class LandingPage extends Component {
     }
   }
 
-  renderPickupEggButton() {
-    // if you're within the fence of an egg, render the button
-    if (this.isWithinFence(this.state.currentPosition.coords, this.props.allEggs[this.props.selectedEgg])) { 
-      return (
-        <Button onPress={Actions.viewPayload}>
-          FOUND AN EGG! PRESS HERE TO PICK IT UP!
-        </Button>
-      )
-    }
-  }
+  // renderPickupEggButton() {
+  //   // if you're within the fence of an egg, render the button
+  //   if (this.isWithinFence(this.state.currentPosition.coords, this.props.allEggs[this.props.selectedEgg])) { 
+  //     return (
+  //       <Button onPress={Actions.viewPayload}>
+  //         FOUND AN EGG! PRESS HERE TO PICK IT UP!
+  //       </Button>
+  //     )
+  //   }
+  // }
 
   render() {
     const position = this.state.currentPosition;
@@ -179,8 +177,6 @@ class LandingPage extends Component {
     // + new eggs waiting to be dropped (from the AddEgg modal)
 
     const annotations = this.props.annotation.concat(this.state.pickups);
-
-    // console.log('this.state.currentPosition: ', this.state.currentPosition)
 
     annotations.map(annotation => {
       if(annotation){
@@ -195,7 +191,7 @@ class LandingPage extends Component {
           );    
         }
       }
-    })
+    });
 
     return (
       <View>
