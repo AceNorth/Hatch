@@ -1,44 +1,21 @@
-import firebase from 'firebase';
-import { LoginManager, AccessToken } from 'react-native-fbsdk';
+import axios from 'axios';
+import { Actions } from 'react-native-router-flux';
+import { GraphRequest, GraphRequestManager } from 'react-native-fbsdk';
 
-const provider = firebase.auth.FacebookAuthProvider;
+import { tunnelIP } from '../TUNNELIP';
+import { fetchFriends } from './friends';
 
 /* --------------    ACTION CONSTANTS    ---------------- */
+
 const WHOAMI = 'WHOAMI';
 
 /* --------------    ACTION CREATORS    ----------------- */
+
 export const whoami = user => ({ type: WHOAMI, user });
 
-export const redirectToFacebook = () =>
-  dispatch =>
-    LoginManager.logInWithReadPermissions(['public_profile', 'email', 'user_friends'])
-      .then((loginResult) => {
-        if (loginResult.isCancelled) {
-          console.log('user canceled');
-          return;
-        }
-        AccessToken.getCurrentAccessToken()
-        .then((accessTokenData) => {
-          const credential = provider.credential(accessTokenData.accessToken);
-          return firebase.auth().signInWithCredential(credential);
-        })
-        .then(({ email, uid, displayName, photoURL, refreshToken }) => {
-          dispatch(whoami({ email, uid, displayName, photoURL, refreshToken }));
-        })
-        .catch(err => {
-          console.log('uh oh err', err);
-        });
-      });
-
-// const addUserToDb = userInfo =>
-//   (dispatch) => {
-//     const { currentUser } = firebase.auth();
-//     // @todo:
-//     // findOrCreate user in Sequelize
-//   };
-
 /* ------------------    REDUCER    --------------------- */
-const authReducer = (state = null, action) => {
+
+export default (state = null, action) => {
   let newState;
   switch (action.type) {
     case WHOAMI:
@@ -50,4 +27,36 @@ const authReducer = (state = null, action) => {
   return newState;
 };
 
-export default authReducer;
+/* --------------    THUNKS/DISPATCHERS    -------------- */
+
+export const fetchUserInfo = () =>
+  (dispatch) => {
+    const infoRequest = new GraphRequest(
+      '/me',
+      { parameters: { fields: { string: 'email,first_name,last_name,picture' } } },
+      (err, result) => {
+        if (err) {
+          console.error('problem getting user info', err);
+        } else {
+          const { id, email, first_name, last_name, picture } = result;
+          const user = {
+            firstName: first_name,
+            lastName: last_name,
+            id,
+            email,
+          };
+          addUserToDb(user);
+          dispatch(whoami({ ...user, profilePic: picture.data.url }));
+          dispatch(fetchFriends());
+          // Actions.landingPage();
+        }
+      }
+    );
+    new GraphRequestManager().addRequest(infoRequest).start();
+  };
+
+/* ------------------    HELPERS    --------------------- */
+
+const addUserToDb = user =>
+  axios.post(`${tunnelIP}/api/user`, user)
+    .catch(err => console.error('ruh roh auth reducer', err));

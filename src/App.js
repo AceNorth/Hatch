@@ -1,29 +1,27 @@
 import React, { Component } from 'react';
 import BackgroundGeolocation from 'react-native-background-geolocation';
-// import { createStore, applyMiddleware } from 'redux';
-// import LandingPage from './components/LandingPage';
 import { Provider } from 'react-redux';
-import firebase from 'firebase';
-import store from './store';
+import { AccessToken } from 'react-native-fbsdk';
 
+import store from './store';
 import Router from './components/Router';
-// import reducers from './reducers';
+import { fetchUserInfo, whoami } from './reducers/auth';
 
 // Disables yellow warnings! Yay!
 console.disableYellowBox = true;
 
 export default class App extends Component {
   componentWillMount() {
-    // FIREBASE CONFIGURATION
-    firebase.initializeApp({
-      apiKey: 'AIzaSyC6jKlwHQal-90LFE5qSKEwQhaZDTCgQk0',
-      authDomain: 'leftyousomethin-c3438.firebaseapp.com',
-      databaseURL: 'https://leftyousomethin-c3438.firebaseio.com',
-      storageBucket: 'leftyousomethin-c3438.appspot.com',
-      messagingSenderId: '921367881342'
-    });
+    // Check if the user is already logged in
+    AccessToken.getCurrentAccessToken()
+      .then((accessTokenData) => {
+        if (accessTokenData) {
+          store.dispatch(fetchUserInfo());
+        } else {
+          store.dispatch(whoami(null));
+        }
+      });
 
-    // BACKGROUND GEOLOCATION CONFIGURATION
     // This handler fires whenever bgGeo receives a location update.
     BackgroundGeolocation.on('location', this.onLocation);
 
@@ -105,9 +103,9 @@ export default class App extends Component {
   }
   render() {
     return (
-      <Provider store={store}>
-        <Router />
-      </Provider>
+    <Provider store={store}>
+      <Router />
+    </Provider>
     );
   }
 }
