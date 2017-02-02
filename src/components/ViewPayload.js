@@ -9,17 +9,22 @@ class ViewPayload extends Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      viewEgg: props.allEggs[props.selectedEgg]
+    }
+
   }
 
   renderPayloadView() {
-    let payloadType = this.props.allEggs[this.props.selectedEgg].payload.type
+    let payloadType = this.state.viewEgg.payloadType
+    console.log('egg: ', this.state.viewEgg)
     
     switch (payloadType) {
       // conditional render for different payloads
       case 'Text':
-        return (<Text> { this.props.allEggs[this.props.selectedEgg].payload.text } </Text>)
+        return (<Text> { this.state.viewEgg.payload.text } </Text>)
       case 'Image':
-        return (<Text> Eventually will be an image </Text>)
+        return (<View> { this.state.viewEgg.payload.path } } </View>)
       default:
         return (<Text> Something has GONE WRONG </Text>)
     }
