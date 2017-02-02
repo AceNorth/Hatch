@@ -21,7 +21,7 @@ class LandingPage extends Component {
       currentPosition: { timestamp: 0, coords: { latitude: 1, longitude: 1 } },
     // locations of eggs waiting to be picked up
       pickups: [],
-      pickupRadius: 0.0005
+      pickupRadius: 0.0003
     };
 
     this.onMapLongPress = this.onMapLongPress.bind(this);
@@ -55,10 +55,10 @@ class LandingPage extends Component {
 
   isWithinFence(coordinatesObject, egg){
    
+   if(!egg) { return false }  
    let eggLong = Number(egg.longitude)
    let eggLat = Number(egg.latitude)
 
-   if(!egg) { return false }  
 
    let fence = Math.pow((coordinatesObject.longitude-eggLong), 2) + Math.pow((coordinatesObject.latitude-eggLat), 2);
    if (fence < Math.pow(this.state.pickupRadius, 2)) {
