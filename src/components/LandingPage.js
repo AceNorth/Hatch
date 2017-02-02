@@ -1,7 +1,7 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, MapView, TextInput, TouchableWithoutFeedback, Modal, Image } from 'react-native';
+import { View, Text, StyleSheet, MapView, TextInput, TouchableWithoutFeedback, Modal } from 'react-native';
 import { Button } from './common';
 import  AddEgg  from './AddEgg';
 import { connect } from 'react-redux';
@@ -21,10 +21,7 @@ class LandingPage extends Component {
       currentPosition: { timestamp: 0, coords: { latitude: 1, longitude: 1 } },
     // locations of eggs waiting to be picked up
       pickups: [],
-      //demonstrating image rendering on front end
-       goHereImage: {},
-
-      pickupRadius: 0.0003
+      pickupRadius: 0.0005
     };
 
     this.onMapLongPress = this.onMapLongPress.bind(this);
@@ -39,14 +36,6 @@ class LandingPage extends Component {
 
     // fetch all eggs belonging to the current user
     this.props.fetchAllEggs(this.props.user.id);
-
-      //this sets the sample image on the home page, use this as a template for how to get the axios response you will need to render images.
-      let goHereImage2;
-      axios.get(`${tunnelIP}/api/egg/goHereImage/19`)
-          .then(response => {
-              goHereImage2 = response.data
-              this.setState({goHereImage: goHereImage2});
-          })
   }
 
   componentWillReceiveProps(nextProps) {
@@ -179,7 +168,6 @@ class LandingPage extends Component {
     // + new eggs waiting to be dropped (from the AddEgg modal)
 
     const annotations = this.props.annotation.concat(this.state.pickups);
-
     // console.log('this.state.currentPosition: ', this.state.currentPosition)
 
     annotations.map(annotation => {
@@ -209,9 +197,7 @@ class LandingPage extends Component {
         </TouchableWithoutFeedback>
         
         {this.renderLeaveEggButton()}
-        {this.renderPickupEggButton()}
-
-          <Image style={{width: 50, height: 50}} source={{uri: this.state.goHereImage.uri}}></Image>
+        {/*this.renderPickupEggButton()*/}
 
         <Modal
             visible={this.props.showAddNodeModal}
@@ -236,8 +222,10 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state, ownProps) => {
+  //fake user for testing:
 
   const user = { id: 225 };
+  // const user = { id: 1 };
 
   let selectedEgg = state.eggs.selectedEgg;
   let allEggs = state.eggs.allEggs;
