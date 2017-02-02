@@ -65,11 +65,11 @@ class LandingPage extends Component {
   }
 
   isWithinFence(coordinatesObject, egg){
-      if(!egg) { return false }
-      let eggLong = Number(egg.longitude)
-   let eggLat = Number(egg.latitude)
 
    if(!egg) { return false }  
+    
+   let eggLong = Number(egg.longitude)
+   let eggLat = Number(egg.latitude)
 
    let fence = Math.pow((coordinatesObject.longitude-eggLong), 2) + Math.pow((coordinatesObject.latitude-eggLat), 2);
    if (fence < Math.pow(this.state.pickupRadius, 2)) {
@@ -207,6 +207,7 @@ class LandingPage extends Component {
             annotations={ annotations }
           />
         </TouchableWithoutFeedback>
+        <Button onPress={Actions.eggManager}> Manage Eggs </Button>
         
         {this.renderLeaveEggButton()}
         {this.renderPickupEggButton()}
