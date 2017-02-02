@@ -7,7 +7,6 @@ import { View, Text } from 'react-native';
 class WelcomePage extends Component { 
   constructor(props) {
     super(props);
-
   }
 
   componentWillReceiveProps(nextProps) {

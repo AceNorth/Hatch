@@ -1,9 +1,8 @@
 import React from 'react';
-import { Text, View, Modal } from 'react-native';
-import { CardSection } from './CardSection';
-import { Button } from './Button';
+import { Text, View, Modal, MapView } from 'react-native';
+import { CardSection, Button } from './common';
 
-const Confirm = ({ children, visible, onAccept, onDecline }) => {
+const EggManagerModal = ({ children, visible, onViewPayload, onCancel }) => {
   const { containerStyle, textStyle, cardSectionStyle } = styles;
 
   return (
@@ -15,14 +14,12 @@ const Confirm = ({ children, visible, onAccept, onDecline }) => {
     >
       <View style={containerStyle}>
         <CardSection style={cardSectionStyle}>
-          <Text style={textStyle}>
-            {children}
-          </Text>
+          {children}
         </CardSection>
 
         <CardSection>
-          <Button onPress={onAccept}>Yes</Button>
-          <Button onPress={onDecline}>No</Button>
+          <Button onPress={onViewPayload}>Open this egg</Button>
+          <Button onPress={onCancel}>Done</Button>
         </CardSection>
       </View>
     </Modal>
@@ -47,4 +44,4 @@ const styles = {
   }
 };
 
-export { Confirm };
+export default EggManagerModal;
