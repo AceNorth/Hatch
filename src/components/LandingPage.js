@@ -194,6 +194,7 @@ class LandingPage extends Component {
             annotations={ annotations }
           />
         </TouchableWithoutFeedback>
+         <Button onPress={Actions.eggManager}> Manage Eggs </Button>
         
         {this.renderLeaveEggButton()}
         {/*this.renderPickupEggButton()*/}
