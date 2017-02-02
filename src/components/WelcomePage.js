@@ -6,20 +6,28 @@ import { View, Text } from 'react-native';
 class WelcomePage extends Component {
 
   componentWillReceiveProps(nextProps) {
-  // navigate to either the landing page (if logged in) or
-  // the authorization page (if not)
-    nextProps.auth ? Actions.landingPage() : Actions.login();
+    nextProps.auth ? Actions.landingPage() : null;
+  }
+
+  nextScreen() {
+    setTimeout(() => {
+      !this.props.auth ? Actions.login() : null;
+    }, 1000);
   }
 
   render() {
-    const { container, text } = styles;
+    const { container, text, half } = styles;
     return (
       <View style={container}>
-        <Text style={text}>HELLO WELCOME TO ANDY'S APP</Text>
+        <View style={half}>
+          <Text style={text} >Ready to find some eggs?</Text>
+          {this.nextScreen()}
+        </View>
+        <View style={half} />
       </View>
     );
-  };
-};
+  }
+}
 
 const styles = {
   container: {
@@ -27,9 +35,13 @@ const styles = {
     backgroundColor: '#f4f281',
     justifyContent: 'center',
   },
+  half: {
+    flex: 1,
+    justifyContent: 'center',
+  },
   text: {
     textAlign: 'center',
-    fontSize: 25,
+    fontSize: 40,
     color: '#fff',
     fontWeight: '600',
   }
