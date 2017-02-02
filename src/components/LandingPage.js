@@ -21,12 +21,10 @@ class LandingPage extends Component {
       currentPosition: { timestamp: 0, coords: { latitude: 1, longitude: 1 } },
     // locations of eggs waiting to be picked up
       pickups: [],
+      //demonstrating image rendering on front end
+       goHereImage: {},
 
-        //demonstrating image rendering on front end
-        goHereImage: {},
-
-      pickupRadius: 0.001
-
+      pickupRadius: 0.0003
     };
 
     this.onMapLongPress = this.onMapLongPress.bind(this);
@@ -66,15 +64,20 @@ class LandingPage extends Component {
     this.setState({ pickups }); 
   }
 
-  // isWithinFence(coordinatesObject, egg){
-  //  if(!egg) { return false }  
-  //  let fence = Math.pow((coordinatesObject.longitude-egg.longitude), 2) + Math.pow((coordinatesObject.latitude-egg.latitude), 2);
-  //  if (fence < Math.pow(0.0001, 2)) {
-  //    return true;
-  //  }
+  isWithinFence(coordinatesObject, egg){
+   
+   let eggLong = Number(egg.longitude)
+   let eggLat = Number(egg.latitude)
 
-  //  return false;
-  // }
+   if(!egg) { return false }  
+
+   let fence = Math.pow((coordinatesObject.longitude-eggLong), 2) + Math.pow((coordinatesObject.latitude-eggLat), 2);
+   if (fence < Math.pow(this.state.pickupRadius, 2)) {
+     return true;
+   }
+
+   return false;
+  }
 
   onAddNodeButtonPress() {
     this.props.showModal(true);
@@ -168,23 +171,6 @@ class LandingPage extends Component {
       )
     }
   }
-  isWithinFence(coordinatesObject, egg){
-    if(!egg){
-      return false;
-    }
-
-   let eggLong = Number(egg.longitude)
-   let eggLat = Number(egg.latitude)
-
-   if(!egg) { return false }
-
-   let fence = Math.pow((coordinatesObject.longitude-eggLong), 2) + Math.pow((coordinatesObject.latitude-eggLat), 2);
-   if (fence < Math.pow(this.state.pickupRadius, 2)) {
-     return true;
-   }
-
-   return false;
-  }
 
   render() {
     const position = this.state.currentPosition;
@@ -199,6 +185,7 @@ class LandingPage extends Component {
     annotations.map(annotation => {
       if(annotation){
         if(this.isWithinFence(this.state.currentPosition.coords, annotation)){
+          annotation.tintColor= MapView.PinColors.GREEN,
           annotation.rightCalloutView = (
             <Button 
               color='#517fa4'
