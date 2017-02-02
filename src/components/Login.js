@@ -7,18 +7,19 @@ import { LoginButton } from 'react-native-fbsdk';
 import { fetchUserInfo } from '../reducers/auth';
 
 const Login = (props) => {
-  const { container, loginButton, text } = styles;
+  const { container, text, half } = styles;
   return (
     <View style={container}>
-      <Text style={text} >Ready to find some eggs?</Text>
-      {
-        props.auth ? Actions.landingPage() :
+      <View style={half}>
+        <Text style={text} >Ready to find some eggs?</Text>
+      </View>
+      <View style={half}>
         <LoginButton
           readPermissions={['email', 'user_friends']}
           onLoginFinished={
             (error, result) => {
               if (error) {
-                console.log('Login failed with error: ' + error);
+                console.log('Login failed with error:', error);
               } else if (result.isCancelled) {
                 console.log('Login was cancelled');
               } else {
@@ -28,9 +29,9 @@ const Login = (props) => {
             }
           }
           onLogoutFinished={() => console.log('User logged out')}
-          style={loginButton}
+          style={styles.loginButton}
         />
-      }
+      </View>
     </View>
   );
 };
@@ -39,8 +40,11 @@ const styles = {
   container: {
     flex: 1,
     backgroundColor: '#f4f281',
-    justifyContent: 'space-around',
-    alignItems: 'center'
+    alignItems: 'center',
+  },
+  half: {
+    flex: 1,
+    justifyContent: 'center',
   },
   loginButton: {
     height: 30,
@@ -55,10 +59,7 @@ const styles = {
 };
 
 Login.propTypes = {
-  auth: PropTypes.object,
   fetchUserInfo: PropTypes.func,
 };
 
-const mapStateToProps = ({ auth }) => ({ auth });
-
-export default connect(mapStateToProps, { fetchUserInfo })(Login);
+export default connect(() => ({}), { fetchUserInfo })(Login);

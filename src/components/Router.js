@@ -7,10 +7,10 @@ import Login from './Login';
 
 const RouterComponent = () => (
   <Router>
-    <Scene key="login" component={Login} hideNavBar />
+    <Scene key="welcomePage" component={WelcomePage} hideNavBar />
+    <Scene key="login" component={Login} type="replace" hideNavBar />
     <Scene key="landingPage" component={LandingPage} title="Left You Somethin" />
     <Scene key="viewPayload" component={ViewPayload} title="Check this out!" />
-    <Scene key="welcomePage" component={WelcomePage} hideNavBar />
   </Router>
 );
 
