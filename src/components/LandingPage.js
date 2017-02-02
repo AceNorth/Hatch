@@ -1,27 +1,31 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, MapView, TextInput, TouchableWithoutFeedback, Modal } from 'react-native';
+import { View, Text, Image, StyleSheet, MapView, TextInput, TouchableWithoutFeedback, Modal } from 'react-native';
 import { Button } from './common';
 import  AddEgg  from './AddEgg';
 import { connect } from 'react-redux';
-import axios from 'axios';
 import { Actions } from 'react-native-router-flux';
 import { setSelectedEgg, fetchAllEggs } from '../reducers/eggs';
 import { tunnelIP } from '../TUNNELIP';
 import {showModal} from '../reducers/addNodeModal';
 import { setAnnotation, clearAnnotation } from '../reducers/map';
+import axios from 'axios';
 
 class LandingPage extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-    // user's current position
+      // user's current position
       currentPosition: { timestamp: 0, coords: { latitude: 1, longitude: 1 } },
-    // locations of eggs waiting to be picked up
+      
+      // locations of eggs waiting to be picked up
       pickups: [],
-      pickupRadius: 0.0003
+      pickupRadius: 0.0003,
+
+      // image rendering  ==> for samples/ image testing
+      goHereImage: {}
     };
 
     this.onMapLongPress = this.onMapLongPress.bind(this);
@@ -36,6 +40,16 @@ class LandingPage extends Component {
 
     // fetch all eggs belonging to the current user
     this.props.fetchAllEggs(this.props.user.id);
+
+    //this sets the sample image on the home page, 
+    //use this as a template for how to get the axios response you will need to render images.
+    let goHereImage2;
+    axios.get(`${tunnelIP}/api/egg/goHereImage/19`)
+      .then(response => {
+          goHereImage2 = response.data
+          this.setState({goHereImage: goHereImage2});
+      })
+
   }
 
   componentWillReceiveProps(nextProps) {
@@ -199,12 +213,13 @@ class LandingPage extends Component {
         {this.renderLeaveEggButton()}
         {/*this.renderPickupEggButton()*/}
 
+        <Image style={{width: 50, height: 50}} source={{uri: this.state.goHereImage.uri}}></Image>
+
         <Modal
             visible={this.props.showAddNodeModal}
             transparent
             animationType="fade"
-            onRequestClose={() => {
-            }}
+            onRequestClose={() => {}}
         >
           <AddEgg
               {...this.state}>
