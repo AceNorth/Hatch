@@ -15,7 +15,7 @@ const Login = (props) => {
         onLoginFinished={
           (error, result) => {
             if (error) {
-              console.log('Login failed with error: ' + result.error);
+              console.log('Login failed with error: ' + error);
             } else if (result.isCancelled) {
               console.log('Login was cancelled');
             } else {
