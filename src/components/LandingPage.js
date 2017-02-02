@@ -44,13 +44,17 @@ class LandingPage extends Component {
 
     for (let key in nextProps.allEggs) {
       let egg = nextProps.allEggs[key];
-
-      if (egg.receiverId === this.props.user.id) {
+      
+      if (egg.receiverId == this.props.user.id) {
        let newPickup = this.createStaticAnnotation(egg.longitude, egg.latitude, egg.senderId, egg.id, egg.goHereText);
        pickups.push(newPickup);
       }
     }
     this.setState({ pickups }); 
+  }
+
+  onAddNodeButtonPress() {
+    this.props.showModal(true);
   }
 
   isWithinFence(coordinatesObject, egg){
@@ -66,10 +70,6 @@ class LandingPage extends Component {
    }
 
    return false;
-  }
-
-  onAddNodeButtonPress() {
-    this.props.showModal(true);
   }
 
   checkFences() {
@@ -150,16 +150,16 @@ class LandingPage extends Component {
     }
   }
 
-  renderPickupEggButton() {
-    // if you're within the fence of an egg, render the button
-    if (this.isWithinFence(this.state.currentPosition.coords, this.props.allEggs[this.props.selectedEgg])) { 
-      return (
-        <Button onPress={Actions.viewPayload}>
-          FOUND AN EGG! PRESS HERE TO PICK IT UP!
-        </Button>
-      )
-    }
-  }
+  // renderPickupEggButton() {
+  //   // if you're within the fence of an egg, render the button
+  //   if (this.isWithinFence(this.state.currentPosition.coords, this.props.allEggs[this.props.selectedEgg])) { 
+  //     return (
+  //       <Button onPress={Actions.viewPayload}>
+  //         FOUND AN EGG! PRESS HERE TO PICK IT UP!
+  //       </Button>
+  //     )
+  //   }
+  // }
 
   render() {
     const position = this.state.currentPosition;
@@ -168,7 +168,6 @@ class LandingPage extends Component {
     // + new eggs waiting to be dropped (from the AddEgg modal)
 
     const annotations = this.props.annotation.concat(this.state.pickups);
-    // console.log('this.state.currentPosition: ', this.state.currentPosition)
 
     annotations.map(annotation => {
       if(annotation){
@@ -183,7 +182,7 @@ class LandingPage extends Component {
           );    
         }
       }
-    })
+    });
 
     return (
       <View>
@@ -224,8 +223,8 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state, ownProps) => {
   //fake user for testing:
 
-  // const user = { id: 225 };
-  const user = { id: 1 };
+  // const user = { id: 225 };  
+  const user = { id: 10201419031655448 } //change to you userId
 
   let selectedEgg = state.eggs.selectedEgg;
   let allEggs = state.eggs.allEggs;
