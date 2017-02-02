@@ -46,8 +46,8 @@ class LandingPage extends Component {
       let egg = nextProps.allEggs[key];
 
       if (egg.receiverId === this.props.user.id) {
-       let newPickup = this.createStaticAnnotation(egg.longitude, egg.latitude, egg.senderId, egg.id, egg.goHereText);
-       pickups.push(newPickup);
+        let newPickup = this.createStaticAnnotation(egg.longitude, egg.latitude, egg.senderId, egg.id, egg.goHereText);
+        pickups.push(newPickup);
       }
     }
     this.setState({ pickups }); 
@@ -224,8 +224,8 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state, ownProps) => {
   //fake user for testing:
 
-  // const user = { id: 225 };
-  const user = { id: 1 };
+  const user = { id: 225 };
+  // const user = { id: 1 };
 
   let selectedEgg = state.eggs.selectedEgg;
   let allEggs = state.eggs.allEggs;
