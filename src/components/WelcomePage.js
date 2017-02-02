@@ -11,8 +11,8 @@ class WelcomePage extends Component {
 
   nextScreen() {
     setTimeout(() => {
-      !this.props.auth ? Actions.login() : null;
-    }, 1000);
+      !this.props.auth ? Actions.login() : Actions.landingPage();
+    }, 1500);
   }
 
   render() {
