@@ -48,7 +48,6 @@ export const fetchUserInfo = () =>
           addUserToDb(user);
           dispatch(whoami({ ...user, profilePic: picture.data.url }));
           dispatch(fetchFriends());
-          // Actions.landingPage();
         }
       }
     );

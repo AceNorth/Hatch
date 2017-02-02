@@ -7,6 +7,7 @@ class WelcomePage extends Component {
   componentWillReceiveProps(nextProps) {
   // navigate to either the landing page (if logged in) or
   // the authorization page (if not)
+    console.log('nextProps.auth is', nextProps.auth);
     nextProps.auth ? Actions.landingPage() : Actions.login();
   }
 
@@ -17,8 +18,8 @@ class WelcomePage extends Component {
         <Text style={text}>HELLO WELCOME TO ANDY'S APP</Text>
       </View>
     );
-  };
-};
+  }
+}
 
 const styles = {
   container: {
