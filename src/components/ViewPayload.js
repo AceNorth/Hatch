@@ -17,9 +17,9 @@ class ViewPayload extends Component {
     switch (payloadType) {
       // conditional render for different payloads
       case 'Text':
-        return (<Text> { this.props.allEggs[this.props.selectedEgg].payload.content } </Text>)
+        return (<Text> { this.props.allEggs[this.props.selectedEgg].payload.text } </Text>)
       case 'Image':
-        return (<View> { this.props.allEggs[this.props.selectedEgg].payload.content } </View>)
+        return (<Text> Eventually will be an image </Text>)
       default:
         return (<Text> Something has GONE WRONG </Text>)
     }

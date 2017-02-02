@@ -58,4 +58,4 @@ export const fetchUserInfo = () =>
 
 const addUserToDb = user =>
   axios.post(`${tunnelIP}/api/user`, user)
-    .catch(err => console.error('ruh roh auth reducer', err));
+    .catch(err => console.error('ruh roh auth reducer (maybe check tunnel)', err));

@@ -4,6 +4,7 @@ import { Actions } from 'react-native-router-flux';
 import { View, Text } from 'react-native';
 
 class WelcomePage extends Component {
+
   componentWillReceiveProps(nextProps) {
     nextProps.auth ? Actions.landingPage() : null;
   }
