@@ -65,8 +65,8 @@ class LandingPage extends Component {
   }
 
   isWithinFence(coordinatesObject, egg){
-   
-   let eggLong = Number(egg.longitude)
+      if(!egg) { return false }
+      let eggLong = Number(egg.longitude)
    let eggLat = Number(egg.latitude)
 
    if(!egg) { return false }  
