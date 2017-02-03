@@ -50,7 +50,7 @@ export const setSelectedEgg = eggId => dispatch => {
 export const fetchAllEggs = userId => dispatch => {
     axios.get(`${tunnelIP}/api/egg/user/${userId}`)
     .then(res => {
-        console.log('res: ', res)
+        // console.log('res: ', res)
         dispatch(fetchEggs(res.data))})
     .catch(err => console.error('Problem fetching eggs', err.message));
 }
