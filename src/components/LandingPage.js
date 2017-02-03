@@ -24,7 +24,7 @@ class LandingPage extends Component {
     this.state = {
       // user's current position
       currentPosition: { timestamp: 0, coords: { latitude: 1, longitude: 1 } },
-      
+
       // locations of eggs waiting to be picked up
       pickups: [],
       pickupRadius: 0.0003,
@@ -50,7 +50,7 @@ class LandingPage extends Component {
     // fetch all eggs belonging to the current user
     this.props.fetchAllEggs(this.props.user.id);
 
-    //this sets the sample image on the home page, 
+    //this sets the sample image on the home page,
     //use this as a template for how to get the axios response you will need to render images.
     let goHereImage2;
     axios.get(`${tunnelIP}/api/egg/goHereImage/19`)
@@ -220,7 +220,7 @@ class LandingPage extends Component {
 
   setWindowDimensions(){
 
-    
+
   }
 
   render() {
@@ -243,9 +243,8 @@ class LandingPage extends Component {
           />
         </TouchableWithoutFeedback>
         <View style={styles.touchStyle}>
-          <Button onPress={Actions.eggManager}> Manage Eggs </Button>
-          <Button onPress={Actions.friends}> My Friends </Button>
-          
+          <Button onPress={Actions.friends}> My Egg Basket </Button>
+
           {this.renderLeaveEggButton()}
 
           <Image style={{width: 50, height: 50}} source={{uri: this.state.goHereImage.uri}}></Image>
