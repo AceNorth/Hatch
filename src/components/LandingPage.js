@@ -218,11 +218,6 @@ class LandingPage extends Component {
     return annotations
   }
 
-  setWindowDimensions(){
-
-    
-  }
-
   render() {
     const position = this.state.currentPosition;
 
@@ -230,6 +225,7 @@ class LandingPage extends Component {
     // + new eggs waiting to be dropped (from the AddEgg modal)
     // annotations.push(this.props.annotation.concat(this.state.pickups));
     const annotations = this.props.annotation.concat(this.state.pickups).concat(this.state.dropoffs);
+    // const annotations = this.props.annotation.concat(this.state.pickups)
     this.setRenderAnnotations(annotations);
 
     return (
@@ -275,7 +271,6 @@ const styles = StyleSheet.create({
     height: DEVICE_HEIGHT
   },
   mapStyle: {
-    // height: 350,
     flex: 0.65,
     margin: 0
   },
