@@ -224,7 +224,7 @@ const mapStateToProps = (state, ownProps) => {
         showAddNodeModal: state.addNodeModal.showAddNodeModal,
         annotation: state.map.annotation,
         senderId: state.auth.id,
-        friends: state.friends,
+        friends: state.friends.allFriends,
     };
 }
 
