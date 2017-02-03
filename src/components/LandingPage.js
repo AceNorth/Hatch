@@ -58,13 +58,13 @@ class LandingPage extends Component {
 
     for (let key in nextProps.allEggs) {
       let egg = nextProps.allEggs[key];
-      
+
       if (egg.receiverId == this.props.user.id) {
        let newPickup = this.createStaticAnnotation(egg.longitude, egg.latitude, egg.senderId, egg.id, egg.goHereText);
        pickups.push(newPickup);
       }
     }
-    this.setState({ pickups }); 
+    this.setState({ pickups });
   }
 
   onAddNodeButtonPress() {
@@ -72,8 +72,8 @@ class LandingPage extends Component {
   }
 
   isWithinFence(coordinatesObject, egg){
-   
-   if(!egg) { return false }  
+
+   if(!egg) { return false }
    let eggLong = Number(egg.longitude)
    let eggLat = Number(egg.latitude)
 
@@ -166,7 +166,7 @@ class LandingPage extends Component {
 
   // renderPickupEggButton() {
   //   // if you're within the fence of an egg, render the button
-  //   if (this.isWithinFence(this.state.currentPosition.coords, this.props.allEggs[this.props.selectedEgg])) { 
+  //   if (this.isWithinFence(this.state.currentPosition.coords, this.props.allEggs[this.props.selectedEgg])) {
   //     return (
   //       <Button onPress={Actions.viewPayload}>
   //         FOUND AN EGG! PRESS HERE TO PICK IT UP!
@@ -188,12 +188,12 @@ class LandingPage extends Component {
         if(this.isWithinFence(this.state.currentPosition.coords, annotation)){
           annotation.tintColor= MapView.PinColors.GREEN,
           annotation.rightCalloutView = (
-            <Button 
+            <Button
               color='#517fa4'
-              onPress={Actions.viewPayload} 
+              onPress={Actions.viewPayload}
               >Psst...
             </Button>
-          );    
+          );
         }
       }
     });
@@ -209,7 +209,7 @@ class LandingPage extends Component {
           />
         </TouchableWithoutFeedback>
          <Button onPress={Actions.eggManager}> Manage Eggs </Button>
-        
+         <Button onPress={Actions.friends}> My Friends </Button>
         {this.renderLeaveEggButton()}
         {/*this.renderPickupEggButton()*/}
 
@@ -239,8 +239,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state, ownProps) => {
   //fake user for testing:
 
-  // const user = { id: 225 };  
-  const user = { id: 10201419031655448 } //change to you userId
+  const user = { id: 10201419031655448 } // change to your userId
 
   let selectedEgg = state.eggs.selectedEgg;
   let allEggs = state.eggs.allEggs;

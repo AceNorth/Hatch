@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { GraphRequest, GraphRequestManager } from 'react-native-fbsdk';
 
 /* --------------    ACTION CONSTANTS    ---------------- */
@@ -10,13 +11,12 @@ export const fetchFriends = () =>
   (dispatch) => {
     const infoRequest = new GraphRequest(
       '/me/friends',
-      null,
+      { parameters: { fields: { string: 'name,picture' } } },
       (err, result) => {
         if (err) {
           console.error('problem getting friends', err);
         } else {
-          const friends = result.data;
-          console.log('your friends on this app', friends);
+          const friends = _.sortBy(result.data, ['name']);
           dispatch({ type: FETCH_FRIENDS, friends });
         }
       }
