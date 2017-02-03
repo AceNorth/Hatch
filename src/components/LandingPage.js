@@ -29,7 +29,7 @@ class LandingPage extends Component {
       pickups: [],
       pickupRadius: 0.0003,
 
-      //eggs that were placed by user
+      // eggs that were placed by user
       dropoffs: [],
 
       // image rendering  ==> for samples/ image testing
@@ -37,7 +37,7 @@ class LandingPage extends Component {
     };
 
     this.onMapLongPress = this.onMapLongPress.bind(this);
-    this.setRenderAnnotations = this.setRenderAnnotations.bind(this)
+    this.setRenderAnnotations = this.setRenderAnnotations.bind(this);
   }
 
   componentWillMount() {
@@ -52,12 +52,12 @@ class LandingPage extends Component {
 
     //this sets the sample image on the home page,
     //use this as a template for how to get the axios response you will need to render images.
-    let goHereImage2;
-    axios.get(`${tunnelIP}/api/egg/goHereImage/19`)
-      .then(response => {
-          goHereImage2 = response.data
-          this.setState({goHereImage: goHereImage2});
-      })
+    // let goHereImage2;
+    // axios.get(`${tunnelIP}/api/egg/goHereImage/19`)
+    //   .then(response => {
+    //       goHereImage2 = response.data
+    //       this.setState({goHereImage: goHereImage2});
+    //   })
   }
 
   componentWillReceiveProps(nextProps) {
@@ -85,41 +85,41 @@ class LandingPage extends Component {
     this.props.showModal(true);
   }
 
-  isWithinFence(coordinatesObject, egg){
-
-   if(!egg) { return false }
-   let eggLong = Number(egg.longitude)
-   let eggLat = Number(egg.latitude)
-
-
-   let fence = Math.pow((coordinatesObject.longitude-eggLong), 2) + Math.pow((coordinatesObject.latitude-eggLat), 2);
-   if (fence < Math.pow(this.state.pickupRadius, 2)) {
-     return true;
-   }
-
-   return false;
-  }
-
-  checkFences() {
-    this.updateCurrentPosition();
-    for (let key in this.props.allEggs) {
-      let egg = this.props.allEggs[key];
-      if (this.isWithinFence(this.state.currentPosition.coords, egg)) {
-        this.props.setSelectedEgg(egg.id);
-      }
-    }
-  };
 
   updateCurrentPosition() {
     let options = {
       enableHighAccuracy: true,
-      timeout: 5000,
+      timeout: 1000,
       maximumAge: 1
     };
 
     navigator.geolocation.getCurrentPosition(
       (position) => this.setState({ currentPosition: position })
       , null, options);
+  }
+
+  checkFences() {
+    this.updateCurrentPosition();
+    for (let key in this.props.allEggs) {
+      let egg = this.props.allEggs[key];
+      if(this.isWithinFence(this.state.currentPosition.coords, egg)){
+        console.log('found selected EGGGGGGG')
+        this.props.setSelectedEgg(egg.id);
+      }
+    }
+  };
+
+  isWithinFence(coordinatesObject, egg){
+   if(!egg) { return false }
+   let eggLong = Number(egg.longitude)
+   let eggLat = Number(egg.latitude)
+
+   let fence = Math.pow((coordinatesObject.longitude-eggLong), 2) 
+                + Math.pow((coordinatesObject.latitude-eggLat), 2);
+   if (fence < Math.pow(this.state.pickupRadius, 2)) {
+     return true;
+   }
+   return false;
   }
 
   onMapLongPress(event) {
@@ -194,16 +194,12 @@ class LandingPage extends Component {
     }
   }
 
-  setAllPins(pins){
-     this.setState({allPins: pins})
-      console.log('ALL PINS: ', this.state.allPins)
-  }
-
   setRenderAnnotations(annotations){
     annotations.map(annotation => {
-      if(annotation){
-        if(this.isWithinFence(this.state.currentPosition.coords, annotation) && annotation.senderId){
-          annotation.tintColor= MapView.PinColors.GREEN,
+      if(annotation && annotation.senderId){
+        // console.log('BOOL: ', this.isWithinFence(this.state.currentPosition.coords, annotation))
+        if(this.isWithinFence(this.state.currentPosition.coords, annotation) && annotation.senderId) {
+          annotation.tintColor = MapView.PinColors.GREEN,
           annotation.rightCalloutView = (
             <Button
               color='#517fa4'
@@ -220,10 +216,10 @@ class LandingPage extends Component {
 
   render() {
     const position = this.state.currentPosition;
-
     // the annotations on the map are a combination of packages waiting for pickup
     // + new eggs waiting to be dropped (from the AddEgg modal)
     // annotations.push(this.props.annotation.concat(this.state.pickups));
+
     const annotations = this.props.annotation.concat(this.state.pickups).concat(this.state.dropoffs);
     // const annotations = this.props.annotation.concat(this.state.pickups)
     this.setRenderAnnotations(annotations);
@@ -280,9 +276,9 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state, ownProps) => {
-  //fake user for testing:
 
-  const user = { id: 10201419031655448 } // change to your userId
+  //fake user for testing:
+  const user = { id: state.auth.fbId } // change to your userId
 
   let selectedEgg = state.eggs.selectedEgg;
   let allEggs = state.eggs.allEggs;
