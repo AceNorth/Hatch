@@ -1,23 +1,25 @@
-import React, { Component } from 'react';
-import { Text, TouchableHighlight } from 'react-native';
+import React, { Component, PropTypes } from 'react';
+import { Text, TouchableHighlight, Image, View } from 'react-native';
 import { connect } from 'react-redux';
 
 import { CardSection } from './common';
 
 class SingleFriend extends Component {
   onPress() {
-
+    console.log('im your friend!');
   }
 
   render() {
-    const { titleStyle } = styles;
-
+    const { name, picture } = this.props.friend;
     return (
       <CardSection>
-        <TouchableHighlight onPress={this.onPress.bind(this)}>
-          <Text style={titleStyle}>
-            {this.props.friend.name}
-          </Text>
+        <TouchableHighlight onPress={this.onPress}>
+          <View style={styles.container}>
+            <Image style={styles.photo} source={{ uri: picture.data.url }} />
+            <Text style={styles.name}>
+              {name}
+            </Text>
+          </View>
         </TouchableHighlight>
       </CardSection>
     );
@@ -25,15 +27,26 @@ class SingleFriend extends Component {
 }
 
 const styles = {
-  titleStyle: {
+  container: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  name: {
     fontSize: 18,
-    paddingLeft: 15
+    paddingLeft: 15,
+  },
+  photo: {
+    height: 50,
+    width: 50,
+    borderRadius: 10,
   }
 };
 
-const mapStateToProps = (state) => {
-  const { audioUrl } = state.audio;
-  return { audioUrl };
+SingleFriend.propTypes = {
+  friend: PropTypes.shape({
+    name: PropTypes.string,
+    picture: PropTypes.object,
+  }),
 };
 
-export default connect(mapStateToProps)(SingleFriend);
+export default connect(() => ({}))(SingleFriend);

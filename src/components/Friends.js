@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import {
   StyleSheet,
   Text,
@@ -9,16 +9,15 @@ import {
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 
-import { Button } from './common';
 import SingleFriend from './SingleFriend';
 
-class SendToFriendsView extends Component {
+class Friends extends Component {
   componentWillMount() {
-    this.createDataSource(this.props.list);
+    this.createDataSource(this.props.friends);
   }
 
   componentWillReceiveProps(nextProps) {
-    this.createDataSource(nextProps.list);
+    this.createDataSource(nextProps.friends);
   }
 
   createDataSource(friends) {
@@ -35,21 +34,12 @@ class SendToFriendsView extends Component {
 
   render() {
     return (
-      <ScrollView style={styles.container}>
-        <Text style={styles.welcome}>
-          These are your friends!
-        </Text>
-        <View style={{ height: 45, justifyContent: 'center' }}>
-          <Button onPress={() => Actions.addFriend()}>
-            Tap here to add a new friend.
-          </Button>
-        </View>
       <ListView
         enableEmptySections
         dataSource={this.dataSource}
         renderRow={this.renderRow}
+        style={styles.container}
       />
-      </ScrollView>
     );
   }
 }
@@ -58,23 +48,20 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F5FCFF',
+    paddingTop: 65,
   },
   welcome: {
     fontSize: 20,
     textAlign: 'center',
     margin: 10,
   },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
 });
 
-const mapStateToProps = state => {
-  const { list } = state.friends;
-  return { list };
+const mapStateToProps = ({ friends }) => ({ friends });
+
+Friends.propTypes = {
+  friends: PropTypes.arrayOf(PropTypes.object),
 };
 
-export default connect(mapStateToProps)(SendToFriendsView);
+export default connect(mapStateToProps)(Friends);
 
