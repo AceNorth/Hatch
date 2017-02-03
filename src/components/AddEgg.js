@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Text, View, Modal, TextInput, StyleSheet, Image} from 'react-native';
+import {Text, View, Modal, TextInput, StyleSheet, Image, Picker} from 'react-native';
 import {CardSection} from './common/CardSection';
 import {Button} from './common/Button';
 import {Input} from './common/Input';
@@ -22,7 +22,8 @@ class AddEgg extends Component {
             goHereImageSource: {uri: 'https://facebook.github.io/react/img/logo_og.png'},
             goHereImageBuffer: null,
             eggs: [],
-        };
+            recipient: this.props.friends[0].id}
+        ;
 
         this.handleInputChange=this.handleInputChange.bind(this);
         this.clearInput=this.clearInput.bind(this);
@@ -47,11 +48,12 @@ class AddEgg extends Component {
             payloadImage: this.state.payloadImageSource,
             payloadImageBuffer: this.state.payloadImageBuffer,
             senderId: this.props.senderId,
+            recipient: this.state.recipient
         }
 
         axios.post(`${tunnelIP}/api/egg`, egg)
             .then(()=>{
-                this.setState({ text:'', payloadText: '', goHereText: ''});
+                this.setState({ text:'', payloadText: '', goHereText: '', recipient:this.props.friends[0].id});
                 this.props.showModal(false);
                 this.props.clearAnnotation();
             })
@@ -60,7 +62,7 @@ class AddEgg extends Component {
     }
 
     onCancelSubmitNode() {
-        this.setState({ text:'', payloadText: '', goHereText: ''});
+        this.setState({ text:'', payloadText: '', goHereText: '', recipient:this.props.friends[0]});
         this.props.showModal(false);
         this.props.clearAnnotation();
     }
@@ -130,7 +132,6 @@ class AddEgg extends Component {
 
     render(){
         const { containerStyle, textStyle, cardSectionStyle} = styles;
-
         return (
             <View style={containerStyle}>
                 <CardSection>
@@ -161,6 +162,19 @@ class AddEgg extends Component {
                         onFocus={this.showImagePicker}
                     />
                 </CardSection>
+                <CardSection>
+                    <Picker
+                        style={styles.picker}
+                        selectedValue={this.state.recipient}
+                        onValueChange={(friend) => this.setState({recipient: friend})}>
+                        { this.props.friends.map((friend) => {
+                                return(
+                                    <Picker.Item label={friend.name} value={friend.id} />
+                                )
+                            }
+                        )}
+                    </Picker>
+                </CardSection>
 
                 <CardSection>
                     <Button onPress={this.onSubmitNode}>Submit</Button>
@@ -188,6 +202,9 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center'
     },
+    picker: {
+        width: 300,
+    },
 });
 
 
@@ -197,7 +214,8 @@ const mapStateToProps = (state, ownProps) => {
     return {
         showAddNodeModal: state.addNodeModal.showAddNodeModal,
         annotation: state.map.annotation,
-        senderId: state.auth.id
+        senderId: state.auth.id,
+        friends: state.friends,
     };
 }
 
