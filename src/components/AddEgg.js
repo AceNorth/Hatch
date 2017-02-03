@@ -9,10 +9,13 @@ import {showModal} from '../reducers/addNodeModal';
 import {setAnnotation, clearAnnotation} from '../reducers/map';
 import { tunnelIP } from '../TUNNELIP';
 
+import { Actions } from 'react-native-router-flux';
+
 
 class AddEgg extends Component {
     constructor(props){
         super(props);
+
         this.state = {
             text: '',
             payloadText: '',
@@ -128,6 +131,11 @@ class AddEgg extends Component {
         this.setState({ [field]: e });
     }
 
+
+    onAddNodeButtonPress() {
+        this.props.showModal(true);
+    }
+
     render(){
         const { containerStyle, textStyle, cardSectionStyle} = styles;
 
@@ -161,11 +169,8 @@ class AddEgg extends Component {
                         onFocus={this.showImagePicker}
                     />
                 </CardSection>
-
-                <CardSection>
-                    <Button onPress={this.onSubmitNode}>Submit</Button>
-                    <Button onPress={this.onCancelSubmitNode}>Cancel</Button>
-                </CardSection>
+                    <Button onPress={this.onSubmitNode} >Submit</Button>
+                    <Button onPress={this.onCancelSubmitNode} >Cancel</Button>
             </View>
         )
     }
@@ -174,7 +179,8 @@ class AddEgg extends Component {
 
 const styles = StyleSheet.create({
     cardSectionStyle: {
-        justifyContent: 'center'
+        justifyContent: 'center',
+        // borderBottomWidth: StyleSheet.hairlineWidth
     },
     textStyle: {
         flex: 1,
@@ -186,11 +192,11 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0, 0, 0, 0.75)',
         position: 'relative',
         flex: 1,
-        justifyContent: 'center'
+        justifyContent: 'center',
+        alignItems: 'center',
+        alignSelf: 'center'
     },
 });
-
-
 
 
 const mapStateToProps = (state, ownProps) => {
@@ -200,7 +206,6 @@ const mapStateToProps = (state, ownProps) => {
         senderId: state.auth.id
     };
 }
-
 
 const mapDispatchToProps = (dispatch, ownProps) => {
     return {
