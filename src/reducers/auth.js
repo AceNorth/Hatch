@@ -42,7 +42,7 @@ export const fetchUserInfo = () =>
           const user = {
             firstName: first_name,
             lastName: last_name,
-            id,
+            id: Number(id),
             email,
           };
           addUserToDb(user);
