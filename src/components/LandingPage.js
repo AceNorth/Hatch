@@ -1,7 +1,7 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { View, Text, Image, StyleSheet, MapView, TextInput, TouchableWithoutFeedback, Modal } from 'react-native';
+import { View, Text, Image, StyleSheet, MapView, TextInput, TouchableWithoutFeedback, Modal, Dimensions } from 'react-native';
 import { Button } from './common';
 import  AddEgg  from './AddEgg';
 import { connect } from 'react-redux';
@@ -12,6 +12,11 @@ import {showModal} from '../reducers/addNodeModal';
 import { setAnnotation, clearAnnotation } from '../reducers/map';
 import axios from 'axios';
 
+let { height, width } = Dimensions.get('window');
+const DEVICE_WIDTH = width;
+const DEVICE_HEIGHT = height;
+
+
 class LandingPage extends Component {
 
   constructor(props) {
@@ -19,29 +24,33 @@ class LandingPage extends Component {
     this.state = {
       // user's current position
       currentPosition: { timestamp: 0, coords: { latitude: 1, longitude: 1 } },
-      
+
       // locations of eggs waiting to be picked up
       pickups: [],
       pickupRadius: 0.0003,
 
+      //eggs that were placed by user
+      dropoffs: [],
+
       // image rendering  ==> for samples/ image testing
-      goHereImage: {}
+      goHereImage: {},
     };
 
     this.onMapLongPress = this.onMapLongPress.bind(this);
+    this.setRenderAnnotations = this.setRenderAnnotations.bind(this)
   }
 
   componentWillMount() {
   // set timer to update "current position" on state every second
     this.timerID = setInterval(
       () => this.checkFences(),
-      1000
+      10000
     );
 
     // fetch all eggs belonging to the current user
     this.props.fetchAllEggs(this.props.user.id);
 
-    //this sets the sample image on the home page, 
+    //this sets the sample image on the home page,
     //use this as a template for how to get the axios response you will need to render images.
     let goHereImage2;
     axios.get(`${tunnelIP}/api/egg/goHereImage/19`)
@@ -49,22 +58,27 @@ class LandingPage extends Component {
           goHereImage2 = response.data
           this.setState({goHereImage: goHereImage2});
       })
-
   }
 
   componentWillReceiveProps(nextProps) {
     // loop through all the user's eggs and turn them into map annotations
-    let pickups = [];
+    let pickUps = [];
+    let dropOffs = [];
 
     for (let key in nextProps.allEggs) {
       let egg = nextProps.allEggs[key];
 
       if (egg.receiverId == this.props.user.id) {
        let newPickup = this.createStaticAnnotation(egg.longitude, egg.latitude, egg.senderId, egg.id, egg.goHereText);
-       pickups.push(newPickup);
+       pickUps.push(newPickup);
+      }
+
+      if (egg.senderId == this.props.user.id) {
+       let newDropoff = this.createStaticDropAnnotation(egg.longitude, egg.latitude, egg.receiverId, egg.id, egg.goHereText);
+       dropOffs.push(newDropoff);
       }
     }
-    this.setState({ pickups });
+    this.setState({ pickups: pickUps, dropoffs: dropOffs });
   }
 
   onAddNodeButtonPress() {
@@ -147,9 +161,25 @@ class LandingPage extends Component {
       longitude,
       latitude,
       eggId,
+      senderId,
       title: goHereText,
       subtitle: pinSubtitle,
       tintColor: MapView.PinColors.PURPLE,
+      draggable: false
+    };
+  };
+
+  createStaticDropAnnotation(longitude, latitude, receiverId, eggId, goHereText) {
+    // we might want to change what's displayed here later, this is just
+    // a placeholder example fo the info we can put on pins
+    let pinSubtitle = "Egg to user " + receiverId;
+    return {
+      longitude,
+      latitude,
+      eggId,
+      title: goHereText,
+      subtitle: pinSubtitle,
+      tintColor: MapView.PinColors.RED,
       draggable: false
     };
   };
@@ -164,28 +194,15 @@ class LandingPage extends Component {
     }
   }
 
-  // renderPickupEggButton() {
-  //   // if you're within the fence of an egg, render the button
-  //   if (this.isWithinFence(this.state.currentPosition.coords, this.props.allEggs[this.props.selectedEgg])) {
-  //     return (
-  //       <Button onPress={Actions.viewPayload}>
-  //         FOUND AN EGG! PRESS HERE TO PICK IT UP!
-  //       </Button>
-  //     )
-  //   }
-  // }
+  setAllPins(pins){
+     this.setState({allPins: pins})
+      console.log('ALL PINS: ', this.state.allPins)
+  }
 
-  render() {
-    const position = this.state.currentPosition;
-
-    // the annotations on the map are a combination of packages waiting for pickup
-    // + new eggs waiting to be dropped (from the AddEgg modal)
-
-    const annotations = this.props.annotation.concat(this.state.pickups);
-
+  setRenderAnnotations(annotations){
     annotations.map(annotation => {
       if(annotation){
-        if(this.isWithinFence(this.state.currentPosition.coords, annotation)){
+        if(this.isWithinFence(this.state.currentPosition.coords, annotation) && annotation.senderId){
           annotation.tintColor= MapView.PinColors.GREEN,
           annotation.rightCalloutView = (
             <Button
@@ -198,33 +215,51 @@ class LandingPage extends Component {
       }
     });
 
+    return annotations
+  }
+
+  setWindowDimensions(){
+
+
+  }
+
+  render() {
+    const position = this.state.currentPosition;
+
+    // the annotations on the map are a combination of packages waiting for pickup
+    // + new eggs waiting to be dropped (from the AddEgg modal)
+    // annotations.push(this.props.annotation.concat(this.state.pickups));
+    const annotations = this.props.annotation.concat(this.state.pickups).concat(this.state.dropoffs);
+    this.setRenderAnnotations(annotations);
+
     return (
-      <View>
+      <View style={styles.viewStyle}>
         <TouchableWithoutFeedback onLongPress={ this.onMapLongPress }>
           <MapView
-            style={{height: 400, width: 400, margin: 0}}
+            style={styles.mapStyle}
             showsUserLocation={true}
             region={{latitude: position.coords.latitude, longitude: position.coords.longitude, latitudeDelta: .01, longitudeDelta: .01}}
             annotations={ annotations }
           />
         </TouchableWithoutFeedback>
-         <Button onPress={Actions.eggManager}> Manage Eggs </Button>
-         <Button onPress={Actions.friends}> My Friends </Button>
-        {this.renderLeaveEggButton()}
-        {/*this.renderPickupEggButton()*/}
+        <View style={styles.touchStyle}>
+          <Button onPress={Actions.friends}> My Egg Basket </Button>
 
-        <Image style={{width: 50, height: 50}} source={{uri: this.state.goHereImage.uri}}></Image>
+          {this.renderLeaveEggButton()}
 
-        <Modal
-            visible={this.props.showAddNodeModal}
-            transparent
-            animationType="fade"
-            onRequestClose={() => {}}
-        >
-          <AddEgg
-              {...this.state}>
-          </AddEgg>
-        </Modal>
+          <Image style={{width: 50, height: 50}} source={{uri: this.state.goHereImage.uri}}></Image>
+
+          <Modal
+              visible={this.props.showAddNodeModal}
+              transparent
+              animationType="fade"
+              onRequestClose={() => {}}
+          >
+            <AddEgg
+                {...this.state}>
+            </AddEgg>
+          </Modal>
+        </View>
       </View>
     );
   }
@@ -234,6 +269,19 @@ const styles = StyleSheet.create({
   title: {
     fontWeight: '500',
   },
+  viewStyle: {
+    width: DEVICE_WIDTH,
+    height: DEVICE_HEIGHT
+  },
+  mapStyle: {
+    // height: 350,
+    flex: 0.65,
+    margin: 0
+  },
+  touchStyle: {
+    flex: 0.35,
+    margin: 0
+  }
 });
 
 const mapStateToProps = (state, ownProps) => {
