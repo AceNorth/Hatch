@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { Actions } from 'react-native-router-flux';
 import { GraphRequest, GraphRequestManager } from 'react-native-fbsdk';
 
 import { tunnelIP } from '../TUNNELIP';
@@ -42,7 +41,7 @@ export const fetchUserInfo = () =>
           const user = {
             firstName: first_name,
             lastName: last_name,
-            id,
+            fbId: id,
             email,
           };
           addUserToDb(user);
