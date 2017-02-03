@@ -36,10 +36,6 @@ class AddEgg extends Component {
 
     }
 
-    // componentWillMount(){
-    //     console.log('here is this.props.friends', this.props.friends);
-    //     console.log('here is this.props.senderId', this.props.senderId);
-    // }
 
     clearInput(){
         this.setState({text:''});
