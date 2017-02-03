@@ -1,23 +1,16 @@
 import React, { Component, PropTypes } from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  ListView,
-  ScrollView
-} from 'react-native';
+import { StyleSheet, ListView } from 'react-native';
 import { connect } from 'react-redux';
-import { Actions } from 'react-native-router-flux';
 
 import SingleFriend from './SingleFriend';
 
 class Friends extends Component {
   componentWillMount() {
-    this.createDataSource(this.props.friends);
+    this.createDataSource(this.props.allFriends);
   }
 
   componentWillReceiveProps(nextProps) {
-    this.createDataSource(nextProps.friends);
+    this.createDataSource(nextProps.allFriends);
   }
 
   createDataSource(friends) {
@@ -57,10 +50,10 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = ({ friends }) => ({ friends });
+const mapStateToProps = ({ friends }) => ({ allFriends: friends.allFriends });
 
 Friends.propTypes = {
-  friends: PropTypes.arrayOf(PropTypes.object),
+  allFriends: PropTypes.arrayOf(PropTypes.object),
 };
 
 export default connect(mapStateToProps)(Friends);
