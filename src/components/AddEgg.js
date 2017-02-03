@@ -1,11 +1,8 @@
 import React, {Component} from 'react';
-
-import {Text, View, Modal, TextInput, StyleSheet, Image} from 'react-native';
+import {Text, View, Modal, TextInput, StyleSheet, Image, Picker} from 'react-native';
 import { Icon } from 'react-native-elements'
 // import Icon from 'react-native-vector-icons/MaterialIcon'
 // const myIcon = (<Icon name="rocket" size={30} color="#900" />)
-
-import {Text, View, Modal, TextInput, StyleSheet, Image, Picker} from 'react-native';
 import {CardSection} from './common/CardSection';
 import {Button} from './common/Button';
 import {Input} from './common/Input';
