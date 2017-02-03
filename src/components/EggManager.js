@@ -12,8 +12,45 @@ class EggManager extends Component {
     super(props);
     this.state = {
       showModal: false,
+      selectedFriendId: -1,
+      displayedEggIds: [],
+      filterBy: 'all',
       chosenEgg: {}
-    }
+    };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    let displayedEggIds = [];
+    // apply filters and set filtered egg IDs on local state
+    switch (this.state.filterBy) {
+      case 'all':
+        Object.keys(nextProps.allEggs).map(eggId => {
+          let egg = nextProps.allEggs[eggId];
+          if (egg.senderId === nextProps.selectedFriendId || egg.receiverId === nextProps.selectedFriendId) {
+            displayedEggIds.push(eggId);
+          }
+        });
+        break;
+      case 'sent':
+        Object.keys(nextProps.allEggs).map(eggId => {
+          let egg = nextProps.allEggs[eggId];
+          if (egg.receiverId === nextProps.selectedFriendId) {
+            displayedEggIds.push(eggId);
+          }
+        });
+        break;
+      case 'received':
+        Object.keys(nextProps.allEggs).map(eggId => {
+          let egg = nextProps.allEggs[eggId];
+          if (egg.senderId === nextProps.selectedFriendId) {
+            displayedEggIds.push(eggId);
+          }
+        });
+        break;
+      default:
+        return;          
+    };
+    this.setState({selectedFriendID: nextProps.selectedFriendId, displayedEggIds});
   }
 
   onEggPress(egg) {
@@ -21,14 +58,29 @@ class EggManager extends Component {
     this.setState({showModal: true, chosenEgg: this.props.allEggs[egg.id] });
   }
 
-  onViewPayload() {
-    this.setState({showModal: false});
-    Actions.viewPayload();
+  onDelete() {
+    // dispatch action to toggle "deleted by sender/receiver" on backend
+    // action should take an eggId and the string "sender" or "receiver"?
   }
 
   onCancel() {
     this.setState({showModal: false});
   }
+
+  renderPayload(egg) {
+    if (!egg.payload) {return};
+    let payloadType = egg.payload.type;
+    
+    switch (payloadType) {
+      case 'Text':
+        return (<Text> { egg.payload.text } </Text>)
+      case 'Image':
+        return (<View> { egg.payload.path } } </View>)
+      default:
+        return (<Text> Something has GONE WRONG </Text>)
+    }
+  }
+
 
   renderEggCard(egg) {
     let displayDate = new Date(Date.parse(egg.createdAt)).toString().split(" ").slice(0,4).join(" ");
@@ -39,10 +91,13 @@ class EggManager extends Component {
       >
         <Card>
           <CardSection>
-            <Text> EGG ID: {egg.id} </Text>
+            <Text> GO HERE: {egg.goHereText} </Text>
           </CardSection>
           <CardSection>
             <Text> FROM: {egg.senderId} </Text>
+          </CardSection>
+          <CardSection>
+            <Text> PAYLOAD: {egg.payload.text} </Text>
           </CardSection>
           <CardSection>
             <Text> CREATED ON: {displayDate} </Text>
@@ -56,14 +111,14 @@ class EggManager extends Component {
     const { container, text } = styles;
     return (
       <View style={container}>
-        {Object.keys(this.props.allEggs).map(key => {
-          let egg = this.props.allEggs[key];
+        {this.state.displayedEggIds.map(eggId => {
+          let egg = this.props.allEggs[eggId];
           return this.renderEggCard(egg);
         })}
         <EggManagerModal
             visible={this.state.showModal}
             chosenEgg={this.state.chosenEgg}
-            onViewPayload={this.onViewPayload.bind(this)}
+            onDelete={this.onDelete.bind(this)}
             onCancel={this.onCancel.bind(this)}
             >
             
@@ -78,7 +133,7 @@ class EggManager extends Component {
                 draggable: false 
               }]}
             />
-            <Text> {this.state.chosenEgg.goHereText} </Text>
+            {this.renderPayload(this.state.chosenEgg)};
           
         </EggManagerModal>
       </View>
