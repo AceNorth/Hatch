@@ -10,12 +10,15 @@ import {setAnnotation, clearAnnotation} from '../reducers/map';
 import { tunnelIP } from '../TUNNELIP';
 
 
-
 class AddEgg extends Component {
     constructor(props){
         super(props);
         this.state = {
-            text: 'placeholder',
+            text: '',
+            payloadText: '',
+            payloadImage: '',
+            payloadImageSource: {uri: 'https://facebook.github.io/react/img/logo_og.png'},
+            payloadImageBuffer: null,
             goHereImageSource: {uri: 'https://facebook.github.io/react/img/logo_og.png'},
             goHereImageBuffer: null,
             eggs: [],
@@ -29,31 +32,26 @@ class AddEgg extends Component {
 
     }
 
-
-    handleInputChange(e){
-        this.setState({text: e });
-    }
-
     clearInput(){
         this.setState({text:''});
     }
 
     onSubmitNode() {
-
         const egg = {
             goHereImage: this.state.goHereImageSource,
             goHereText: this.state.text,
             goHereImageBuffer: this.state.goHereImageBuffer,
             latitude: this.props.annotation[0].latitude,
             longitude: this.props.annotation[0].longitude,
-            payloadType: 'Text',
-            payload: 'Hey everybody',
-            senderId: 1,
+            payloadText: this.state.payloadText,
+            payloadImage: this.state.payloadImageSource,
+            payloadImageBuffer: this.state.payloadImageBuffer,
+            senderId: this.props.senderId,
         }
 
         axios.post(`${tunnelIP}/api/egg`, egg)
             .then(()=>{
-                this.setState({ text:'placeholder' });
+                this.setState({ text:'', payloadText: '', goHereText: ''});
                 this.props.showModal(false);
                 this.props.clearAnnotation();
             })
@@ -62,7 +60,7 @@ class AddEgg extends Component {
     }
 
     onCancelSubmitNode() {
-        this.setState({ text:'placeholder' });
+        this.setState({ text:'', payloadText: '', goHereText: ''});
         this.props.showModal(false);
         this.props.clearAnnotation();
     }
@@ -122,7 +120,13 @@ class AddEgg extends Component {
 
     }
 
+    // handleInputChange(e){
+    //     this.setState({text: e });
+    // }
 
+    handleInputChange(field, e){
+        this.setState({ [field]: e });
+    }
 
     render(){
         const { containerStyle, textStyle, cardSectionStyle} = styles;
@@ -130,37 +134,31 @@ class AddEgg extends Component {
         return (
             <View style={containerStyle}>
                 <CardSection>
+                    <Image source={this.state.goHereImageSource} style={{width: 50, height: 50}}  />
                     <Input
-                        label="GoHere Image"
-                        value='Click here to change the GoHere Image'
+                        placeholder="GoHere Image/Somethin"
                         onFocus={this.showImagePicker}
                     />
                 </CardSection>
                 <CardSection>
-                    <Image source={this.state.goHereImageSource} style={{width: 50, height: 50}}  />
-                </CardSection>
-                <CardSection>
                     <Input
-                        label="GoHere Text"
-                        onChangeText={e => this.handleInputChange(e)}
+                        placeholder="GoHere Text"
+                        onChangeText={e => this.handleInputChange('text', e)}
                         value={this.state.text}
-                        onFocus={this.clearInput}
                     />
                 </CardSection>
                 <CardSection>
                     <Input
-                        label="Payload Type"
-                        onChangeText={e => this.handleInputChange(e)}
-                        value={this.state.text}
-                        onFocus={this.clearInput}
+                        placeholder="Payload Text"
+                        onChangeText={e => this.handleInputChange('payloadText', e)}
+                        value={this.state.payloadText}
                     />
                 </CardSection>
                 <CardSection>
+                    <Image source={this.state.payloadImageSource} style={{width: 50, height: 50}} />
                     <Input
-                        label="Payload"
-                        onChangeText={e => this.handleInputChange(e)}
-                        value={this.state.text}
-                        onFocus={this.clearInput}
+                        placeholder="Payload Image"
+                        onFocus={this.showImagePicker}
                     />
                 </CardSection>
 
@@ -198,7 +196,8 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state, ownProps) => {
     return {
         showAddNodeModal: state.addNodeModal.showAddNodeModal,
-        annotation: state.map.annotation
+        annotation: state.map.annotation,
+        senderId: state.auth.id
     };
 }
 
