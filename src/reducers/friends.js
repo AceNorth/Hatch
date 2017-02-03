@@ -20,7 +20,10 @@ export const fetchFriends = () =>
           console.error('problem getting friends', err);
         } else {
           const friends = _.sortBy(result.data, ['name'])
-            .map(friend => ({ ...friend, id: Number(friend.id) }));
+            .map((friend) => {
+              const fbIdAdded = { ...friend, fbId: friend.id };
+              return _.omit(fbIdAdded, 'id'); // delete old id key
+            });
           dispatch({ type: FETCH_FRIENDS, friends });
         }
       }
