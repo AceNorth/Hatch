@@ -16,8 +16,7 @@ class ViewPayload extends Component {
   }
 
   renderPayloadView() {
-    let payloadType = this.state.viewEgg.payloadType
-    console.log('egg: ', this.state.viewEgg)
+    let payloadType = this.state.viewEgg.payloadType;
     
     switch (payloadType) {
       // conditional render for different payloads
