@@ -25,7 +25,7 @@ class AddEgg extends Component {
             goHereImageSource: {uri: 'https://facebook.github.io/react/img/logo_og.png'},
             goHereImageBuffer: null,
             eggs: [],
-            recipient: this.props.friends[0].id}
+            recipient: this.props.friends[0].fbId}
         ;
 
         this.handleInputChange=this.handleInputChange.bind(this);
@@ -35,6 +35,7 @@ class AddEgg extends Component {
         this.showImagePicker = this.showImagePicker.bind(this);
 
     }
+
 
     clearInput(){
         this.setState({text:''});
@@ -56,7 +57,7 @@ class AddEgg extends Component {
 
         axios.post(`${tunnelIP}/api/egg`, egg)
             .then(()=>{
-                this.setState({ text:'', payloadText: '', goHereText: '', recipient:this.props.friends[0].id});
+                this.setState({ text:'', payloadText: '', goHereText: '', recipient:this.props.friends[0].fbId});
                 this.props.showModal(false);
                 this.props.clearAnnotation();
             })
@@ -223,7 +224,7 @@ const mapStateToProps = (state, ownProps) => {
     return {
         showAddNodeModal: state.addNodeModal.showAddNodeModal,
         annotation: state.map.annotation,
-        senderId: state.auth.id,
+        senderId: state.auth.fbId,
         friends: state.friends.allFriends,
     };
 }
