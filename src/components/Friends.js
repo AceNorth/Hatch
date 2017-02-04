@@ -30,14 +30,12 @@ class Friends extends Component {
 
   render() {
     return (
-      <View>
         <ListView
           enableEmptySections
           dataSource={this.dataSource}
           renderRow={this.renderRow}
           style={styles.container}
         />
-      </View>
     );
   }
 }
