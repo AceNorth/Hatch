@@ -1,5 +1,8 @@
 import React, {Component} from 'react';
 import {Text, View, Modal, TextInput, StyleSheet, Image, Picker} from 'react-native';
+import { Icon } from 'react-native-elements'
+// import Icon from 'react-native-vector-icons/MaterialIcon'
+// const myIcon = (<Icon name="rocket" size={30} color="#900" />)
 import {CardSection} from './common/CardSection';
 import {Button} from './common/Button';
 import {Input} from './common/Input';
@@ -55,6 +58,8 @@ class AddEgg extends Component {
             recipient: this.state.recipient
         }
 
+        console.log('payBuffer: ', this.state.payloadImageBuffer);
+        
         axios.post(`${tunnelIP}/api/egg`, egg)
             .then(()=>{
                 this.setState({ text:'', payloadText: '', goHereText: '', recipient:this.props.friends[0].fbId});
@@ -71,7 +76,17 @@ class AddEgg extends Component {
         this.props.clearAnnotation();
     }
 
-    showImagePicker(){
+    selectImageForPicker(type){
+        if(type == 'clue'){
+            this.showImagePicker('clue');
+        }
+        else {
+            this.showImagePicker('pay');
+        }
+    }
+
+    showImagePicker(type){
+
         const options = {
             storageOptions: {
                 skipBackup: true,
@@ -83,7 +98,7 @@ class AddEgg extends Component {
         };
 
         const ImagePicker = require('react-native-image-picker');
-        const Platform = require('react-native').Platform;
+        // const Platform = require('react-native').Platform;
         /**
          * The first arg is the options object for customization (it can also be null or omitted for default options),
          * The second arg is the callback which sends object: response (more info below in README)
@@ -91,6 +106,7 @@ class AddEgg extends Component {
 
         ImagePicker.showImagePicker(options, (response) => {
             console.log('Response = ', response);
+            let goSource, goBuffer, paySource, payBuffer;
 
             if (response.didCancel) {
                 console.log('User cancelled image picker');
@@ -102,33 +118,43 @@ class AddEgg extends Component {
             //     console.log('User tapped custom button: ', response.customButton);
             // }
             else {
-                let source;
-                let buffer;
+                if(type == 'clue'){
+                    // display the image using either data...
+                    goSource = { uri: 'data:image/jpeg;base64,' + response.data };
+                    goBuffer = response.data;
 
-                // display the image using either data...
-                source = { uri: 'data:image/jpeg;base64,' + response.data };
-                buffer = response.data;
+                    // ...or a reference to the platform specific asset location
+                    // if (Platform.OS === 'android') {
+                    //     goSource = { uri: response.uri };
+                    // } else {
+                    //     goSource = { uri: response.uri.replace('file://', '') };
+                    // }
 
-                // ...or a reference to the platform specific asset location
-                if (Platform.OS === 'android') {
-                    source = { uri: response.uri };
-                } else {
-                    source = { uri: response.uri.replace('file://', '') };
+                    this.setState({
+                        goHereImageSource: goSource,
+                        goHereImageBuffer: goBuffer
+                    });  
                 }
+                else {
+                    // display the image using either data...
+                    paySource = { uri: 'data:image/jpeg;base64,' + response.data };
+                    payBuffer = response.data;
 
-                this.setState({
-                    goHereImageSource: source,
-                    goHereImageBuffer: buffer
-                });
+                    // ...or a reference to the platform specific asset location
+                    // if (Platform.OS === 'android') {
+                    //     paySource = { uri: response.uri };
+                    // } else {
+                    //     paySource = { uri: response.uri.replace('file://', '') };
+                    // }
+
+                    this.setState({
+                        payloadImageSource: paySource,
+                        payloadImageBuffer: payBuffer
+                    });  
+                }
             }
         });
-
-
     }
-
-    // handleInputChange(e){
-    //     this.setState({text: e });
-    // }
 
     handleInputChange(field, e){
         this.setState({ [field]: e });
@@ -144,33 +170,37 @@ class AddEgg extends Component {
         return (
             <View style={containerStyle}>
                 <CardSection>
-                    <Image source={this.state.goHereImageSource} style={{width: 50, height: 50}}  />
-                    <Input
-                        placeholder="GoHere Image/Somethin"
-                        onFocus={this.showImagePicker}
+                    <Icon
+                        name='camera'
+                        type= 'material-community'
+                        color='#f50'
+                        // onPress={this.showImagePicker}
+                        onPress={() => {this.selectImageForPicker('clue')} }
                     />
-                </CardSection>
-                <CardSection>
                     <Input
                         placeholder="GoHere Text"
                         onChangeText={e => this.handleInputChange('text', e)}
                         value={this.state.text}
                     />
+                    <Image source={this.state.goHereImageSource} style={{width: 50, height: 50}} />
                 </CardSection>
+
                 <CardSection>
+                    <Icon
+                        name='camera'
+                        type= 'material-community'
+                        color='#f50'
+                        onPress={this.showImagePicker}
+                        // onLongPress={this.selectImageForPicker()}
+                    />
                     <Input
                         placeholder="Payload Text"
                         onChangeText={e => this.handleInputChange('payloadText', e)}
                         value={this.state.payloadText}
                     />
-                </CardSection>
-                <CardSection>
                     <Image source={this.state.payloadImageSource} style={{width: 50, height: 50}} />
-                    <Input
-                        placeholder="Payload Image"
-                        onFocus={this.showImagePicker}
-                    />
                 </CardSection>
+
                 <CardSection>
                     <Picker
                         style={styles.picker}
