@@ -178,7 +178,7 @@ class AddEgg extends Component {
                         type= 'ionicon'
                         color='#f50'
                         // onPress={this.showImagePicker}
-                        onPress={this.selectImageForPicker('payload')} //CREATES BUG IN SIMULATOR
+                        onPress={() => this.selectImageForPicker('payload')} //CREATES BUG IN SIMULATOR
                     />
                     <Input
                         placeholder="Payload Text"

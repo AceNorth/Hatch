@@ -3,9 +3,8 @@ import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 import { View, Text, TouchableOpacity, MapView } from 'react-native';
 import { Card, CardSection } from './common';
-import { setSelectedEgg } from '../reducers/eggs';
+import { setSelectedEgg, deleteEgg } from '../reducers/eggs';
 import EggManagerModal from './EggManagerModal';
-
 
 class EggManager extends Component { 
   constructor(props) {
@@ -19,30 +18,33 @@ class EggManager extends Component {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillMount() {
     let displayedEggIds = [];
     // apply filters and set filtered egg IDs on local state
     switch (this.state.filterBy) {
       case 'all':
-        Object.keys(nextProps.allEggs).map(eggId => {
-          let egg = nextProps.allEggs[eggId];
-          if (egg.senderId === nextProps.selectedFriendId || egg.receiverId === nextProps.selectedFriendId) {
+        Object.keys(this.props.allEggs).map(eggId => {
+          let egg = this.props.allEggs[eggId];
+          if (egg.senderId == this.props.selectedFriendId && !egg.deletedByReceiver) {
+            displayedEggIds.push(eggId);
+          }
+          if (egg.receiverId == this.props.selectedFriendId && !egg.deletedBySender) {
             displayedEggIds.push(eggId);
           }
         });
         break;
       case 'sent':
-        Object.keys(nextProps.allEggs).map(eggId => {
-          let egg = nextProps.allEggs[eggId];
-          if (egg.receiverId === nextProps.selectedFriendId) {
+        Object.keys(this.props.allEggs).map(eggId => {
+          let egg = this.props.allEggs[eggId];
+          if (egg.receiverId == this.props.selectedFriendId && !egg.deletedBySender) {
             displayedEggIds.push(eggId);
           }
         });
         break;
       case 'received':
-        Object.keys(nextProps.allEggs).map(eggId => {
-          let egg = nextProps.allEggs[eggId];
-          if (egg.senderId === nextProps.selectedFriendId) {
+        Object.keys(this.props.allEggs).map(eggId => {
+          let egg = this.props.allEggs[eggId];
+          if (egg.senderId == this.props.selectedFriendId && !egg.deletedByReceiver) {
             displayedEggIds.push(eggId);
           }
         });
@@ -50,17 +52,26 @@ class EggManager extends Component {
       default:
         return;          
     };
-    this.setState({selectedFriendID: nextProps.selectedFriendId, displayedEggIds});
+    this.setState({selectedFriendId: this.props.selectedFriendId, displayedEggIds});
   }
 
   onEggPress(egg) {
-    this.props.setSelectedEgg(egg.id);
     this.setState({showModal: true, chosenEgg: this.props.allEggs[egg.id] });
   }
 
   onDelete() {
-    // dispatch action to toggle "deleted by sender/receiver" on backend
-    // action should take an eggId and the string "sender" or "receiver"?
+    // our delete function is a little weird and an antipattern I think
+    // because we don't want to delete eggs from the database
+    // so we're actually UPDATING the egg to SAY it's been deleted,
+    // and by whom.
+    if (this.state.chosenEgg.senderId === this.state.selectedFriendId) {
+      this.state.chosenEgg.deletedByReceiver = true;
+    } else {
+      this.state.chosenEgg.deletedBySender = true;
+    }
+
+    this.props.deleteEgg(this.state.chosenEgg);
+    this.setState({chosenEgg: {}});
   }
 
   onCancel() {
@@ -75,19 +86,21 @@ class EggManager extends Component {
       case 'Text':
         return (<Text> { egg.payload.text } </Text>)
       case 'Image':
-        return (<View> { egg.payload.path } } </View>)
+        return (<View> { egg.payload.path } } </View>);
       default:
-        return (<Text> Something has GONE WRONG </Text>)
+        return (<Text> Something has GONE WRONG </Text>);
     }
   }
 
 
   renderEggCard(egg) {
     let displayDate = new Date(Date.parse(egg.createdAt)).toString().split(" ").slice(0,4).join(" ");
+    let displayColor = (egg.pickedUp) ? "blue" : "red";
     return (
       <TouchableOpacity 
         key={egg.id} 
         onLongPress={() => this.onEggPress(egg)}
+        style={{backgroundColor: displayColor}}
       >
         <Card>
           <CardSection>
@@ -133,7 +146,7 @@ class EggManager extends Component {
                 draggable: false 
               }]}
             />
-            {this.renderPayload(this.state.chosenEgg)};
+            {this.renderPayload(this.state.chosenEgg)}
           
         </EggManagerModal>
       </View>
@@ -157,14 +170,18 @@ const styles = {
 
 const mapStateToProps = (state, ownProps) => { 
   const allEggs = state.eggs.allEggs;
-  return { allEggs }; 
+  const selectedFriendId = state.friends.selectedFriendId;
+  return { allEggs, selectedFriendId }; 
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     setSelectedEgg: function(eggId) {
-        dispatch(setSelectedEgg(eggId));
-      }
+      dispatch(setSelectedEgg(eggId));
+      },
+    deleteEgg: function(egg) {
+      dispatch(deleteEgg(egg));
+    }
   };
 };
 
