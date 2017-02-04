@@ -8,7 +8,6 @@ class ViewPayload extends Component {
 
   constructor(props) {
     super(props);
-
     this.state = {
       viewEgg: props.allEggs[props.selectedEgg]
     }
@@ -21,11 +20,13 @@ class ViewPayload extends Component {
     switch (payloadType) {
       // conditional render for different payloads
       case 'Text':
-        return (<Text> { this.state.viewEgg.payload.text } </Text>)
+        return (<Text>{ this.state.viewEgg.payload.text }</Text>)
       case 'Image':
-        return (<View> { this.state.viewEgg.payload.path } } </View>)
+        //change this to image
+        //render from DB
+        return (<Text>{ this.state.viewEgg.payload.path }</Text>)
       default:
-        return (<Text> Something has GONE WRONG </Text>)
+        return (<Text>Something has GONE WRONG</Text>)
     }
   }
 

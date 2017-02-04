@@ -119,34 +119,20 @@ class AddEgg extends Component {
             //     console.log('User tapped custom button: ', response.customButton);
             // }
             else {
-                if(type == 'clue'){
+                if(type === 'clue'){
                     // display the image using either data...
                     goSource = { uri: 'data:image/jpeg;base64,' + response.data };
                     goBuffer = response.data;
-
-                    // ...or a reference to the platform specific asset location
-                    // if (Platform.OS === 'android') {
-                    //     goSource = { uri: response.uri };
-                    // } else {
-                    //     goSource = { uri: response.uri.replace('file://', '') };
-                    // }
 
                     this.setState({
                         goHereImageSource: goSource,
                         goHereImageBuffer: goBuffer
                     });  
                 }
-                else {
+                else if(type === 'payload') {
                     // display the image using either data...
                     paySource = { uri: 'data:image/jpeg;base64,' + response.data };
                     payBuffer = response.data;
-
-                    // ...or a reference to the platform specific asset location
-                    // if (Platform.OS === 'android') {
-                    //     paySource = { uri: response.uri };
-                    // } else {
-                    //     paySource = { uri: response.uri.replace('file://', '') };
-                    // }
 
                     this.setState({
                         payloadImageSource: paySource,
@@ -172,8 +158,8 @@ class AddEgg extends Component {
             <View style={containerStyle}>
                 <CardSection>
                     <Icon
-                        name='camera'
-                        type= 'material-community'
+                        name='ios-camera-outline'
+                        type= 'ionicon'
                         color='#f50'
                         // onPress={this.showImagePicker}
                         onPress={() => {this.selectImageForPicker('clue')} }
@@ -188,11 +174,11 @@ class AddEgg extends Component {
 
                 <CardSection>
                     <Icon
-                        name='camera'
-                        type= 'material-community'
+                        name='ios-camera'
+                        type= 'ionicon'
                         color='#f50'
-                        onPress={this.showImagePicker}
-                        // onLongPress={this.selectImageForPicker()}
+                        // onPress={this.showImagePicker}
+                        onPress={this.selectImageForPicker('payload')} //CREATES BUG IN SIMULATOR
                     />
                     <Input
                         placeholder="Payload Text"
@@ -246,7 +232,8 @@ const styles = StyleSheet.create({
         alignSelf: 'center'
     },
     picker: {
-        width: 300,
+        // width: 300,
+        flex: 1,
     },
 });
 

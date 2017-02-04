@@ -1,17 +1,25 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { View, Text, Image, StyleSheet, MapView, TextInput, TouchableWithoutFeedback, Modal, Dimensions } from 'react-native';
-import { Button } from './common';
-import  AddEgg  from './AddEgg';
 import { connect } from 'react-redux';
+import { View, Text, Image, StyleSheet, MapView, 
+         TextInput, TouchableWithoutFeedback, Modal, Dimensions } from 'react-native';
 import { Actions } from 'react-native-router-flux';
+import { Icon } from 'react-native-elements'
+
+//Components
+import  AddEgg  from './AddEgg';
+import { Button } from './common';
+
+//Reducers
 import { setSelectedEgg, fetchAllEggs } from '../reducers/eggs';
-import { tunnelIP } from '../TUNNELIP';
 import {showModal} from '../reducers/addNodeModal';
 import { setAnnotation, clearAnnotation } from '../reducers/map';
-import axios from 'axios';
 
+import axios from 'axios';
+import { tunnelIP } from '../TUNNELIP';
+
+//Fetches device height and width
 let { height, width } = Dimensions.get('window');
 const DEVICE_WIDTH = width;
 const DEVICE_HEIGHT = height;
@@ -98,12 +106,12 @@ class LandingPage extends Component {
       , null, options);
   }
 
+  //add function for popup / push notification to appear
   checkFences() {
     this.updateCurrentPosition();
     for (let key in this.props.allEggs) {
       let egg = this.props.allEggs[key];
       if(this.isWithinFence(this.state.currentPosition.coords, egg)){
-        console.log('found selected EGGGGGGG')
         this.props.setSelectedEgg(egg.id);
       }
     }
@@ -221,7 +229,6 @@ class LandingPage extends Component {
     // annotations.push(this.props.annotation.concat(this.state.pickups));
 
     const annotations = this.props.annotation.concat(this.state.pickups).concat(this.state.dropoffs);
-    // const annotations = this.props.annotation.concat(this.state.pickups)
     this.setRenderAnnotations(annotations);
 
     return (
@@ -251,6 +258,14 @@ class LandingPage extends Component {
                 {...this.state}>
             </AddEgg>
           </Modal>
+        </View>
+        <View>
+          <Icon
+              name='ios-egg'
+              type= 'ionicon'
+              color='#f50'
+              onPress={Actions.friends}
+          />
         </View>
       </View>
     );
