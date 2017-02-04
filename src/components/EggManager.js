@@ -10,6 +10,7 @@ import EggManagerModal from './EggManagerModal';
 class EggManager extends Component { 
   constructor(props) {
     super(props);
+    // console.log('PROPS: ', props)
     this.state = {
       showModal: false,
       selectedFriendId: -1,

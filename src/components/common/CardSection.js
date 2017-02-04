@@ -15,11 +15,12 @@ const styles = {
 		padding: 10,
 		marginHorizontal: 20,
 		backgroundColor: '#fff',
-		justifyContent: 'flex-start',
+		justifyContent: 'center',
 		flexDirection: 'row',
 		borderColor: '#ddd',
 		position: 'relative',
 		borderRadius: 4,
+		alignItems: 'stretch',
 	}
 }
 

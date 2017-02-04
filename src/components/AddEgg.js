@@ -153,89 +153,88 @@ class AddEgg extends Component {
     }
 
     render(){
-        const { containerStyle, textStyle, cardSectionStyle} = styles;
-        return (
-            <View style={containerStyle}>
-                <CardSection>
-                    <Icon
-                        name='ios-camera-outline'
-                        type= 'ionicon'
-                        color='#f50'
-                        // onPress={this.showImagePicker}
-                        onPress={() => {this.selectImageForPicker('clue')} }
-                    />
-                    <Input
-                        placeholder="GoHere Text"
-                        onChangeText={e => this.handleInputChange('text', e)}
-                        value={this.state.text}
-                    />
-                    <Image source={this.state.goHereImageSource} style={{width: 50, height: 50}} />
-                </CardSection>
+      const { containerStyle, textStyle, cardSectionStyle} = styles;
+      return (
+        <View style={styles.containerStyle}>
+          <CardSection>
+            <Icon
+              name='ios-camera-outline'
+              type= 'ionicon'
+              color='#f50'
+              // onPress={this.showImagePicker}
+              onPress={() => {this.selectImageForPicker('clue')} }
+            />
+            <Input
+              placeholder="GoHere Text"
+              onChangeText={e => this.handleInputChange('text', e)}
+              value={this.state.text}
+            />
+            <Image source={this.state.goHereImageSource} style={{width: 50, height: 50}} />
+          </CardSection>
 
-                <CardSection>
-                    <Icon
-                        name='ios-camera'
-                        type= 'ionicon'
-                        color='#f50'
-                        // onPress={this.showImagePicker}
-                        onPress={this.selectImageForPicker('payload')} //CREATES BUG IN SIMULATOR
-                    />
-                    <Input
-                        placeholder="Payload Text"
-                        onChangeText={e => this.handleInputChange('payloadText', e)}
-                        value={this.state.payloadText}
-                    />
-                    <Image source={this.state.payloadImageSource} style={{width: 50, height: 50}} />
-                </CardSection>
+          <CardSection>
+            <Icon
+              name='ios-camera'
+              type= 'ionicon'
+              color='#f50'
+              onPress={this.showImagePicker}
+              // onPress={this.selectImageForPicker('payload')} //CREATES BUG IN SIMULATOR
+            />
+            <Input
+              placeholder="Payload Text"
+              onChangeText={e => this.handleInputChange('payloadText', e)}
+              value={this.state.payloadText}
+            />
+            <Image source={this.state.payloadImageSource} style={{width: 50, height: 50}} />
+          </CardSection>
 
-                <CardSection>
-                    <Picker
-                        style={styles.picker}
-                        selectedValue={this.state.recipient}
-                        onValueChange={(friend) => this.setState({recipient: friend.fbId})}>
-                        { this.props.friends.map((friend) => {
-                                return(
-                                    <Picker.Item label={friend.name} value={friend} />
-                                )
-                            }
-                        )}
-                    </Picker>
-                </CardSection>
-
-                <CardSection>
-                    <Button onPress={this.onSubmitNode}>Submit</Button>
-                    <Button onPress={this.onCancelSubmitNode}>Cancel</Button>
-                </CardSection>
-            </View>
-        )
+          <CardSection>
+            <Picker
+              style={styles.picker}
+              selectedValue={this.state.recipient}
+              onValueChange={(friend) => this.setState({recipient: friend.fbId})}>
+              { this.props.friends.map((friend) => {
+                  return(
+                      <Picker.Item label={friend.name} value={friend} />
+                  )
+                }
+              )}
+            </Picker>
+          </CardSection>
+          <CardSection >
+            <Button onPress={this.onSubmitNode}>Submit</Button>
+            <Button onPress={this.onCancelSubmitNode}>Cancel</Button>
+          </CardSection>
+        </View>
+      )
     }
 }
 
 
 const styles = StyleSheet.create({
-    cardSectionStyle: {
-        justifyContent: 'center',
-        // borderBottomWidth: StyleSheet.hairlineWidth
-    },
-    textStyle: {
-        flex: 1,
-        fontSize: 18,
-        textAlign: 'center',
-        lineHeight: 40
-    },
-    containerStyle: {
-        backgroundColor: 'rgba(0, 0, 0, 0.75)',
-        position: 'relative',
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        alignSelf: 'center'
-    },
-    picker: {
-        // width: 300,
-        flex: 1,
-    },
-});
+  cardSectionStyle: {
+    justifyContent: 'center',
+    // borderBottomWidth: StyleSheet.hairlineWidth
+  },
+  textStyle: {
+    flex: 1,
+    fontSize: 18,
+    textAlign: 'center',
+    lineHeight: 40
+  },
+  containerStyle: {
+    backgroundColor: 'rgba(0, 0, 0, 0.75)',
+    position: 'relative',
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center'
+  },
+  picker: {
+    // width: 300,
+    flex: 1,
+  }
+})
 
 
 const mapStateToProps = (state, ownProps) => {

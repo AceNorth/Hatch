@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import { View, Text } from 'react-native';
 import { Card, CardSection } from './common';
 import axios from 'axios';
+import { tunnelIP } from '../TUNNELIP';
+
 
 class ViewPayload extends Component {
 
@@ -11,12 +13,11 @@ class ViewPayload extends Component {
     this.state = {
       viewEgg: props.allEggs[props.selectedEgg]
     }
-
   }
 
   renderPayloadView() {
+
     let payloadType = this.state.viewEgg.payloadType;
-    
     switch (payloadType) {
       // conditional render for different payloads
       case 'Text':
@@ -30,8 +31,16 @@ class ViewPayload extends Component {
     }
   }
 
-  render() {
+  onSubmitPickup(){
+    let eggId = this.state.viewEgg.id
+    axios.put(`${tunnelIP}/api/egg/picked/${eggId}`)
+    .then( res => {
+      this.setState({viewEgg: res.data})
+    })
+    .catch(err => console.log('onSubmit Egg Update error', err))
+  }
 
+  render() {
     return (
       <Card>
         <CardSection style={{flex: 1}}>
@@ -39,6 +48,7 @@ class ViewPayload extends Component {
         </CardSection>
         <CardSection>
           { this.renderPayloadView() }
+          { this.onSubmitPickup() }
         </CardSection>
       </Card>
     );
