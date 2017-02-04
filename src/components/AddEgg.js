@@ -54,6 +54,7 @@ class AddEgg extends Component {
             senderId: this.props.senderId,
             recipient: this.state.recipient
         }
+        console.log('here is egg', egg)
 
         axios.post(`${tunnelIP}/api/egg`, egg)
             .then(()=>{
@@ -175,10 +176,10 @@ class AddEgg extends Component {
                     <Picker
                         style={styles.picker}
                         selectedValue={this.state.recipient}
-                        onValueChange={(friend) => this.setState({recipient: friend})}>
+                        onValueChange={(friend) => this.setState({recipient: friend.fbId})}>
                         { this.props.friends.map((friend) => {
                                 return(
-                                    <Picker.Item label={friend.name} value={friend.id} />
+                                    <Picker.Item label={friend.name} value={friend} />
                                 )
                             }
                         )}
