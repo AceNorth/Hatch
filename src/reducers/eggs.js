@@ -1,17 +1,22 @@
 import React from 'react';
 import axios from 'axios';
 import { tunnelIP } from '../TUNNELIP';
+import {_} from 'lodash';
 
 /* --------------    ACTION CONSTANTS    ---------------- */
 
 const ADD_EGG = 'ADD_EGG';
 const SELECT_EGG = 'SELECT_EGG';
 const FETCH_EGGS = 'FETCH_EGGS';
+const DELETE_EGG = 'DELETE_EGG';
+const PICKUP_EGG = 'PICKUP_EGG';
 
 /* --------------    ACTION CREATORS    ----------------- */
 
 const selectEgg = egg => ({ type: SELECT_EGG, egg });
 const fetchEggs = eggs => ({ type: FETCH_EGGS, eggs });
+const deleteEggFromState = egg => ({ type: DELETE_EGG, egg });
+const pickupThisEgg = egg => ({ type: PICKUP_EGG, egg});
 
 /* ------------------    REDUCER    --------------------- */
 
@@ -34,6 +39,12 @@ export default function (state = initialState, action) {
                 newState.allEggs[egg.id] = egg;
             })
             break;
+        case DELETE_EGG:
+            newState = _.omit(newState, action.egg.id);
+            break;
+        case PICKUP_EGG:    
+            newState[egg.id].pickedUp = true;
+            break; 
         default:
             return state;
     }
@@ -50,7 +61,16 @@ export const setSelectedEgg = eggId => dispatch => {
 export const fetchAllEggs = userId => dispatch => {
     axios.get(`${tunnelIP}/api/egg/user/${userId}`)
     .then(res => {
-        // console.log('res: ', res)
         dispatch(fetchEggs(res.data))})
     .catch(err => console.error('Problem fetching eggs', err.message));
-}
+};
+
+export const deleteEgg = egg => dispatch => {
+    axios.put(`${tunnelIP}/api/egg/${egg.id}`)
+    .then(res => dispatch(deleteEggFromState(egg)));
+};
+
+export const pickupEgg = egg => dispatch => {
+    axios.put(`${tunnelIP}/api/egg/${egg.id}`)
+    .then(() => dispatch(pickupThisEgg(egg)));
+};
