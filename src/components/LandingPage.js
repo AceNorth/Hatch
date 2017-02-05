@@ -6,6 +6,7 @@ import { View, Text, Image, StyleSheet, MapView,
          TextInput, TouchableWithoutFeedback, Modal, Dimensions } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { Icon } from 'react-native-elements'
+import store from '../store';
 
 //Components
 import  AddEgg  from './AddEgg';
@@ -55,7 +56,6 @@ class LandingPage extends Component {
     // fetch all eggs belonging to the current user
     this.props.fetchAllEggs(this.props.user.fbId);
 
-
   }
 
 
@@ -81,7 +81,6 @@ class LandingPage extends Component {
 
       for (let key in this.props.allEggs) {
           let egg = this.props.allEggs[key];
-          console.log('inside updateCurrentPositionAndPins, here is egg', egg)
           if (egg.receiverId == this.props.user.fbId) {
               let newPickup = this.createStaticAnnotation(egg.longitude, egg.latitude, egg.senderId, egg.id, egg.goHereText);
               pickUps.push(newPickup);
@@ -93,7 +92,6 @@ class LandingPage extends Component {
           }
       }
       this.setState({ pickups: pickUps, dropoffs: dropOffs });
-      console.log('inside updateCurrentPositionAndPins, here is state', this.state)
 
   }
 
@@ -182,6 +180,11 @@ class LandingPage extends Component {
     }
   }
 
+  pickupPayload(selectedAnnotation){
+    console.log('--------->selectedAnnotation, can I get eggId?', selectedAnnotation.eggId)
+      this.props.setSelectedEgg(selectedAnnotation.eggId);
+      return (Actions.viewPayload)
+  }
   setRenderAnnotations(annotations){
     annotations.map(annotation => {
       if(annotation && annotation.senderId){
@@ -191,7 +194,7 @@ class LandingPage extends Component {
           annotation.rightCalloutView = (
             <Button
               color='#517fa4'
-              onPress={Actions.viewPayload}
+              onPress={this.pickupPayload(annotation)}
               >Psst...
             </Button>
           );
