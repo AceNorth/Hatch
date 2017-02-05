@@ -1,3 +1,3 @@
-export const tunnelIP = 'https://kkgsjzkfeg.localtunnel.me';
+export const tunnelIP = 'https://scdtuzynor.localtunnel.me';
 
 // type "lt --port 1333" when server is running to update this

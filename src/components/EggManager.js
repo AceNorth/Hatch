@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
-import { View, Text, TouchableOpacity, MapView } from 'react-native';
+import { View, Text, TouchableOpacity, MapView, ScrollView, Picker } from 'react-native';
 import { Card, CardSection } from './common';
 import { setSelectedEgg, deleteEgg } from '../reducers/eggs';
 import EggManagerModal from './EggManagerModal';
@@ -11,17 +11,20 @@ class EggManager extends Component {
     super(props);
     this.state = {
       showModal: false,
-      selectedFriendId: -1,
       displayedEggIds: [],
-      filterBy: 'all',
-      chosenEgg: {}
+      chosenEgg: {},
+      currentlyShowing: 'all'
     };
   }
 
   componentWillMount() {
+    this.changeDisplayedEggs('all');
+  }
+
+  changeDisplayedEggs(filter) {
     let displayedEggIds = [];
     // apply filters and set filtered egg IDs on local state
-    switch (this.state.filterBy) {
+    switch (filter) {
       case 'all':
         Object.keys(this.props.allEggs).map(eggId => {
           let egg = this.props.allEggs[eggId];
@@ -52,7 +55,7 @@ class EggManager extends Component {
       default:
         return;          
     };
-    this.setState({selectedFriendId: this.props.selectedFriendId, displayedEggIds});
+    this.setState({displayedEggIds});
   }
 
   onEggPress(egg) {
@@ -71,7 +74,7 @@ class EggManager extends Component {
     }
 
     this.props.deleteEgg(this.state.chosenEgg);
-    this.setState({chosenEgg: {}});
+    this.setState({chosenEgg: {}, showModal: false});
   }
 
   onCancel() {
@@ -95,7 +98,7 @@ class EggManager extends Component {
 
   renderEggCard(egg) {
     let displayDate = new Date(Date.parse(egg.createdAt)).toString().split(" ").slice(0,4).join(" ");
-    let displayColor = (egg.pickedUp) ? "blue" : "red";
+    let displayColor = (egg.pickedUp) ? "#8db7fc" : "#2f7efc";
     return (
       <TouchableOpacity 
         key={egg.id} 
@@ -120,10 +123,24 @@ class EggManager extends Component {
       )
   }
 
+  onPickerChange(filter) {
+    this.setState({currentlyShowing: filter})
+    this.changeDisplayedEggs(filter);
+    this.forceUpdate();
+  }
+
   render() {
     const { container, text } = styles;
     return (
-      <View style={container}>
+      <View style={{flex:1}}>
+      <Picker
+        selectedValue={this.state.currentlyShowing}
+        onValueChange={filter => this.onPickerChange(filter)}>
+        <Picker.Item label="All eggs" value="all" />
+        <Picker.Item label="Sent eggs" value="sent" />
+        <Picker.Item label="Received eggs" value="received" />
+      </Picker>
+      <ScrollView >
         {this.state.displayedEggIds.map(eggId => {
           let egg = this.props.allEggs[eggId];
           return this.renderEggCard(egg);
@@ -147,8 +164,8 @@ class EggManager extends Component {
               }]}
             />
             {this.renderPayload(this.state.chosenEgg)}
-          
         </EggManagerModal>
+      </ScrollView>
       </View>
     );
   };
