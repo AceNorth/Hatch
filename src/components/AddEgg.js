@@ -1,8 +1,6 @@
 import React, {Component} from 'react';
 import {Text, View, Modal, TextInput, StyleSheet, Image, Picker} from 'react-native';
 import { Icon } from 'react-native-elements'
-// import Icon from 'react-native-vector-icons/MaterialIcon'
-// const myIcon = (<Icon name="rocket" size={30} color="#900" />)
 import {CardSection} from './common/CardSection';
 import {Button} from './common/Button';
 import {Input} from './common/Input';
@@ -11,8 +9,6 @@ import axios from 'axios';
 import {showModal} from '../reducers/addNodeModal';
 import {setAnnotation, clearAnnotation} from '../reducers/map';
 import { tunnelIP } from '../TUNNELIP';
-
-import { Actions } from 'react-native-router-flux';
 
 
 class AddEgg extends Component {
@@ -32,17 +28,12 @@ class AddEgg extends Component {
         ;
 
         this.handleInputChange=this.handleInputChange.bind(this);
-        this.clearInput=this.clearInput.bind(this);
         this.onSubmitNode = this.onSubmitNode.bind(this);
         this.onCancelSubmitNode = this.onCancelSubmitNode.bind(this);
         this.showImagePicker = this.showImagePicker.bind(this);
 
     }
 
-
-    clearInput(){
-        this.setState({text:''});
-    }
 
     onSubmitNode() {
         const egg = {
@@ -57,10 +48,7 @@ class AddEgg extends Component {
             senderId: this.props.senderId,
             recipient: this.state.recipient
         }
-        console.log('here is egg', egg)
 
-        console.log('payBuffer: ', this.state.payloadImageBuffer);
-        
         axios.post(`${tunnelIP}/api/egg`, egg)
             .then(()=>{
                 this.setState({ text:'', payloadText: '', goHereText: '', recipient:this.props.friends[0].fbId});
@@ -115,9 +103,6 @@ class AddEgg extends Component {
             else if (response.error) {
                 console.log('ImagePicker Error: ', response.error);
             }
-            // else if (response.customButton) {
-            //     console.log('User tapped custom button: ', response.customButton);
-            // }
             else {
                 if(type === 'clue'){
                     // display the image using either data...
@@ -129,7 +114,7 @@ class AddEgg extends Component {
                         goHereImageBuffer: goBuffer
                     });  
                 }
-                else if(type === 'payload') {
+                else if(type === 'pay') {
                     // display the image using either data...
                     paySource = { uri: 'data:image/jpeg;base64,' + response.data };
                     payBuffer = response.data;
@@ -147,10 +132,6 @@ class AddEgg extends Component {
         this.setState({ [field]: e });
     }
 
-
-    onAddNodeButtonPress() {
-        this.props.showModal(true);
-    }
 
     render(){
         const { containerStyle, textStyle, cardSectionStyle} = styles;
@@ -177,8 +158,7 @@ class AddEgg extends Component {
                         name='ios-camera'
                         type= 'ionicon'
                         color='#f50'
-                        // onPress={this.showImagePicker}
-                        onPress={() => this.selectImageForPicker('payload')} //CREATES BUG IN SIMULATOR
+                        onPress={() => this.selectImageForPicker('payload')}
                     />
                     <Input
                         placeholder="Payload Text"
@@ -215,7 +195,6 @@ class AddEgg extends Component {
 const styles = StyleSheet.create({
     cardSectionStyle: {
         justifyContent: 'center',
-        // borderBottomWidth: StyleSheet.hairlineWidth
     },
     textStyle: {
         flex: 1,
@@ -232,7 +211,6 @@ const styles = StyleSheet.create({
         alignSelf: 'center'
     },
     picker: {
-        // width: 300,
         flex: 1,
     },
 });
