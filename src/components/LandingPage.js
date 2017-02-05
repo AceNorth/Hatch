@@ -181,14 +181,12 @@ class LandingPage extends Component {
   }
 
   pickupPayload(selectedAnnotation){
-    console.log('--------->selectedAnnotation, can I get eggId?', selectedAnnotation.eggId)
       this.props.setSelectedEgg(selectedAnnotation.eggId);
       return (Actions.viewPayload)
   }
   setRenderAnnotations(annotations){
     annotations.map(annotation => {
       if(annotation && annotation.senderId){
-        // console.log('BOOL: ', this.isWithinFence(this.state.currentPosition.coords, annotation))
         if(this.isWithinFence(this.state.currentPosition.coords, annotation) && annotation.senderId) {
           annotation.tintColor = MapView.PinColors.GREEN,
           annotation.rightCalloutView = (
