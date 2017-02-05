@@ -208,14 +208,8 @@ class LandingPage extends Component {
 
   render() {
 
-    console.log('inside landing page render, here is props.selectedEgg', this.props.selectedEgg)
     const position = this.state.currentPosition;
-    // the annotations on the map are a combination of packages waiting for pickup
-    // + new eggs waiting to be dropped (from the AddEgg modal)
-    // annotations.push(this.props.annotation.concat(this.state.pickups));
 
-    // const annotations = this.props.annotation.concat(this.state.pickups).concat(this.state.dropoffs);
-    // this.setRenderAnnotations(annotations);
 
     return (
       <View style={styles.viewStyle}>
