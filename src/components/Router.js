@@ -8,7 +8,7 @@ import Friends from './Friends';
 import Login from './Login';
 
 const RouterComponent = () => (
-  <Router>
+  <Router >
     <Scene key="welcomePage" component={WelcomePage} hideNavBar initial />
     <Scene key="login" component={Login} type="replace" hideNavBar />
     <Scene key="landingPage" component={LandingPage} title="Left You Somethin" onRight={Actions.eggManager} rightTitle="Your eggs" />
