@@ -192,10 +192,10 @@ class AddEgg extends Component {
                     <Picker
                         style={styles.picker}
                         selectedValue={this.state.recipient}
-                        onValueChange={(friend) => this.setState({recipient: friend.fbId})}>
+                        onValueChange={(friend) => this.setState({recipient: friend})}>
                         { this.props.friends.map((friend) => {
                                 return(
-                                    <Picker.Item label={friend.name} value={friend} />
+                                    <Picker.Item label={friend.name} value={friend.fbId} />
                                 )
                             }
                         )}
