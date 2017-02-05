@@ -56,7 +56,7 @@ class LandingPage extends Component {
     );
 
     // fetch all eggs belonging to the current user
-    this.props.fetchAllEggs(this.props.user.id);
+    this.props.fetchAllEggs(this.props.user.fbId);
 
     //this sets the sample image on the home page,
     //use this as a template for how to get the axios response you will need to render images.
@@ -76,12 +76,12 @@ class LandingPage extends Component {
     for (let key in nextProps.allEggs) {
       let egg = nextProps.allEggs[key];
 
-      if (egg.receiverId == this.props.user.id) {
+      if (egg.receiverId == this.props.user.fbId) {
        let newPickup = this.createStaticAnnotation(egg.longitude, egg.latitude, egg.senderId, egg.id, egg.goHereText);
        pickUps.push(newPickup);
       }
 
-      if (egg.senderId == this.props.user.id) {
+      if (egg.senderId == this.props.user.fbId) {
        let newDropoff = this.createStaticDropAnnotation(egg.longitude, egg.latitude, egg.receiverId, egg.id, egg.goHereText);
        dropOffs.push(newDropoff);
       }
@@ -292,8 +292,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state, ownProps) => {
 
-  //fake user for testing:
-  const user = { id: state.auth.fbId }; // change to your userId
+  const user = state.auth;
 
   let selectedEgg = state.eggs.selectedEgg;
   let allEggs = state.eggs.allEggs;
