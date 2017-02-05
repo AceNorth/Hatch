@@ -16,6 +16,14 @@ class ViewPayload extends Component {
 
   }
 
+  componentWillMount(){
+    console.log('inside ViewPayload, here is this.state before', this.state)
+    console.log('inside ViewPayload, here is this.props before', this.props)
+    this.setState({viewEgg: this.props.allEggs[this.props.selectedEgg]})
+      console.log('inside ViewPayload, here is this.state after', this.state)
+      console.log('inside ViewPayload, here is this.props after', this.props)
+  }
+
   renderPayloadView() {
     let payloadType = this.state.viewEgg.payloadType;
     

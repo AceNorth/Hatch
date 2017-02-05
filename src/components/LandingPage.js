@@ -100,7 +100,7 @@ class LandingPage extends Component {
    let eggLong = Number(egg.longitude)
    let eggLat = Number(egg.latitude)
 
-   let fence = Math.pow((coordinatesObject.longitude-eggLong), 2) 
+   let fence = Math.pow((coordinatesObject.longitude-eggLong), 2)
                 + Math.pow((coordinatesObject.latitude-eggLat), 2);
    if (fence < Math.pow(this.state.pickupRadius, 2)) {
      return true;
@@ -182,9 +182,12 @@ class LandingPage extends Component {
 
   pickupPayload(selectedAnnotation){
       this.props.setSelectedEgg(selectedAnnotation.eggId);
-      return (Actions.viewPayload)
+      return (Actions.viewPayload())
   }
-  setRenderAnnotations(annotations){
+
+  setRenderAnnotations(annotations, e){
+    // console.log('setRenderAnnotations, annotations', annotations)
+    // console.log('setRenderAnnotations, e', e)
     annotations.map(annotation => {
       if(annotation && annotation.senderId){
         if(this.isWithinFence(this.state.currentPosition.coords, annotation) && annotation.senderId) {
@@ -192,7 +195,7 @@ class LandingPage extends Component {
           annotation.rightCalloutView = (
             <Button
               color='#517fa4'
-              onPress={this.pickupPayload(annotation)}
+              onPress={(e) => this.pickupPayload(annotation, e)}
               >Psst...
             </Button>
           );
@@ -204,13 +207,15 @@ class LandingPage extends Component {
   }
 
   render() {
+
+    console.log('inside landing page render, here is props.selectedEgg', this.props.selectedEgg)
     const position = this.state.currentPosition;
     // the annotations on the map are a combination of packages waiting for pickup
     // + new eggs waiting to be dropped (from the AddEgg modal)
     // annotations.push(this.props.annotation.concat(this.state.pickups));
 
-    const annotations = this.props.annotation.concat(this.state.pickups).concat(this.state.dropoffs);
-    this.setRenderAnnotations(annotations);
+    // const annotations = this.props.annotation.concat(this.state.pickups).concat(this.state.dropoffs);
+    // this.setRenderAnnotations(annotations);
 
     return (
       <View style={styles.viewStyle}>
@@ -219,7 +224,7 @@ class LandingPage extends Component {
             style={styles.mapStyle}
             showsUserLocation={true}
             region={{latitude: position.coords.latitude, longitude: position.coords.longitude, latitudeDelta: .01, longitudeDelta: .01}}
-            annotations={ annotations }
+            annotations={ this.setRenderAnnotations(this.state.pickups.concat(this.state.dropoffs))}
           />
         </TouchableWithoutFeedback>
         <View style={styles.touchStyle}>
