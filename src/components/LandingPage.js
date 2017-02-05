@@ -185,7 +185,7 @@ class LandingPage extends Component {
       return (Actions.viewPayload())
   }
 
-  setRenderAnnotations(annotations, e){
+  setRenderAnnotations(annotations){
     // console.log('setRenderAnnotations, annotations', annotations)
     // console.log('setRenderAnnotations, e', e)
     annotations.map(annotation => {
