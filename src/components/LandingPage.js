@@ -40,8 +40,6 @@ class LandingPage extends Component {
       // eggs that were placed by user
       dropoffs: [],
 
-      // image rendering  ==> for samples/ image testing
-      goHereImage: {},
     };
 
     this.onMapLongPress = this.onMapLongPress.bind(this);
@@ -50,51 +48,23 @@ class LandingPage extends Component {
 
   componentWillMount() {
   // set timer to update "current position" on state every second
-    this.timerID = setInterval(
-      () => this.checkFences(),
-      10000
-    );
-
+        this.timerID = setInterval(
+          () => this.updateCurrentPositionAndPins(),
+          10000
+        );
     // fetch all eggs belonging to the current user
     this.props.fetchAllEggs(this.props.user.fbId);
 
-    //this sets the sample image on the home page,
-    //use this as a template for how to get the axios response you will need to render images.
-    // let goHereImage2;
-    // axios.get(`${tunnelIP}/api/egg/goHereImage/19`)
-    //   .then(response => {
-    //       goHereImage2 = response.data
-    //       this.setState({goHereImage: goHereImage2});
-    //   })
+
   }
 
-  componentWillReceiveProps(nextProps) {
-    // loop through all the user's eggs and turn them into map annotations
-    let pickUps = [];
-    let dropOffs = [];
-
-    for (let key in nextProps.allEggs) {
-      let egg = nextProps.allEggs[key];
-
-      if (egg.receiverId == this.props.user.fbId) {
-       let newPickup = this.createStaticAnnotation(egg.longitude, egg.latitude, egg.senderId, egg.id, egg.goHereText);
-       pickUps.push(newPickup);
-      }
-
-      if (egg.senderId == this.props.user.fbId) {
-       let newDropoff = this.createStaticDropAnnotation(egg.longitude, egg.latitude, egg.receiverId, egg.id, egg.goHereText);
-       dropOffs.push(newDropoff);
-      }
-    }
-    this.setState({ pickups: pickUps, dropoffs: dropOffs });
-  }
 
   onAddNodeButtonPress() {
     this.props.showModal(true);
   }
 
 
-  updateCurrentPosition() {
+  updateCurrentPositionAndPins() {
     let options = {
       enableHighAccuracy: true,
       timeout: 1000,
@@ -104,18 +74,28 @@ class LandingPage extends Component {
     navigator.geolocation.getCurrentPosition(
       (position) => this.setState({ currentPosition: position })
       , null, options);
-  }
 
-  //add function for popup / push notification to appear
-  checkFences() {
-    this.updateCurrentPosition();
-    for (let key in this.props.allEggs) {
-      let egg = this.props.allEggs[key];
-      if(this.isWithinFence(this.state.currentPosition.coords, egg)){
-        this.props.setSelectedEgg(egg.id);
+      let pickUps = [];
+      let dropOffs = [];
+
+
+      for (let key in this.props.allEggs) {
+          let egg = this.props.allEggs[key];
+          console.log('inside updateCurrentPositionAndPins, here is egg', egg)
+          if (egg.receiverId == this.props.user.fbId) {
+              let newPickup = this.createStaticAnnotation(egg.longitude, egg.latitude, egg.senderId, egg.id, egg.goHereText);
+              pickUps.push(newPickup);
+          }
+
+          if (egg.senderId == this.props.user.fbId) {
+              let newDropoff = this.createStaticDropAnnotation(egg.longitude, egg.latitude, egg.receiverId, egg.id, egg.goHereText);
+              dropOffs.push(newDropoff);
+          }
       }
-    }
-  };
+      this.setState({ pickups: pickUps, dropoffs: dropOffs });
+      console.log('inside updateCurrentPositionAndPins, here is state', this.state)
+
+  }
 
   isWithinFence(coordinatesObject, egg){
    if(!egg) { return false }
@@ -246,7 +226,7 @@ class LandingPage extends Component {
 
           {this.renderLeaveEggButton()}
 
-          <Image style={{width: 50, height: 50}} source={{uri: this.state.goHereImage.uri}}></Image>
+          {/*<Image style={{width: 50, height: 50}} source={{uri: this.state.goHereImage.uri}}></Image>*/}
 
           <Modal
               visible={this.props.showAddNodeModal}
