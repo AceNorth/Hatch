@@ -1,4 +1,6 @@
-export const tunnelIP = 'https://rddzxtfikk.localtunnel.me';
+
+export const tunnelIP = 'https://zwwzumuoof.localtunnel.me';
+
 
 // to update heroku app:
 // get everything up-to-date in master
