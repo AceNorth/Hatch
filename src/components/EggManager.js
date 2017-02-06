@@ -9,6 +9,7 @@ import EggManagerModal from './EggManagerModal';
 class EggManager extends Component { 
   constructor(props) {
     super(props);
+    // console.log('PROPS: ', props)
     this.state = {
       showModal: false,
       displayedEggIds: [],
@@ -89,7 +90,7 @@ class EggManager extends Component {
       case 'Text':
         return (<Text> { egg.payload.text } </Text>)
       case 'Image':
-        return (<View> { egg.payload.path } } </View>);
+        return (<View> { egg.payload.path } </View>);
       default:
         return (<Text> Something has GONE WRONG </Text>);
     }
@@ -110,7 +111,10 @@ class EggManager extends Component {
             <Text> GO HERE: {egg.goHereText} </Text>
           </CardSection>
           <CardSection>
-            <Text> FROM: {egg.senderId} </Text>
+            <Text> TO: {egg.receiver.firstName + " " + egg.receiver.lastName} </Text>
+          </CardSection>
+          <CardSection>
+            <Text> FROM: {egg.sender.firstName + " " + egg.sender.lastName} </Text>
           </CardSection>
           <CardSection>
             <Text> PAYLOAD: {egg.payload.text} </Text>

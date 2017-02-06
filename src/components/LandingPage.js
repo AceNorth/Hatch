@@ -82,12 +82,12 @@ class LandingPage extends Component {
       for (let key in this.props.allEggs) {
           let egg = this.props.allEggs[key];
           if (egg.receiverId == this.props.user.fbId) {
-              let newPickup = this.createStaticAnnotation(egg.longitude, egg.latitude, egg.senderId, egg.id, egg.goHereText);
+              let newPickup = this.createStaticAnnotation(egg.longitude, egg.latitude, egg.sender, egg.id, egg.goHereText);
               pickUps.push(newPickup);
           }
 
           if (egg.senderId == this.props.user.fbId) {
-              let newDropoff = this.createStaticDropAnnotation(egg.longitude, egg.latitude, egg.receiverId, egg.id, egg.goHereText);
+              let newDropoff = this.createStaticDropAnnotation(egg.longitude, egg.latitude, egg.receiver, egg.id, egg.goHereText);
               dropOffs.push(newDropoff);
           }
       }
@@ -139,15 +139,18 @@ class LandingPage extends Component {
     };
   }
 
-  createStaticAnnotation(longitude, latitude, senderId, eggId, goHereText) {
+  createStaticAnnotation(longitude, latitude, sender, eggId, goHereText) {
     // we might want to change what's displayed here later, this is just
     // a placeholder example fo the info we can put on pins
-    let pinSubtitle = "Egg from user " + senderId;
+    
+    let senderId = sender.id
+    let sentFrom = sender.firstName + " " + sender.lastName
+    let pinSubtitle = "Egg from " + sentFrom ;
     return {
       longitude,
       latitude,
-      eggId,
       senderId,
+      eggId,
       title: goHereText,
       subtitle: pinSubtitle,
       tintColor: MapView.PinColors.PURPLE,
@@ -155,10 +158,12 @@ class LandingPage extends Component {
     };
   };
 
-  createStaticDropAnnotation(longitude, latitude, receiverId, eggId, goHereText) {
+  createStaticDropAnnotation(longitude, latitude, receiver, eggId, goHereText) {
     // we might want to change what's displayed here later, this is just
     // a placeholder example fo the info we can put on pins
-    let pinSubtitle = "Egg to user " + receiverId;
+    
+    let sentTo = receiver.firstName + " " + receiver.lastName
+    let pinSubtitle = "Egg to " + sentTo ;
     return {
       longitude,
       latitude,

@@ -30,12 +30,12 @@ class Friends extends Component {
 
   render() {
     return (
-        <ListView
-          enableEmptySections
-          dataSource={this.dataSource}
-          renderRow={this.renderRow}
-          style={styles.container}
-        />
+      <ListView
+        enableEmptySections
+        dataSource={this.dataSource}
+        renderRow={this.renderRow}
+        style={styles.container}
+      />
     );
   }
 }
@@ -45,6 +45,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F5FCFF',
     paddingTop: 65,
+    textAlign: 'left',
   },
   welcome: {
     fontSize: 20,
