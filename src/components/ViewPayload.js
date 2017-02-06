@@ -20,6 +20,10 @@ class ViewPayload extends Component {
     this.setState({viewEgg: this.props.allEggs[this.props.selectedEgg]})
   }
 
+  componentWillMount(){
+    this.setState({viewEgg: this.props.allEggs[this.props.selectedEgg]})
+  }
+
   renderPayloadView() {
     let payloadType = this.state.viewEgg.payload.type;
     switch (payloadType) {
@@ -53,6 +57,13 @@ class ViewPayload extends Component {
         <CardSection>
           { this.renderPayloadView() }
           { this.onSubmitPickup() }
+        </CardSection>
+        <CardSection>
+          <Button
+              color='#517fa4'
+              onPress={Actions.landingPage}
+          >Go Back
+          </Button>
         </CardSection>
         <CardSection>
           <Button

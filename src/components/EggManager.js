@@ -76,7 +76,6 @@ class EggManager extends Component {
 
     this.props.deleteEgg(this.state.chosenEgg);
     this.setState({chosenEgg: {}, showModal: false});
-    
   }
 
   onCancel() {
