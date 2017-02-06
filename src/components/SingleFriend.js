@@ -8,7 +8,7 @@ import { selectFriend } from '../reducers/friends';
 
 class SingleFriend extends Component {
   onPress() {
-    this.props.selectFriend(this.props.friend.id);
+    this.props.selectFriend(this.props.friend.fbId);
     Actions.eggManager();
   }
 

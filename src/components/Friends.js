@@ -1,6 +1,9 @@
 import React, { Component, PropTypes } from 'react';
-import { StyleSheet, ListView } from 'react-native';
 import { connect } from 'react-redux';
+import { Actions } from 'react-native-router-flux';
+import { StyleSheet, ListView, View } from 'react-native';
+import { Icon } from 'react-native-elements'
+
 
 import SingleFriend from './SingleFriend';
 
@@ -27,12 +30,12 @@ class Friends extends Component {
 
   render() {
     return (
-      <ListView
-        enableEmptySections
-        dataSource={this.dataSource}
-        renderRow={this.renderRow}
-        style={styles.container}
-      />
+        <ListView
+          enableEmptySections
+          dataSource={this.dataSource}
+          renderRow={this.renderRow}
+          style={styles.container}
+        />
     );
   }
 }
