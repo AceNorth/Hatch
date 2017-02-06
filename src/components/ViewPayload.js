@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { View, Text } from 'react-native';
-import { Card, CardSection } from './common';
+import { Card, CardSection, Button } from './common';
 import axios from 'axios';
 import { tunnelIP } from '../TUNNELIP';
+import { Actions } from 'react-native-router-flux';
 
 
 class ViewPayload extends Component {
@@ -15,9 +16,12 @@ class ViewPayload extends Component {
     }
   }
 
-  renderPayloadView() {
+  componentWillMount(){
+    this.setState({viewEgg: this.props.allEggs[this.props.selectedEgg]})
+  }
 
-    let payloadType = this.state.viewEgg.payloadType;
+  renderPayloadView() {
+    let payloadType = this.state.viewEgg.payload.type;
     switch (payloadType) {
       // conditional render for different payloads
       case 'Text':
@@ -49,6 +53,13 @@ class ViewPayload extends Component {
         <CardSection>
           { this.renderPayloadView() }
           { this.onSubmitPickup() }
+        </CardSection>
+        <CardSection>
+          <Button
+              color='#517fa4'
+              onPress={Actions.landingPage}
+          >Go Back
+          </Button>
         </CardSection>
       </Card>
     );

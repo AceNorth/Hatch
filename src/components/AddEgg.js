@@ -1,8 +1,6 @@
 import React, {Component} from 'react';
 import {Text, View, Modal, TextInput, StyleSheet, Image, Picker} from 'react-native';
 import { Icon } from 'react-native-elements'
-// import Icon from 'react-native-vector-icons/MaterialIcon'
-// const myIcon = (<Icon name="rocket" size={30} color="#900" />)
 import {CardSection} from './common/CardSection';
 import {Button} from './common/Button';
 import {Input} from './common/Input';
@@ -11,8 +9,6 @@ import axios from 'axios';
 import {showModal} from '../reducers/addNodeModal';
 import {setAnnotation, clearAnnotation} from '../reducers/map';
 import { tunnelIP } from '../TUNNELIP';
-
-import { Actions } from 'react-native-router-flux';
 
 
 class AddEgg extends Component {
@@ -32,17 +28,12 @@ class AddEgg extends Component {
         ;
 
         this.handleInputChange=this.handleInputChange.bind(this);
-        this.clearInput=this.clearInput.bind(this);
         this.onSubmitNode = this.onSubmitNode.bind(this);
         this.onCancelSubmitNode = this.onCancelSubmitNode.bind(this);
         this.showImagePicker = this.showImagePicker.bind(this);
 
     }
 
-
-    clearInput(){
-        this.setState({text:''});
-    }
 
     onSubmitNode() {
         const egg = {
@@ -57,10 +48,7 @@ class AddEgg extends Component {
             senderId: this.props.senderId,
             recipient: this.state.recipient
         }
-        console.log('here is egg', egg)
 
-        console.log('payBuffer: ', this.state.payloadImageBuffer);
-        
         axios.post(`${tunnelIP}/api/egg`, egg)
             .then(()=>{
                 this.setState({ text:'', payloadText: '', goHereText: '', recipient:this.props.friends[0].fbId});
@@ -115,9 +103,6 @@ class AddEgg extends Component {
             else if (response.error) {
                 console.log('ImagePicker Error: ', response.error);
             }
-            // else if (response.customButton) {
-            //     console.log('User tapped custom button: ', response.customButton);
-            // }
             else {
                 if(type === 'clue'){
                     // display the image using either data...
@@ -129,7 +114,7 @@ class AddEgg extends Component {
                         goHereImageBuffer: goBuffer
                     });  
                 }
-                else if(type === 'payload') {
+                else if(type === 'pay') {
                     // display the image using either data...
                     paySource = { uri: 'data:image/jpeg;base64,' + response.data };
                     payBuffer = response.data;
@@ -148,93 +133,87 @@ class AddEgg extends Component {
     }
 
 
-    onAddNodeButtonPress() {
-        this.props.showModal(true);
-    }
-
     render(){
-      const { containerStyle, textStyle, cardSectionStyle} = styles;
-      return (
-        <View style={styles.containerStyle}>
-          <CardSection>
-            <Icon
-              name='ios-camera-outline'
-              type= 'ionicon'
-              color='#f50'
-              // onPress={this.showImagePicker}
-              onPress={() => {this.selectImageForPicker('clue')} }
-            />
-            <Input
-              placeholder="GoHere Text"
-              onChangeText={e => this.handleInputChange('text', e)}
-              value={this.state.text}
-            />
-            <Image source={this.state.goHereImageSource} style={{width: 50, height: 50}} />
-          </CardSection>
+        const { containerStyle, textStyle, cardSectionStyle} = styles;
+        return (
+            <View style={containerStyle}>
+                <CardSection>
+                    <Icon
+                        name='ios-camera-outline'
+                        type= 'ionicon'
+                        color='#f50'
+                        // onPress={this.showImagePicker}
+                        onPress={() => {this.selectImageForPicker('clue')} }
+                    />
+                    <Input
+                        placeholder="GoHere Text"
+                        onChangeText={e => this.handleInputChange('text', e)}
+                        value={this.state.text}
+                    />
+                    <Image source={this.state.goHereImageSource} style={{width: 50, height: 50}} />
+                </CardSection>
 
-          <CardSection>
-            <Icon
-              name='ios-camera'
-              type= 'ionicon'
-              color='#f50'
-              onPress={this.showImagePicker}
-              // onPress={this.selectImageForPicker('payload')} //CREATES BUG IN SIMULATOR
-            />
-            <Input
-              placeholder="Payload Text"
-              onChangeText={e => this.handleInputChange('payloadText', e)}
-              value={this.state.payloadText}
-            />
-            <Image source={this.state.payloadImageSource} style={{width: 50, height: 50}} />
-          </CardSection>
+                <CardSection>
+                    <Icon
+                        name='ios-camera'
+                        type= 'ionicon'
+                        color='#f50'
+                        onPress={() => this.selectImageForPicker('payload')}
+                    />
+                    <Input
+                        placeholder="Payload Text"
+                        onChangeText={e => this.handleInputChange('payloadText', e)}
+                        value={this.state.payloadText}
+                    />
+                    <Image source={this.state.payloadImageSource} style={{width: 50, height: 50}} />
+                </CardSection>
 
-          <CardSection>
-            <Picker
-              style={styles.picker}
-              selectedValue={this.state.recipient}
-              onValueChange={(friend) => this.setState({recipient: friend.fbId})}>
-              { this.props.friends.map((friend) => {
-                  return(
-                      <Picker.Item label={friend.name} value={friend} />
-                  )
-                }
-              )}
-            </Picker>
-          </CardSection>
-          <CardSection >
-            <Button onPress={this.onSubmitNode}>Submit</Button>
-            <Button onPress={this.onCancelSubmitNode}>Cancel</Button>
-          </CardSection>
-        </View>
-      )
+                <CardSection>
+                    <Picker
+                        style={styles.picker}
+                        selectedValue={this.state.recipient}
+                        onValueChange={(friend) => this.setState({recipient: friend})}>
+                        { this.props.friends.map((friend) => {
+                                return(
+                                    <Picker.Item label={friend.name} value={friend.fbId} />
+                                )
+                            }
+                        )}
+                    </Picker>
+                </CardSection>
+
+                <CardSection>
+                    <Button onPress={this.onSubmitNode}>Submit</Button>
+                    <Button onPress={this.onCancelSubmitNode}>Cancel</Button>
+                </CardSection>
+            </View>
+        )
     }
 }
 
 
 const styles = StyleSheet.create({
-  cardSectionStyle: {
-    justifyContent: 'center',
-    // borderBottomWidth: StyleSheet.hairlineWidth
-  },
-  textStyle: {
-    flex: 1,
-    fontSize: 18,
-    textAlign: 'center',
-    lineHeight: 40
-  },
-  containerStyle: {
-    backgroundColor: 'rgba(0, 0, 0, 0.75)',
-    position: 'relative',
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    alignSelf: 'center'
-  },
-  picker: {
-    // width: 300,
-    flex: 1,
-  }
-})
+    cardSectionStyle: {
+        justifyContent: 'center',
+    },
+    textStyle: {
+        flex: 1,
+        fontSize: 18,
+        textAlign: 'center',
+        lineHeight: 40
+    },
+    containerStyle: {
+        backgroundColor: 'rgba(0, 0, 0, 0.75)',
+        position: 'relative',
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        alignSelf: 'center'
+    },
+    picker: {
+        flex: 1,
+    },
+});
 
 
 const mapStateToProps = (state, ownProps) => {
