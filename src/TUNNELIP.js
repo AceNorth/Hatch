@@ -1,3 +1,6 @@
-export const tunnelIP = 'https://uwihndueuz.localtunnel.me';
+export const tunnelIP = 'https://nameless-mesa-46893.herokuapp.com';
 
-// type "lt --port 1333" when server is running to update this
+// to update heroku app:
+// get everything up-to-date in master
+// git pull from master
+// git push heroku master

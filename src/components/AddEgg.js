@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import axios from 'axios';
 import { Icon } from 'react-native-elements';
 import { CardSection, Button, InputNoLabel } from './common';
+import FriendsDropdown from './FriendsDropdown';
 import { showModal } from '../reducers/addNodeModal';
 import { setAnnotation, clearAnnotation } from '../reducers/map';
 import { tunnelIP } from '../TUNNELIP';
@@ -132,31 +133,35 @@ class AddEgg extends Component {
     return (
       <View style={containerStyle}>
         <CardSection>
-          <InputNoLabel
-            placeholder="Where we first met <3"
-            onChangeText={e => this.handleInputChange('text', e)}
-            value={this.state.text}
-          />
+          <View style={{ flexDirection: 'column', flex: 1 }}>
+            <Text>Egg pick-up instructions</Text>
+            <InputNoLabel
+              placeholder="Where we first met <3"
+              onChangeText={e => this.handleInputChange('text', e)}
+              value={this.state.text}
+            />
+          </View>
           <Image
             source={this.state.goHereImageSource}
             style={{ width: 50, height: 50 }}
             onPress={() => this.selectImageForPicker('clue')}
           />
         </CardSection>
-        <CardSection style={cardSectionStyle}>
-          <Text>Message</Text>
+        <CardSection>
+          <View style={{ flexDirection: 'column', flex: 1 }}>
+            <Text>Secret message (hidden till pickup)</Text>
             <InputNoLabel
               placeholder="You found me!"
               onChangeText={e => this.handleInputChange('payloadText', e)}
               value={this.state.payloadText}
             />
+          </View>
             <Image
               source={this.state.payloadImageSource}
               style={{ width: 50, height: 50 }}
               onPress={() => this.selectImageForPicker('payload')}
             />
         </CardSection>
-
         <CardSection >
           <Picker
             style={styles.picker}
@@ -167,7 +172,7 @@ class AddEgg extends Component {
           </Picker>
         </CardSection>
 
-        <CardSection>
+        <CardSection style={{ flex: 1 }}>
           <Button onPress={this.onSubmitNode}>Submit</Button>
           <Button onPress={this.onCancelSubmitNode}>Cancel</Button>
         </CardSection>
