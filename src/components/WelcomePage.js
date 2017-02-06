@@ -11,15 +11,10 @@ class WelcomePage extends Component {
   }
 
   render() {
-    console.log("TUNNEL BOY: ", tunnelIP)
-    const { container, text, half, image } = styles;
+    const { container, image } = styles;
     return (
       <View style={container}>
-        <View style={half}>
-          <Text style={text}> Left You Somethin' </Text>
-          <Image style={image} source={{uri: `${tunnelIP}/eggboy.png`}} />
-        </View>
-        <View style={half} />
+        <Image style={image} source={{uri: `${tunnelIP}/eggboy.png`}} />
       </View>
     );
   }
@@ -30,16 +25,7 @@ const styles = {
     flex: 1,
     backgroundColor: '#f4f281',
     justifyContent: 'center',
-  },
-  half: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-  text: {
-    textAlign: 'center',
-    fontSize: 40,
-    color: '#fff',
-    fontWeight: '600',
+    alignItems: 'center'
   },
   image: {
     width: 105,

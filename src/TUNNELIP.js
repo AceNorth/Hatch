@@ -1,6 +1,5 @@
 
-export const tunnelIP = 'https://hqjcwaxexl.localtunnel.me';
-
+export const tunnelIP = 'https://nameless-mesa-46893.herokuapp.com';
 
 // to update heroku app:
 // get everything up-to-date in master
