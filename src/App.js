@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 // import BackgroundGeolocation from 'react-native-background-geolocation';
+import firebase from 'firebase';
 import { Provider } from 'react-redux';
 import { AccessToken } from 'react-native-fbsdk';
 
@@ -21,6 +22,14 @@ export default class App extends Component {
           store.dispatch(whoami(null));
         }
       });
+
+    firebase.initializeApp({
+      apiKey: 'AIzaSyC6jKlwHQal-90LFE5qSKEwQhaZDTCgQk0',
+      authDomain: 'leftyousomethin-c3438.firebaseapp.com',
+      databaseURL: 'https://leftyousomethin-c3438.firebaseio.com',
+      storageBucket: 'leftyousomethin-c3438.appspot.com',
+      messagingSenderId: '921367881342'
+    });
 
 //     // This handler fires whenever bgGeo receives a location update.
 //     BackgroundGeolocation.on('location', this.onLocation);

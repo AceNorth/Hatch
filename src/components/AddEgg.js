@@ -162,6 +162,16 @@ class AddEgg extends Component {
               onPress={() => this.selectImageForPicker('payload')}
             />
         </CardSection>
+        <CardSection style={{ flex: 1 }}>
+          <Icon
+            name="ios-mic"
+            type="ionicon"
+            color="#CD0240"
+            onPress={() => {}}
+
+          />
+          <Text style={{ paddingLeft: 15, paddingRight: 5 }}>Tap and hold to record a voice message for your egg.</Text>
+        </CardSection>
         <CardSection >
           <Picker
             style={styles.picker}
