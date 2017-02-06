@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, Image, Picker } from 'react-native';
+import { Text, View, StyleSheet, Image, Picker, TextInput } from 'react-native';
 import { connect } from 'react-redux';
 import axios from 'axios';
 import { Icon } from 'react-native-elements';
@@ -143,20 +143,18 @@ class AddEgg extends Component {
             onPress={() => this.selectImageForPicker('clue')}
           />
         </CardSection>
-
         <CardSection style={cardSectionStyle}>
           <Text>Message</Text>
-          <Text>Okay</Text>
-          <InputNoLabel
-            placeholder="You found me!"
-            onChangeText={e => this.handleInputChange('payloadText', e)}
-            value={this.state.payloadText}
-          />
-          <Image
-            source={this.state.payloadImageSource}
-            style={{ width: 50, height: 50 }}
-            onPress={() => this.selectImageForPicker('payload')}
-          />
+            <InputNoLabel
+              placeholder="You found me!"
+              onChangeText={e => this.handleInputChange('payloadText', e)}
+              value={this.state.payloadText}
+            />
+            <Image
+              source={this.state.payloadImageSource}
+              style={{ width: 50, height: 50 }}
+              onPress={() => this.selectImageForPicker('payload')}
+            />
         </CardSection>
 
         <CardSection >
@@ -164,15 +162,8 @@ class AddEgg extends Component {
             style={styles.picker}
             selectedValue={this.state.recipient}
             onValueChange={(friend) => this.setState({ recipient: friend })}
-          > {this.props.friends.map((friend) => {
-              return (
-                <Picker.Item
-                  label={friend.name}
-                  value={friend.fbId}
-                />
-              );
-            })
-          }
+          >
+            {this.props.friends.map(friend => (<Picker.Item label={friend.name} value={friend.fbId} />))}
           </Picker>
         </CardSection>
 

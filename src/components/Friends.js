@@ -1,9 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Actions } from 'react-native-router-flux';
-import { StyleSheet, ListView, View } from 'react-native';
-import { Icon } from 'react-native-elements'
-
+import { StyleSheet, ListView } from 'react-native';
 
 import SingleFriend from './SingleFriend';
 

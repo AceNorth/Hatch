@@ -15,7 +15,7 @@ import { Actions } from 'react-native-router-flux';
 import { Icon } from 'react-native-elements';
 
 // Components
-import  AddEgg  from './AddEgg';
+import AddEgg from './AddEgg';
 import { Button } from './common';
 
 // Reducers
@@ -87,6 +87,7 @@ class LandingPage extends Component {
       for (let key in this.props.allEggs) {
         let egg = this.props.allEggs[key];
         if (egg.receiverId == this.props.user.fbId) {
+          console.log('egg', egg)
           let newPickup = this.createStaticAnnotation(egg.longitude, egg.latitude, egg.sender, egg.id, egg.goHereText);
           pickUps.push(newPickup);
         }
@@ -150,7 +151,6 @@ class LandingPage extends Component {
   createStaticAnnotation(longitude, latitude, sender, eggId, goHereText) {
     // we might want to change what's displayed here later, this is just
     // a placeholder example fo the info we can put on pins
-
     const senderId = sender.id;
     const sentFrom = `${sender.firstName} ${sender.lastName}`;
     const pinSubtitle = `Egg from ${sentFrom}`;
