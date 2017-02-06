@@ -92,6 +92,7 @@ class LandingPage extends Component {
               dropOffs.push(newDropoff);
           }
       }
+
       this.setState({ pickups: pickUps, dropoffs: dropOffs });
 
       // initially sets eggs to all pickups and dropoffs
@@ -123,7 +124,10 @@ class LandingPage extends Component {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           let newA = this.createAnnotation(position.coords.longitude, position.coords.latitude);
-          this.props.setAnnotation(newA);
+
+          // this.setState({dropoffs: [...this.state.dropoffs, newA]})
+          //   console.log('---------->this.state', this.state);
+            this.props.setAnnotation(newA);
         }
         , null, options);
     }
@@ -195,7 +199,6 @@ class LandingPage extends Component {
   }
 
   setRenderAnnotations(annotations){
-    // console.log('setRenderAnnotations, e', e)
     annotations.map(annotation => {
       if(annotations){
         if(this.isWithinFence(this.state.currentPosition.coords, annotation) && annotation.senderId) {
@@ -243,6 +246,7 @@ class LandingPage extends Component {
 
   render() {
     const position = this.state.currentPosition;
+    let annotationsToDisplay = [...this.state.eggsToDisplay, ...this.props.annotation]
 
     return (
       <View style={styles.viewStyle}>
@@ -251,7 +255,7 @@ class LandingPage extends Component {
             style={styles.mapStyle}
             showsUserLocation={true}
             region={{latitude: position.coords.latitude, longitude: position.coords.longitude, latitudeDelta: .01, longitudeDelta: .01}}
-            annotations={this.state.eggsToDisplay}
+            annotations={annotationsToDisplay}
           />
         </TouchableWithoutFeedback>
 
@@ -264,8 +268,6 @@ class LandingPage extends Component {
         </Picker>
 
         <View style={styles.touchStyle}>
-          {/*<Button onPress={Actions.friends}> My Egg Basket </Button>*/}
-          {/*<Image style={{width: 50, height: 50}} source={{uri: this.state.goHereImage.uri}}></Image>*/}
 
           {this.renderLeaveEggButton()}
 

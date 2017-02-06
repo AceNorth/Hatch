@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 import axios from 'axios';
 import {showModal} from '../reducers/addNodeModal';
 import {setAnnotation, clearAnnotation} from '../reducers/map';
+import {addEggToDbAndStore} from '../reducers/eggs';
 import { tunnelIP } from '../TUNNELIP';
 
 
@@ -49,13 +50,11 @@ class AddEgg extends Component {
             recipient: this.state.recipient
         }
 
-        axios.post(`${tunnelIP}/api/egg`, egg)
-            .then(()=>{
-                this.setState({ text:'', payloadText: '', goHereText: '', recipient:this.props.friends[0].fbId});
-                this.props.showModal(false);
-                this.props.clearAnnotation();
-            })
-            .catch(err => console.log('AddEgg onSubmitNode error', err))
+        this.props.addEggToDbAndStore(egg);
+
+        this.setState({ text:'', payloadText: '', goHereText: '', recipient:this.props.friends[0].fbId});
+        this.props.showModal(false);
+        this.props.clearAnnotation();
 
     }
 
@@ -235,6 +234,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         },
         clearAnnotation: function(){
             dispatch(clearAnnotation())
+        },
+        addEggToDbAndStore: function(egg){
+            dispatch(addEggToDbAndStore(egg))
         }
     }
 }
