@@ -11,7 +11,6 @@ class WelcomePage extends Component {
   }
 
   render() {
-    console.log("TUNNEL BOY: ", tunnelIP)
     const { container, text, half, image } = styles;
     return (
       <View style={container}>
