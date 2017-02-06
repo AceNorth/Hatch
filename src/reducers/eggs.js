@@ -13,7 +13,7 @@ const PICKUP_EGG = 'PICKUP_EGG';
 
 /* --------------    ACTION CREATORS    ----------------- */
 
-const selectEgg = egg => ({ type: SELECT_EGG, egg });
+const selectEgg = eggId => ({ type: SELECT_EGG, eggId });
 const fetchEggs = eggs => ({ type: FETCH_EGGS, eggs });
 const deleteEggFromState = egg => ({ type: DELETE_EGG, egg });
 const pickupThisEgg = egg => ({ type: PICKUP_EGG, egg});
@@ -32,7 +32,7 @@ export default function (state = initialState, action) {
             newState.allEggs[action.egg.id] = action.egg;
             break;
         case SELECT_EGG:
-            newState.selectedEgg = action.egg.id;
+            newState.selectedEgg = action.eggId;
             break;
         case FETCH_EGGS:
             action.eggs.map(function(egg) {
@@ -53,9 +53,10 @@ export default function (state = initialState, action) {
 
 /* --------------    THUNKS/DISPATCHERS    -------------- */
 export const setSelectedEgg = eggId => dispatch => {
-  axios.get(`${tunnelIP}/api/egg/${eggId}`)
-  .then(res => dispatch(selectEgg(res.data)))
-  .catch(err => console.error('Problem setting egg', err));
+  // axios.get(`${tunnelIP}/api/egg/${eggId}`)
+  // .then(res => dispatch(selectEgg(res.data)))
+    dispatch(selectEgg(eggId));
+  // .catch(err => console.error('Problem setting egg', err));
 };
 
 export const fetchAllEggs = userId => dispatch => {
