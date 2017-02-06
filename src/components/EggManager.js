@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 import { View, Text, TouchableOpacity, MapView, ScrollView, Picker } from 'react-native';
+import Video from 'react-native-video';
 import { Card, CardSection } from './common';
 import { setSelectedEgg, deleteEgg } from '../reducers/eggs';
 import EggManagerModal from './EggManagerModal';
+import tunnelIP from '../TUNNELIP';
 
 class EggManager extends Component { 
   constructor(props) {
@@ -90,6 +92,45 @@ class EggManager extends Component {
         return (<Text> { egg.payload.text } </Text>)
       case 'Image':
         return (<View> { egg.payload.path } } </View>);
+      case 'Video':
+        return (
+          <Video source={{uri: `${tunnelIP}/exampleVideo.mov`}}   // Can be a URL or a local file.
+       ref={(ref) => {
+         this.player = ref
+       }}                             
+       // Store reference
+       rate={1.0}                     
+       // 0 is paused, 1 is normal.
+       volume={1.0}                   
+       // 0 is muted, 1 is normal.
+       muted={false}                  
+       // Mutes the audio entirely.
+       paused={false}                 
+       // Pauses playback entirely.
+       resizeMode="cover"             
+       // Fill the whole screen at aspect ratio.
+       repeat={true}                  
+       // Repeat forever.
+       playInBackground={false}       
+       // Audio continues to play when app entering background.
+       playWhenInactive={false}       
+       // [iOS] Video continues to play when control or notification center are shown.
+       progressUpdateInterval={250.0} 
+       // [iOS] Interval to fire onProgress (default to ~250ms)
+       onLoadStart={this.loadStart}   
+       // Callback when video starts to load
+       onLoad={this.setDuration}      
+       // Callback when video loads
+       onProgress={this.setTime}      
+       // Callback every ~250ms with currentTime
+       onEnd={this.onEnd}             
+       // Callback when playback finishes
+       onError={this.videoError}      
+       // Callback when video cannot be loaded
+       onBuffer={this.onBuffer} 
+       // Callback when remote video is buffering
+       style={styles.exampleVideo} />
+          )
       default:
         return (<Text> Something has GONE WRONG </Text>);
     }
@@ -182,7 +223,14 @@ const styles = {
     fontSize: 25,
     color: '#fff',
     fontWeight: '600',
-  }
+  },
+  exampleVideo: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
+  },
 };
 
 const mapStateToProps = (state, ownProps) => { 
