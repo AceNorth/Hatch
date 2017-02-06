@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
-import { View, Text } from 'react-native';
+import { View, Text, Image } from 'react-native';
+import { tunnelIP } from '../TUNNELIP';
 
 class WelcomePage extends Component {
 
@@ -10,11 +11,13 @@ class WelcomePage extends Component {
   }
 
   render() {
-    const { container, text, half } = styles;
+    console.log("TUNNEL BOY: ", tunnelIP)
+    const { container, text, half, image } = styles;
     return (
       <View style={container}>
         <View style={half}>
-          <Text style={text} >Ready to find some eggs?</Text>
+          <Text style={text}> Left You Somethin' </Text>
+          <Image style={image} source={{uri: `${tunnelIP}/eggboy.png`}} />
         </View>
         <View style={half} />
       </View>
@@ -37,6 +40,11 @@ const styles = {
     fontSize: 40,
     color: '#fff',
     fontWeight: '600',
+  },
+  image: {
+    width: 105,
+    height: 135,
+    alignSelf: 'center'
   }
 };
 
