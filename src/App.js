@@ -80,6 +80,7 @@ export default class App extends Component {
   }
 
   // You must remove listeners when your component unmounts
+
   // componentWillUnmount() {
   //   // Remove BackgroundGeolocation listeners
   //   BackgroundGeolocation.un('location', this.onLocation);
@@ -101,6 +102,7 @@ export default class App extends Component {
   //     console.error('onGeofenceCross error happened:', err);
   //   }
   // }
+
   render() {
     return (
     <Provider store={store}>

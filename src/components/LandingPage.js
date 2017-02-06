@@ -36,7 +36,7 @@ class LandingPage extends Component {
     super(props);
     this.state = {
       // user's current position
-      currentPosition: { timestamp: 0, coords: { latitude: 41.888423, longitude: -87.634369 } },
+      currentPosition: { timestamp: 0, coords: { latitude: 41.888523, longitude: -87.634369 } },
 
       // locations of eggs waiting to be picked up
       pickups: [],
