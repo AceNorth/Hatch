@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { View, Text, Image, StyleSheet, MapView, 
+import { View, Text, Image, StyleSheet, MapView, Picker,
          TextInput, TouchableWithoutFeedback, Modal, Dimensions } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { Icon } from 'react-native-elements'
@@ -40,6 +40,8 @@ class LandingPage extends Component {
 
       // eggs that were placed by user
       dropoffs: [],
+      eggsShown: 'all',
+      eggsToDisplay: []
 
     };
 
@@ -55,7 +57,6 @@ class LandingPage extends Component {
         );
     // fetch all eggs belonging to the current user
     this.props.fetchAllEggs(this.props.user.fbId);
-
   }
 
 
@@ -93,6 +94,9 @@ class LandingPage extends Component {
       }
       this.setState({ pickups: pickUps, dropoffs: dropOffs });
 
+      // initially sets eggs to all pickups and dropoffs
+      let viewEggs = this.setRenderAnnotations(this.state.pickups.concat(this.state.dropoffs))
+      this.setState({ eggsToDisplay: viewEggs });
   }
 
   isWithinFence(coordinatesObject, egg){
@@ -191,10 +195,9 @@ class LandingPage extends Component {
   }
 
   setRenderAnnotations(annotations){
-    // console.log('setRenderAnnotations, annotations', annotations)
     // console.log('setRenderAnnotations, e', e)
     annotations.map(annotation => {
-      if(annotation && annotation.senderId){
+      if(annotations){
         if(this.isWithinFence(this.state.currentPosition.coords, annotation) && annotation.senderId) {
           annotation.tintColor = MapView.PinColors.GREEN,
           annotation.rightCalloutView = (
@@ -211,10 +214,35 @@ class LandingPage extends Component {
     return annotations
   }
 
+  changeShownEggs(eggsToShow) {
+    let showEggs = [];
+
+    switch (eggsToShow) {
+      case 'all':
+        showEggs = this.setRenderAnnotations(this.state.pickups.concat(this.state.dropoffs));
+        break;
+      case 'sent':
+        //change annotations to just include dropoffs
+        showEggs = this.setRenderAnnotations(this.state.dropoffs);
+        break;
+      case 'received':
+        //change annotations to just include dropoffs
+        showEggs = this.setRenderAnnotations(this.state.pickups);
+        break;
+      default:
+        return showEggs;          
+    };
+    this.setState({eggsToDisplay: showEggs});
+  }
+
+  onPickerChange(displayEggs) {
+    this.setState({eggsShown: displayEggs})
+    this.changeShownEggs(displayEggs);
+    this.forceUpdate();
+  }
+
   render() {
-
     const position = this.state.currentPosition;
-
 
     return (
       <View style={styles.viewStyle}>
@@ -223,15 +251,23 @@ class LandingPage extends Component {
             style={styles.mapStyle}
             showsUserLocation={true}
             region={{latitude: position.coords.latitude, longitude: position.coords.longitude, latitudeDelta: .01, longitudeDelta: .01}}
-            annotations={ this.setRenderAnnotations(this.state.pickups.concat(this.state.dropoffs))}
+            annotations={this.state.eggsToDisplay}
           />
         </TouchableWithoutFeedback>
+
+        <Picker
+          selecedValue= {this.state.eggsShown}
+          onValueChange= {filter => this.onPickerChange(filter)} >
+          <Picker.Item label="All eggs" value="all" />
+          <Picker.Item label="Sent eggs" value="sent" />
+          <Picker.Item label="Received eggs" value="received" />
+        </Picker>
+
         <View style={styles.touchStyle}>
-          <Button onPress={Actions.friends}> My Egg Basket </Button>
+          {/*<Button onPress={Actions.friends}> My Egg Basket </Button>*/}
+          {/*<Image style={{width: 50, height: 50}} source={{uri: this.state.goHereImage.uri}}></Image>*/}
 
           {this.renderLeaveEggButton()}
-
-          {/*<Image style={{width: 50, height: 50}} source={{uri: this.state.goHereImage.uri}}></Image>*/}
 
           <Modal
               visible={this.props.showAddNodeModal}
