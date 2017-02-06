@@ -2,29 +2,33 @@
 
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { View, Text, Image, StyleSheet, MapView, 
-         TextInput, TouchableWithoutFeedback, Modal, Dimensions } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  MapView,
+  TouchableWithoutFeedback,
+  Modal,
+  Dimensions
+} from 'react-native';
 import { Actions } from 'react-native-router-flux';
-import { Icon } from 'react-native-elements'
-import store from '../store';
+import { Icon } from 'react-native-elements';
+import axios from 'axios';
 
-//Components
+// Components
 import  AddEgg  from './AddEgg';
 import { Button } from './common';
 
-//Reducers
+// Reducers
 import { setSelectedEgg, fetchAllEggs } from '../reducers/eggs';
-import {showModal} from '../reducers/addNodeModal';
+import { showModal } from '../reducers/addNodeModal';
 import { setAnnotation, clearAnnotation } from '../reducers/map';
 
-import axios from 'axios';
 import { tunnelIP } from '../TUNNELIP';
 
-//Fetches device height and width
+// Fetches device height and width
 let { height, width } = Dimensions.get('window');
 const DEVICE_WIDTH = width;
 const DEVICE_HEIGHT = height;
-
 
 class LandingPage extends Component {
 
@@ -32,7 +36,7 @@ class LandingPage extends Component {
     super(props);
     this.state = {
       // user's current position
-      currentPosition: { timestamp: 0, coords: { latitude: 1, longitude: 1 } },
+      currentPosition: { timestamp: 0, coords: { latitude: 41.888423, longitude: -87.634369 } },
 
       // locations of eggs waiting to be picked up
       pickups: [],

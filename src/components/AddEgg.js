@@ -1,15 +1,12 @@
-import React, {Component} from 'react';
-import {Text, View, Modal, TextInput, StyleSheet, Image, Picker} from 'react-native';
-import { Icon } from 'react-native-elements'
-import {CardSection} from './common/CardSection';
-import {Button} from './common/Button';
-import {Input} from './common/Input';
+import React, { Component } from 'react';
+import { Text, View, Modal, StyleSheet, Image, Picker } from 'react-native';
+import { Icon } from 'react-native-elements';
+import { Card, CardSection, Button, InputNoLabel } from './common';
 import { connect } from 'react-redux';
 import axios from 'axios';
-import {showModal} from '../reducers/addNodeModal';
-import {setAnnotation, clearAnnotation} from '../reducers/map';
+import { showModal } from '../reducers/addNodeModal';
+import { setAnnotation, clearAnnotation } from '../reducers/map';
 import { tunnelIP } from '../TUNNELIP';
-
 
 class AddEgg extends Component {
     constructor(props){
@@ -19,9 +16,9 @@ class AddEgg extends Component {
             text: '',
             payloadText: '',
             payloadImage: '',
-            payloadImageSource: {uri: 'https://facebook.github.io/react/img/logo_og.png'},
+            payloadImageSource: require('../../addimage.png'),
             payloadImageBuffer: null,
-            goHereImageSource: {uri: 'https://facebook.github.io/react/img/logo_og.png'},
+            goHereImageSource: require('../../addimage.png'),
             goHereImageBuffer: null,
             eggs: [],
             recipient: this.props.friends[0].fbId}
@@ -112,7 +109,7 @@ class AddEgg extends Component {
                     this.setState({
                         goHereImageSource: goSource,
                         goHereImageBuffer: goBuffer
-                    });  
+                    });
                 }
                 else if(type === 'pay') {
                     // display the image using either data...
@@ -122,7 +119,7 @@ class AddEgg extends Component {
                     this.setState({
                         payloadImageSource: paySource,
                         payloadImageBuffer: payBuffer
-                    });  
+                    });
                 }
             }
         });
@@ -134,46 +131,44 @@ class AddEgg extends Component {
 
 
     render(){
-        const { containerStyle, textStyle, cardSectionStyle} = styles;
+        const { containerStyle, textStyle, cardSectionStyle } = styles;
         return (
             <View style={containerStyle}>
                 <CardSection>
-                    <Icon
-                        name='ios-camera-outline'
-                        type= 'ionicon'
-                        color='#f50'
-                        // onPress={this.showImagePicker}
-                        onPress={() => {this.selectImageForPicker('clue')} }
-                    />
-                    <Input
-                        placeholder="GoHere Text"
+                    <InputNoLabel
+                        placeholder="Where we first met <3"
                         onChangeText={e => this.handleInputChange('text', e)}
                         value={this.state.text}
                     />
-                    <Image source={this.state.goHereImageSource} style={{width: 50, height: 50}} />
+                    <Image
+                        source={this.state.goHereImageSource}
+                        style={{ width: 50, height: 50 }}
+                        onPress={() => {this.selectImageForPicker('clue')} }
+
+                    />
                 </CardSection>
 
-                <CardSection>
-                    <Icon
-                        name='ios-camera'
-                        type= 'ionicon'
-                        color='#f50'
-                        onPress={() => this.selectImageForPicker('payload')}
-                    />
-                    <Input
-                        placeholder="Payload Text"
+                <CardSection style={cardSectionStyle}>
+                    <Text>Egg Message</Text>
+                    <InputNoLabel
+                        placeholder="You found me!"
                         onChangeText={e => this.handleInputChange('payloadText', e)}
                         value={this.state.payloadText}
                     />
-                    <Image source={this.state.payloadImageSource} style={{width: 50, height: 50}} />
+                    <Image
+                        source={this.state.payloadImageSource}
+                        style={ {width: 50, height: 50 }}
+                        onPress={() => this.selectImageForPicker('payload')}
+                    />
                 </CardSection>
 
                 <CardSection>
                     <Picker
                         style={styles.picker}
                         selectedValue={this.state.recipient}
-                        onValueChange={(friend) => this.setState({recipient: friend})}>
-                        { this.props.friends.map((friend) => {
+                        onValueChange={(friend) => this.setState({ recipient: friend })}
+                    >
+                        {this.props.friends.map((friend) => {
                                 return(
                                     <Picker.Item label={friend.name} value={friend.fbId} />
                                 )
@@ -194,7 +189,8 @@ class AddEgg extends Component {
 
 const styles = StyleSheet.create({
     cardSectionStyle: {
-        justifyContent: 'center',
+        flexDirection: 'row',
+        flex: 1,
     },
     textStyle: {
         flex: 1,
