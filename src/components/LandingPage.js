@@ -1,6 +1,4 @@
-'use strict';
-
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import {
   View,
@@ -13,6 +11,7 @@ import {
 } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { Icon } from 'react-native-elements';
+import { LoginButton } from 'react-native-fbsdk';
 
 // Components
 import AddEgg from './AddEgg';
@@ -22,6 +21,7 @@ import { Button } from './common';
 import { setSelectedEgg, fetchAllEggs } from '../reducers/eggs';
 import { showModal } from '../reducers/addNodeModal';
 import { setAnnotation, clearAnnotation } from '../reducers/map';
+import { whoami } from '../reducers/auth';
 
 import { tunnelIP } from '../TUNNELIP';
 
@@ -59,7 +59,9 @@ class LandingPage extends Component {
       10000
     );
     // fetch all eggs belonging to the current user
-    this.props.fetchAllEggs(this.props.user.fbId);
+    if (this.props.user) {
+      this.props.fetchAllEggs(this.props.user.fbId);
+    }
   }
 
   componentWillUnmount() {
@@ -71,6 +73,11 @@ class LandingPage extends Component {
     // for when we leave the page or want to drop a pin
     clearInterval(this.timerID);
   }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.user) {
+      this.props.fetchAllEggs(nextProps.user.fbId);
+    }
 
   onAddNodeButtonPress() {
     this.props.showModal(true);
@@ -288,6 +295,27 @@ class LandingPage extends Component {
         <View style={styles.touchStyle}>
 
           {this.renderLeaveEggButton()}
+          <LoginButton
+            readPermissions={['email', 'user_friends']}
+            onLoginFinished={
+              (error, result) => {
+                if (error) {
+                  console.log('Login failed with error:', error);
+                } else if (result.isCancelled) {
+                  console.log('Login was cancelled');
+                } else {
+                  this.props.fetchUserInfo();
+                  Actions.landingPage();
+                }
+              }
+            }
+            onLogoutFinished={() => {
+              console.log('User logged out');
+              this.props.whoami(null);
+              Actions.login();
+            }}
+            style={styles.loginButton}
+          />
 
           <Modal
             visible={this.props.showAddNodeModal}
@@ -328,7 +356,12 @@ const styles = StyleSheet.create({
   touchStyle: {
     flex: 0.35,
     margin: 0
-  }
+  },
+  loginButton: {
+    height: 30,
+    width: 200,
+    alignSelf: 'center'
+  },
 });
 
 const mapStateToProps = (state) => {
@@ -361,8 +394,29 @@ const mapDispatchToProps = (dispatch) => {
     },
     clearAnnotation: () => {
       dispatch(clearAnnotation());
-    }
+    },
+    whoami: (user) => {
+      dispatch(whoami(user));
+    },
   };
+};
+
+LandingPage.propTypes = {
+  showAddNodeModal: PropTypes.func,
+  annotation: PropTypes.shape({
+    length: PropTypes.number,
+  }),
+  selectedEgg: PropTypes.number,
+  allEggs: PropTypes.object,
+  user: PropTypes.shape({
+    fbId: PropTypes.number
+  }),
+  setSelectedEgg: PropTypes.func,
+  fetchAllEggs: PropTypes.func,
+  showModal: PropTypes.func,
+  setAnnotation: PropTypes.func,
+  clearAnnotation: PropTypes.func,
+  whoami: PropTypes.func,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(LandingPage);
