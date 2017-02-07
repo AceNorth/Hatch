@@ -57,36 +57,6 @@ class AddEgg extends Component {
         this.props.showModal(false);
         this.props.clearAnnotation();
 
-    this.handleInputChange = this.handleInputChange.bind(this);
-    this.onSubmitNode = this.onSubmitNode.bind(this);
-    this.onCancelSubmitNode = this.onCancelSubmitNode.bind(this);
-    this.showImagePicker = this.showImagePicker.bind(this);
-
-  }
-
-
-  onSubmitNode() {
-    const egg = {
-      goHereImage: this.state.goHereImageSource,
-      goHereText: this.state.text,
-      goHereImageBuffer: this.state.goHereImageBuffer,
-      latitude: this.props.annotation[0].latitude,
-      longitude: this.props.annotation[0].longitude,
-      payloadText: this.state.payloadText,
-      payloadImage: this.state.payloadImageSource,
-      payloadImageBuffer: this.state.payloadImageBuffer,
-      senderId: this.props.senderId,
-      recipient: this.state.recipient
-    }
-
-    axios.post(`${tunnelIP}/api/egg`, egg)
-      .then(() => {
-        this.setState({ text: '', payloadText: '', goHereText: '', recipient: this.props.friends[0].fbId });
-        this.props.showModal(false);
-        this.props.clearAnnotation();
-      })
-      .catch(err => console.log('AddEgg onSubmitNode error', err))
-
   }
 
   onCancelSubmitNode() {
