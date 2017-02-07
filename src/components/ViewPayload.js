@@ -5,7 +5,7 @@ import { Card, CardSection, Button } from './common';
 import axios from 'axios';
 import { tunnelIP } from '../TUNNELIP';
 import { Actions } from 'react-native-router-flux';
-
+import {pickupEgg} from '../reducers/eggs'; 
 
 class ViewPayload extends Component {
 
@@ -22,26 +22,20 @@ class ViewPayload extends Component {
     this.setState({viewEgg: this.props.allEggs[this.props.selectedEgg]})
       let goHereImage2;
       axios.get(`${tunnelIP}/api/egg/goHereImage/`+ this.props.selectedEgg)
-          .then(response => {
-              goHereImage2 = response.data;
-              this.setState({goHereImage: goHereImage2});
-          })
+         
       let payloadImage2;
       axios.get(`${tunnelIP}/api/egg/payloadImage/`+ this.props.allEggs[this.props.selectedEgg].payloadId)
-          .then(response => {
-              payloadImage2 = response.data;
-              this.setState({payloadImage: payloadImage2});
-          })
+        .then(response => {
+            payloadImage2 = response.data;
+            this.setState({payloadImage: payloadImage2});
+        })
   }
 
 
   onSubmitPickup(){
-    let eggId = this.state.viewEgg.id
-    axios.put(`${tunnelIP}/api/egg/picked/${eggId}`)
-    .then( res => {
-      this.setState({viewEgg: res.data})
-    })
-    .catch(err => console.log('onSubmit Egg Update error', err))
+    let egg = this.state.viewEgg
+    this.state.viewEgg.pickedUp = true;
+    this.props.pickupEgg(this.state.viewEgg)
   }
 
   render() {
@@ -79,7 +73,11 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-    return {};
+    return {
+      pickupEgg: function(egg) {
+        dispatch(pickupEgg(egg));
+      }
+    };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ViewPayload);

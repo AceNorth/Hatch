@@ -7,7 +7,8 @@ import {
   TouchableWithoutFeedback,
   Modal,
   Dimensions,
-  Picker
+  Picker,
+  Text
 } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { Icon } from 'react-native-elements';
@@ -41,15 +42,23 @@ class LandingPage extends Component {
 
       // annotation objects (pins) for eggs waiting to be picked up
       eggPins: [],
-      pickupRadius: 0.0003,
+      pickupRadius: 0.003,
 
       // view toggler
-      showEggs: true
+      showEggs: true,
+
+      // loading message
+      showLoading: true
     };
     // update user's location every second as they walk around
-    this.timerID = setInterval(
+    this.locationUpdater = setInterval(
       () => this.updateCurrentPosition(),
       1000
+    );
+
+    this.eggFetcher = setInterval(
+      () => this.checkForEggs(),
+      5000
     );
 
     this.onMapLongPress = this.onMapLongPress.bind(this);
@@ -65,12 +74,23 @@ class LandingPage extends Component {
 
   componentWillUnmount() {
     this.stopLocationUpdating();
+    this.stopFetching();
   }
 
   stopLocationUpdating() {
     // stops our location from updating every second,
     // for when we leave the page or want to drop a pin
-    clearInterval(this.timerID);
+    clearInterval(this.locationUpdater);
+  }
+
+  checkForEggs() {
+    this.setState({showLoading: false});
+    this.updatePins();
+    this.props.fetchAllEggs(this.props.user.fbId);
+  }
+
+  stopFetching() {
+    clearInterval(this.eggFetcher);
   }
 
   onAddNodeButtonPress() {
@@ -89,8 +109,6 @@ class LandingPage extends Component {
     navigator.geolocation.getCurrentPosition(
       (position) => this.setState({ currentPosition: position })
       , null, options);
-
-    this.updatePins();
   }
 
   updatePins() {
@@ -178,16 +196,20 @@ class LandingPage extends Component {
   }
 
   renderViewToggleButton() {
+    if (this.state.showLoading) {
+          return (<Text style={styles.loadingText}> LOADING YOUR EGGS... </Text>)
+        }
+
     if (this.state.showEggs) {
       return (
         <Button onPress={this.toggleView.bind(this)}>
-        Hide eggs
+        Hide pins
         </Button>
       );
     } else {
       return (
         <Button onPress={this.toggleView.bind(this)}>
-        Show eggs
+        Show pins
         </Button>
       );
     }
@@ -312,6 +334,10 @@ class LandingPage extends Component {
 const styles = StyleSheet.create({
   title: {
     fontWeight: '500',
+  },
+  loadingText: {
+    fontWeight: '500',
+    alignSelf: 'center'
   },
   viewStyle: {
     width: DEVICE_WIDTH,
