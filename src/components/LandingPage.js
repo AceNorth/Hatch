@@ -44,11 +44,10 @@ class LandingPage extends Component {
 
       // eggs that were placed by user
       dropoffs: [],
-      eggsShown: 'all',
+      filterBy: 'all',
       eggsToDisplay: []
 
     };
-
     this.onMapLongPress = this.onMapLongPress.bind(this);
     this.setRenderAnnotations = this.setRenderAnnotations.bind(this);
   }
@@ -63,13 +62,23 @@ class LandingPage extends Component {
     this.props.fetchAllEggs(this.props.user.fbId);
   }
 
+  componentWillUnmount() {
+    this.stopLocationUpdating();
+  }
+
+  stopLocationUpdating() {
+    // stops our location from updating every second,
+    // for when we leave the page or want to drop a pin
+    clearInterval(this.timerID);
+  }
 
   onAddNodeButtonPress() {
     this.props.showModal(true);
   }
 
-
   updateCurrentPositionAndPins() {
+    // change this because all pins are showing up every time this runs
+
     let options = {
       enableHighAccuracy: true,
       timeout: 1000,
@@ -86,13 +95,12 @@ class LandingPage extends Component {
 
       for (let key in this.props.allEggs) {
         let egg = this.props.allEggs[key];
-        if (egg.receiverId == this.props.user.fbId) {
-          console.log('egg', egg)
+        if (egg.receiverId == this.props.user.fbId && !egg.deletedByReceiver && !egg.pickedUp) {
           let newPickup = this.createStaticAnnotation(egg.longitude, egg.latitude, egg.sender, egg.id, egg.goHereText);
           pickUps.push(newPickup);
         }
 
-        if (egg.senderId == this.props.user.fbId) {
+        if (egg.senderId == this.props.user.fbId && !egg.deletedBySender&& !egg.pickedUp) {
           let newDropoff = this.createStaticDropAnnotation(egg.longitude, egg.latitude, egg.receiver, egg.id, egg.goHereText);
           dropOffs.push(newDropoff);
         }
@@ -119,6 +127,9 @@ class LandingPage extends Component {
   }
 
   onMapLongPress(event) {
+    // stop updating user's location until they finish dropping the egg
+    this.stopLocationUpdating();
+
     if (!this.props.annotation.length) {
       const options = {
         enableHighAccuracy: true,
@@ -234,20 +245,22 @@ class LandingPage extends Component {
         // change annotations to just include dropoffs
         showEggs = this.setRenderAnnotations(this.state.pickups);
         break;
+      case 'none':
+        this.setState({eggsToDisplay: []});
+        return;
       default:
         return showEggs;
     }
-
     this.setState({ eggsToDisplay: showEggs });
   }
 
   onPickerChange(displayEggs) {
-    this.setState({ eggsShown: displayEggs });
+    this.setState({ filterBy:displayEggs });
     this.changeShownEggs(displayEggs);
-    this.forceUpdate();
   }
 
   render() {
+    console.log("STATE: ", this.state)
     const position = this.state.currentPosition;
     let annotationsToDisplay = [...this.state.eggsToDisplay, ...this.props.annotation]
 
@@ -263,12 +276,13 @@ class LandingPage extends Component {
         </TouchableWithoutFeedback>
 
         <Picker
-          selecedValue={this.state.eggsShown}
+          selectedValue={this.state.filterBy}
           onValueChange={filter => this.onPickerChange(filter)}
         >
           <Picker.Item label="All eggs" value="all" />
           <Picker.Item label="Sent eggs" value="sent" />
           <Picker.Item label="Received eggs" value="received" />
+          <Picker.Item label="No eggs" value="none" />
         </Picker>
 
         <View style={styles.touchStyle}>
