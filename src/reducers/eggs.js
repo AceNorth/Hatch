@@ -76,11 +76,11 @@ export const fetchAllEggs = userId => dispatch => {
 };
 
 export const deleteEgg = egg => dispatch => {
-    axios.put(`${tunnelIP}/api/egg/${egg.id}`)
+    axios.put(`${tunnelIP}/api/egg/${egg.id}`, egg)
     .then(res => dispatch(deleteEggFromState(egg)));
 };
 
 export const pickupEgg = egg => dispatch => {
-    axios.put(`${tunnelIP}/api/egg/${egg.id}`)
+    axios.put(`${tunnelIP}/api/egg/${egg.id}`, egg)
     .then(() => dispatch(pickupThisEgg(egg)));
 };
