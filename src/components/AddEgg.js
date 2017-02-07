@@ -3,6 +3,7 @@ import { Text, View, StyleSheet, Image, Picker, TouchableHighlight } from 'react
 import { connect } from 'react-redux';
 import axios from 'axios';
 import { AudioRecorder } from 'react-native-audio';
+import {addEggToDbAndStore} from '../reducers/eggs';
 import { Icon } from 'react-native-elements';
 
 import { CardSection, Button, InputNoLabel } from './common';
@@ -13,20 +14,48 @@ import { setAnnotation, clearAnnotation } from '../reducers/map';
 import { tunnelIP } from '../TUNNELIP';
 
 class AddEgg extends Component {
-  constructor(props) {
-    super(props);
+    constructor(props){
+        super(props);
 
-    this.state = {
-      text: '',
-      payloadText: '',
-      payloadImage: '',
-      payloadImageSource: require('../../addimage.png'),
-      payloadImageBuffer: null,
-      goHereImageSource: require('../../addimage.png'),
-      goHereImageBuffer: null,
-      eggs: [],
-      recipient: this.props.friends[0].fbId
-    };
+        this.state = {
+            text: '',
+            payloadText: '',
+            payloadImage: '',
+            payloadImageSource: {uri: 'https://facebook.github.io/react/img/logo_og.png'},
+            payloadImageBuffer: null,
+            goHereImageSource: {uri: 'https://facebook.github.io/react/img/logo_og.png'},
+            goHereImageBuffer: null,
+            eggs: [],
+            recipient: this.props.friends[0].fbId}
+        ;
+
+        this.handleInputChange=this.handleInputChange.bind(this);
+        this.onSubmitNode = this.onSubmitNode.bind(this);
+        this.onCancelSubmitNode = this.onCancelSubmitNode.bind(this);
+        this.showImagePicker = this.showImagePicker.bind(this);
+
+    }
+
+
+    onSubmitNode() {
+        const egg = {
+            goHereImage: this.state.goHereImageSource,
+            goHereText: this.state.text,
+            goHereImageBuffer: this.state.goHereImageBuffer,
+            latitude: this.props.annotation[0].latitude,
+            longitude: this.props.annotation[0].longitude,
+            payloadText: this.state.payloadText,
+            payloadImage: this.state.payloadImageSource,
+            payloadImageBuffer: this.state.payloadImageBuffer,
+            senderId: this.props.senderId,
+            recipient: this.state.recipient
+        }
+
+        this.props.addEggToDbAndStore(egg);
+
+        this.setState({ text:'', payloadText: '', goHereText: '', recipient:this.props.friends[0].fbId});
+        this.props.showModal(false);
+        this.props.clearAnnotation();
 
     this.handleInputChange = this.handleInputChange.bind(this);
     this.onSubmitNode = this.onSubmitNode.bind(this);
@@ -240,18 +269,19 @@ const mapStateToProps = state => ({
   },
 });
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    showModal: function(boolean) {
-      dispatch(showModal(boolean));
-    },
-    setAnnotation: function(annotation) {
-      dispatch(setAnnotation(annotation));
-    },
-    clearAnnotation: function() {
-      dispatch(clearAnnotation());
-    }
-  };
-};
+const mapDispatchToProps = dispatch => ({
+  showModal: function (boolean) {
+    dispatch(showModal(boolean));
+  },
+  setAnnotation: function (annotation) {
+    dispatch(setAnnotation(annotation));
+  },
+  clearAnnotation: function () {
+    dispatch(clearAnnotation());
+  },
+  addEggToDbAndStore: function (egg) {
+    dispatch(addEggToDbAndStore(egg));
+  },
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddEgg);
