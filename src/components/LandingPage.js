@@ -15,6 +15,7 @@ import { LoginButton } from 'react-native-fbsdk';
 
 // Components
 import AddEgg from './AddEgg';
+import { InvisibleButton } from './InvisibleButton';
 import { Button } from './common';
 
 // Reducers
@@ -38,26 +39,24 @@ class LandingPage extends Component {
       // user's current position
       currentPosition: { timestamp: 0, coords: { latitude: 41.888523, longitude: -87.634369 } },
 
-      // locations of eggs waiting to be picked up
-      pickups: [],
+      // annotation objects (pins) for eggs waiting to be picked up
+      eggPins: [],
       pickupRadius: 0.0003,
 
-      // eggs that were placed by user
-      dropoffs: [],
-      filterBy: 'all',
-      eggsToDisplay: []
-
+      // view toggler
+      showEggs: true
     };
+    // update user's location every second as they walk around
+    this.timerID = setInterval(
+      () => this.updateCurrentPosition(),
+      1000
+    );
+
     this.onMapLongPress = this.onMapLongPress.bind(this);
     this.setRenderAnnotations = this.setRenderAnnotations.bind(this);
   }
 
   componentWillMount() {
-  // set timer to update "current position" on state every second
-    this.timerID = setInterval(
-      () => this.updateCurrentPositionAndPins(),
-      10000
-    );
     // fetch all eggs belonging to the current user
     if (this.props.user) {
       this.props.fetchAllEggs(this.props.user.fbId);
@@ -74,16 +73,11 @@ class LandingPage extends Component {
     clearInterval(this.timerID);
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.user) {
-      this.props.fetchAllEggs(nextProps.user.fbId);
-    }
-
   onAddNodeButtonPress() {
     this.props.showModal(true);
   }
 
-  updateCurrentPositionAndPins() {
+  updateCurrentPosition() {
     // change this because all pins are showing up every time this runs
 
     let options = {
@@ -96,34 +90,27 @@ class LandingPage extends Component {
       (position) => this.setState({ currentPosition: position })
       , null, options);
 
-      let pickUps = [];
-      let dropOffs = [];
+    this.updatePins();
+  }
 
+  updatePins() {
+    let pins = [];
 
-      for (let key in this.props.allEggs) {
-        let egg = this.props.allEggs[key];
-        if (egg.receiverId == this.props.user.fbId && !egg.deletedByReceiver && !egg.pickedUp) {
-          let newPickup = this.createStaticAnnotation(egg.longitude, egg.latitude, egg.sender, egg.id, egg.goHereText);
-          pickUps.push(newPickup);
-        }
-
-        if (egg.senderId == this.props.user.fbId && !egg.deletedBySender&& !egg.pickedUp) {
-          let newDropoff = this.createStaticDropAnnotation(egg.longitude, egg.latitude, egg.receiver, egg.id, egg.goHereText);
-          dropOffs.push(newDropoff);
-        }
+    for (let key in this.props.allEggs) {
+      let egg = this.props.allEggs[key];
+      if (egg.receiverId === this.props.user.fbId && !egg.deletedByReceiver && !egg.pickedUp) {
+        let newPin = this.createStaticAnnotation(egg.longitude, egg.latitude, egg.sender, egg.id, egg.goHereText);
+        pins.push(newPin);
       }
+    }
 
-      this.setState({ pickups: pickUps, dropoffs: dropOffs });
-
-      // initially sets eggs to all pickups and dropoffs
-      let viewEggs = this.setRenderAnnotations(this.state.pickups.concat(this.state.dropoffs))
-      this.setState({ eggsToDisplay: viewEggs });
+    this.setState({ eggPins: pins });
   }
 
   isWithinFence(coordinatesObject, egg){
    if(!egg) { return false }
-   let eggLong = Number(egg.longitude)
-   let eggLat = Number(egg.latitude)
+   let eggLong = Number(egg.longitude);
+   let eggLat = Number(egg.latitude);
 
    let fence = Math.pow((coordinatesObject.longitude - eggLong), 2)
                 + Math.pow((coordinatesObject.latitude - eggLat), 2);
@@ -185,22 +172,26 @@ class LandingPage extends Component {
     };
   }
 
-  createStaticDropAnnotation(longitude, latitude, receiver, eggId, goHereText) {
-    // we might want to change what's displayed here later, this is just
-    // a placeholder example fo the info we can put on pins
-
-    const sentTo = `${receiver.firstName} ${receiver.lastName}`;
-    const pinSubtitle = `Egg to ${sentTo}`;
-    return {
-      longitude,
-      latitude,
-      eggId,
-      title: goHereText,
-      subtitle: pinSubtitle,
-      tintColor: MapView.PinColors.RED,
-      draggable: false
-    };
+  toggleView() {
+    let view = !this.state.showEggs;
+    this.setState({ showEggs: view });
   }
+
+  renderViewToggleButton() {
+    if (this.state.showEggs) {
+      return (
+        <Button onPress={this.toggleView.bind(this)}>
+        Hide eggs
+        </Button>
+      );
+    } else {
+      return (
+        <Button onPress={this.toggleView.bind(this)}>
+        Show eggs
+        </Button>
+      );
+    }
+  };
 
   renderLeaveEggButton() {
     if (this.props.annotation.length) {
@@ -208,6 +199,12 @@ class LandingPage extends Component {
         <Button onPress={this.onAddNodeButtonPress.bind(this)}>
         Leave an egg at the current pin
         </Button>
+      );
+    } else {
+      return (
+        <InvisibleButton onPress={() => {}}>
+        I am invisible and you should not see me
+        </InvisibleButton>
       );
     }
   }
@@ -237,41 +234,19 @@ class LandingPage extends Component {
     return annotations;
   }
 
-  changeShownEggs(eggsToShow) {
-    let showEggs = [];
-
-    switch (eggsToShow) {
-      case 'all':
-        showEggs = this.setRenderAnnotations(this.state.pickups.concat(this.state.dropoffs));
-        break;
-      case 'sent':
-        // change annotations to just include dropoffs
-        showEggs = this.setRenderAnnotations(this.state.dropoffs);
-        break;
-      case 'received':
-        // change annotations to just include dropoffs
-        showEggs = this.setRenderAnnotations(this.state.pickups);
-        break;
-      case 'none':
-        this.setState({eggsToDisplay: []});
-        return;
-      default:
-        return showEggs;
-    }
-    this.setState({ eggsToDisplay: showEggs });
-  }
-
-  onPickerChange(displayEggs) {
-    this.setState({ filterBy:displayEggs });
-    this.changeShownEggs(displayEggs);
-  }
-
   render() {
-    console.log("STATE: ", this.state)
     const position = this.state.currentPosition;
-    let annotationsToDisplay = [...this.state.eggsToDisplay, ...this.props.annotation]
+    let annotationsToDisplay;
+
+    if (this.state.showEggs) {
+      annotationsToDisplay = [...this.state.eggPins, ...this.props.annotation];
+    } else {
+      annotationsToDisplay = this.props.annotation;
+    }
 
     return (
+      //the map
+
       <View style={styles.viewStyle}>
         <TouchableWithoutFeedback onLongPress={this.onMapLongPress}>
           <MapView
@@ -282,18 +257,8 @@ class LandingPage extends Component {
           />
         </TouchableWithoutFeedback>
 
-        <Picker
-          selectedValue={this.state.filterBy}
-          onValueChange={filter => this.onPickerChange(filter)}
-        >
-          <Picker.Item label="All eggs" value="all" />
-          <Picker.Item label="Sent eggs" value="sent" />
-          <Picker.Item label="Received eggs" value="received" />
-          <Picker.Item label="No eggs" value="none" />
-        </Picker>
-
         <View style={styles.touchStyle}>
-
+          {this.renderViewToggleButton()}
           {this.renderLeaveEggButton()}
           <LoginButton
             readPermissions={['email', 'user_friends']}
