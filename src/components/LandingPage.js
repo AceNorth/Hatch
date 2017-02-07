@@ -109,6 +109,8 @@ class LandingPage extends Component {
     navigator.geolocation.getCurrentPosition(
       (position) => this.setState({ currentPosition: position })
       , null, options);
+
+    this.setRenderAnnotations(this.state.eggPins);
   }
 
   updatePins() {
@@ -121,7 +123,7 @@ class LandingPage extends Component {
         pins.push(newPin);
       }
     }
-
+    this.setRenderAnnotations(pins);
     this.setState({ eggPins: pins });
   }
 
