@@ -1,63 +1,63 @@
 import React, { Component } from 'react';
-import {
-  StyleSheet,
-  View,
-  Image,
-  TouchableHighlight,
-} from 'react-native';
+import { DeviceEventEmitter, View, StyleSheet, TouchableHighlight } from 'react-native';
 import { connect } from 'react-redux';
-import { AudioUtils, AudioPlayer } from 'react-native-audio';
+import Sound from 'react-native-sound';
 import { Icon } from 'react-native-elements';
 
 import { newRecording, stopPlay, startPlay, timeProgress } from '../reducers/audio';
 
 class PlaybackMenu extends Component {
   componentDidMount() {
-    // Event listener to keep track of time
-    AudioPlayer.onProgress = data => { // data: currentDuration
-      this.props.timeProgress(data.currentTime.toFixed(2));
-    };
+    // @todo: replace 'test.aac' with dynamically created clip names (also in recorder)
+    this.clip = new Sound('test.aac', Sound.DOCUMENT, (error) => {
+      if (error) {
+        console.log('failed to load the sound', error);
+      } else { // loaded successfully
+        console.log('yay loaded the sound');
+      }
+    });
+  }
 
-    // Event listener listens for when playing is done
-    AudioPlayer.onFinished = data => { // data = {finished: true}
-      this.props.stopPlay();
-    };
-
-    AudioPlayer.setProgressSubscription();
-    AudioPlayer.setFinishedSubscription();
+  componentWillUnmount() {
+    this.clip.release();
   }
 
   _togglePlayStop() {
     if (this.props.playing) {
       this.props.stopPlay();
-      AudioPlayer.stop();
+      this.clip.pause();
     } else {
       this.props.startPlay();
-      AudioPlayer.playWithUrl(this.props.audioUrl);
+      this.clip.play((success) => {
+        success ? this.props.stopPlay() : console.log('playback failed due to audio decoding errors');
+      });
     }
   }
 
   render() {
+    const { smallButton } = styles;
     return (
       <TouchableHighlight
-      activeOpacity={0.8}
-      underlayColor={'white'}
-      style={smallButton}
-      onPress={this._togglePlayStop.bind(this)}
+        activeOpacity={0.8}
+        underlayColor={'white'}
+        style={smallButton}
+        onPress={this._togglePlayStop.bind(this)}
       >
-      {
-        this.props.playing ?
-          <Icon
-            name="play"
-            type="ionicon"
-            color="#CD0240"
-          /> :
-          <Icon
-            name="stop"
-            type="ionicon"
-            color="#CD0240"
-          />
-      }
+        <View>
+        {
+          this.props.playing ?
+            <Icon
+              name="ios-pause"
+              type="ionicon"
+              color="#CD0240"
+            /> :
+            <Icon
+              name="ios-play"
+              type="ionicon"
+              color="#CD0240"
+            />
+        }
+        </View>
       </TouchableHighlight>
 
     );

@@ -2,15 +2,14 @@ import React, { Component } from 'react';
 import { Text, View, StyleSheet, Image, Picker, TouchableHighlight } from 'react-native';
 import { connect } from 'react-redux';
 import axios from 'axios';
-import { AudioRecorder } from 'react-native-audio';
-import {addEggToDbAndStore} from '../reducers/eggs';
-import { Icon } from 'react-native-elements';
+import { addEggToDbAndStore } from '../reducers/eggs';
 
 import { CardSection, Button, InputNoLabel } from './common';
 import RecordAudio from './RecordAudio';
 import PlayAudio from './PlayAudio';
 import { showModal } from '../reducers/addNodeModal';
 import { setAnnotation, clearAnnotation } from '../reducers/map';
+import { uploadAudioFile } from '../reducers/audio';
 import { tunnelIP } from '../TUNNELIP';
 
 class AddEgg extends Component {
@@ -21,9 +20,9 @@ class AddEgg extends Component {
             text: '',
             payloadText: '',
             payloadImage: '',
-            payloadImageSource: {uri: 'https://facebook.github.io/react/img/logo_og.png'},
+            payloadImageSource: { uri: `${tunnelIP}/addImgOrange.png` },
             payloadImageBuffer: null,
-            goHereImageSource: {uri: 'https://facebook.github.io/react/img/logo_og.png'},
+            goHereImageSource: { uri: `${tunnelIP}/addImgRed.png` },
             goHereImageBuffer: null,
             eggs: [],
             recipient: this.props.friends[0].fbId}
@@ -38,18 +37,26 @@ class AddEgg extends Component {
 
 
     onSubmitNode() {
-        const egg = {
-            goHereImage: this.state.goHereImageSource,
-            goHereText: this.state.text,
-            goHereImageBuffer: this.state.goHereImageBuffer,
-            latitude: this.props.annotation[0].latitude,
-            longitude: this.props.annotation[0].longitude,
-            payloadText: this.state.payloadText,
-            payloadImage: this.state.payloadImageSource,
-            payloadImageBuffer: this.state.payloadImageBuffer,
-            senderId: this.props.senderId,
-            recipient: this.state.recipient
-        }
+      const egg = {
+        goHereImage: this.state.goHereImageSource,
+        goHereText: this.state.text,
+        goHereImageBuffer: this.state.goHereImageBuffer,
+        latitude: this.props.annotation[0].latitude,
+        longitude: this.props.annotation[0].longitude,
+        payloadText: this.state.payloadText,
+        payloadImage: this.state.payloadImageSource,
+        payloadImageBuffer: this.state.payloadImageBuffer,
+        senderId: this.props.senderId,
+        recipient: this.state.recipient
+      };
+
+      // If user recorded audio, send that instead of payload image
+      if (this.props.audioUrl) {
+        egg.payloadImageBuffer = null;
+
+        // Store audio in Firebase
+
+      }
 
         this.props.addEggToDbAndStore(egg);
 
@@ -77,7 +84,7 @@ class AddEgg extends Component {
       payloadImageBuffer: this.state.payloadImageBuffer,
       senderId: this.props.senderId,
       recipient: this.state.recipient
-    }
+    };
 
     axios.post(`${tunnelIP}/api/egg`, egg)
       .then(() => {
@@ -208,9 +215,15 @@ class AddEgg extends Component {
           {
             this.props.stoppedRecording
             ? <PlayAudio />
-            : <RecordAudio prepareRecordingPath={this.props.prepareRecordingPath} />
+            : <RecordAudio />
           }
-          <Text style={{ paddingLeft: 15, paddingRight: 5 }}>Tap and hold to record a voice message for your egg.</Text>
+
+          {
+            this.props.currentTime
+            ? <Text style={textStyle}>{Math.floor(this.props.currentTime)}s</Text>
+            : <Text style={textStyle}>Tap and hold to record a voice message for your egg.</Text>
+          }
+
         </CardSection>
         <CardSection >
           <Picker
@@ -218,7 +231,7 @@ class AddEgg extends Component {
             selectedValue={this.state.recipient}
             onValueChange={(friend) => this.setState({ recipient: friend })}
           >
-            {this.props.friends.map(friend => (<Picker.Item label={friend.name} value={friend.fbId} />))}
+            {this.props.friends.map(friend => (<Picker.Item label={friend.name} value={friend.fbId} key={friend.fbId} />))}
           </Picker>
         </CardSection>
 
@@ -239,9 +252,8 @@ const styles = StyleSheet.create({
   },
   textStyle: {
     flex: 1,
-    fontSize: 18,
-    textAlign: 'center',
-    lineHeight: 40
+    paddingLeft: 15,
+    paddingRight: 5,
   },
   containerStyle: {
     backgroundColor: 'rgba(0, 0, 0, 0.75)',
@@ -264,9 +276,7 @@ const mapStateToProps = state => ({
   friends: state.friends.allFriends,
   stoppedRecording: state.audio.stoppedRecording,
   currentTime: state.audio.currentTime,
-  prepareRecordingPath: (audioPath) => {
-    AudioRecorder.prepareRecordingAtPath(audioPath, { AudioEncoding: 'aac' });
-  },
+  audioUrl: state.audio.audioUrl,
 });
 
 const mapDispatchToProps = dispatch => ({

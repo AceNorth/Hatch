@@ -1,4 +1,10 @@
+import firebase from 'firebase';
+import RNFetchBlob from 'react-native-fetch-blob';
 
+const Blob = RNFetchBlob.polyfill.Blob;
+
+window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest;
+window.Blob = Blob;
 
 /* --------------    ACTION CONSTANTS    ---------------- */
 
@@ -12,48 +18,47 @@ const STOP_PLAY = 'STOP_PLAY';
 
 /* --------------    ACTION CREATORS    ----------------- */
 
-export const newRecording = () => {
-  return {
-    type: NEW_RECORDING,
-  };
-};
+export const newRecording = () => ({ type: NEW_RECORDING });
+export const startRecording = () => ({ type: START_RECORDING });
+export const stopRecording = () => ({ type: STOP_RECORDING });
+export const startPlay = () => ({ type: START_PLAY });
+export const stopPlay = () => ({ type: STOP_PLAY });
 
-export const startRecording = () => {
-  return {
-    type: START_RECORDING,
-  };
-};
+export const recordingFinished = audioUrl => ({
+  type: RECORDING_FINISHED,
+  audioUrl
+});
 
-export const stopRecording = () => {
-  return {
-    type: STOP_RECORDING,
-  };
-};
+export const timeProgress = currentTime => ({
+  type: TIME_PROGRESS,
+  currentTime
+});
 
-export const recordingFinished = audioUrl => {
-  return {
-    type: RECORDING_FINISHED,
-    audioUrl
-  };
-};
+// Helper function!
+export const uploadAudioFile = audioUrl => {
+  // Get a reference to audio folder in Firebase storage
+  const filename = `${Date.now()}.aac`; //
+  const clipRef = firebase.storage().ref().child('audio').child(filename);
 
-export const startPlay = () => {
-  return {
-    type: START_PLAY,
-  };
-};
+  const filepath = audioUrl.slice(7);
+  const rnfbURI = RNFetchBlob.wrap(filepath);
 
-export const stopPlay = () => {
-  return {
-    type: STOP_PLAY,
-  };
-};
-
-export const timeProgress = currentTime => {
-  return {
-    type: TIME_PROGRESS,
-    currentTime
-  };
+  // create Blob from file path
+  return Blob.build(rnfbURI, { type: 'audio/aac;' })
+    .then(blob => {
+      return clipRef.put(blob, { contentType: 'audio/aac' }) // upload image using Firebase SDK
+        .then(snapshot => {
+          console.log('Uploaded audio file to Firebase storage.');
+          blob.close();
+        })
+        .then(() => clipRef)
+        .catch(err => {
+          console.error('Upload failed:', err);
+        });
+    })
+    .catch(err => {
+      console.error('func uploadAudioMsg failed:', err);
+    });
 };
 
 /* ------------------    REDUCER    --------------------- */
@@ -95,7 +100,6 @@ export default (prevState = audioInitialState, action) => {
     case STOP_PLAY:
       newState.playing = false;
       newState.stoppedPlaying = true;
-      newState.currentTime = 0.0;
       break;
     default:
       return prevState;

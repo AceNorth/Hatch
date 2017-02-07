@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { StyleSheet, View, TouchableHighlight } from 'react-native';
 import { connect } from 'react-redux';
 import { AudioRecorder, AudioUtils } from 'react-native-audio';
@@ -11,7 +11,6 @@ class RecordAudio extends Component {
     // Determines where the audio file will be stored
     const audioPath = AudioUtils.DocumentDirectoryPath + '/test.aac';
 
-    // prepareRecordingPath is passed from RecordView.js
     this.props.prepareRecordingPath(audioPath);
 
     // Event listener to keep track of time
@@ -27,30 +26,30 @@ class RecordAudio extends Component {
   }
 
   onPressIn() {
+    console.log('starting to record');
     AudioRecorder.startRecording();
     this.props.startRecording();
   }
 
   onPressOut() {
+    console.log('stopped recording');
     AudioRecorder.stopRecording();
     this.props.stopRecording();
   }
 
   render() {
-    const { container, buttonActive, button } = styles;
+    const { container } = styles;
     return (
       <View style={container}>
         <TouchableHighlight
-          style={this.props.recording ? buttonActive : button}
-          onPressIn={this.onPressIn.bind(this)}
-          onPressOut={this.onPressOut.bind(this)}
+          onPressIn={() => this.onPressIn()}
+          onPressOut={() => this.onPressOut()}
         >
           <View>
             <Icon
               name="ios-mic"
               type="ionicon"
               color="#CD0240"
-              onPress={() => {}}
             />
           </View>
         </TouchableHighlight>
@@ -64,21 +63,25 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
   },
-  button: {
-    width: 40,
-    height: 40,
-    borderRadius: 40 / 2,
-  },
-  buttonActive: {
-    width: 40,
-    height: 40,
-    borderRadius: 40 / 2,
-  },
 });
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const { recording } = state.audio;
-  return { recording };
+  return {
+    prepareRecordingPath: (audioPath) => {
+      AudioRecorder.prepareRecordingAtPath(audioPath, { AudioEncoding: 'aac' });
+    },
+    recording
+  };
+};
+
+RecordAudio.propTypes = {
+  recording: PropTypes.bool,
+  startRecording: PropTypes.func,
+  stopRecording: PropTypes.func,
+  timeProgress: PropTypes.func,
+  recordingFinished: PropTypes.func,
+  prepareRecordingPath: PropTypes.func,
 };
 
 export default connect(mapStateToProps, {

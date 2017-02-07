@@ -5,7 +5,6 @@
 	};
 	objectVersion = 46;
 	objects = {
-
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -70,6 +69,7 @@
 		F1874E4C1E44F9B20010BE96 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F1874E381E44F9B20010BE96 /* Zocial.ttf */; };
 		F1874E531E44FA5A0010BE96 /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F1874E521E44FA290010BE96 /* libRNVectorIcons.a */; };
 		FCD4A41BBCD94A049937856C /* libRNBackgroundFetch.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EA5EC40A59634E3FA59D38A9 /* libRNBackgroundFetch.a */; };
+		6A605496BA10462080D39D2D /* libRNFetchBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7B115393913845C985F95EF7 /* libRNFetchBlob.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -439,6 +439,8 @@
 		F1874E371E44F9B20010BE96 /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = SimpleLineIcons.ttf; sourceTree = "<group>"; };
 		F1874E381E44F9B20010BE96 /* Zocial.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Zocial.ttf; sourceTree = "<group>"; };
 		F1874E4D1E44FA280010BE96 /* RNVectorIcons.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNVectorIcons.xcodeproj; path = "../node_modules/react-native-vector-icons/RNVectorIcons.xcodeproj"; sourceTree = "<group>"; };
+		991DB8E7587549C781C82FB3 /* RNFetchBlob.xcodeproj */ = {isa = PBXFileReference; name = "RNFetchBlob.xcodeproj"; path = "../node_modules/react-native-fetch-blob/ios/RNFetchBlob.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		7B115393913845C985F95EF7 /* libRNFetchBlob.a */ = {isa = PBXFileReference; name = "libRNFetchBlob.a"; path = "libRNFetchBlob.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -480,6 +482,7 @@
 				FCD4A41BBCD94A049937856C /* libRNBackgroundFetch.a in Frameworks */,
 				DEE78CFEF0954367BFBF42AD /* libCocoaLumberjack.a in Frameworks */,
 				95109C7CE9734A4ABFFF8CB5 /* libRNImagePicker.a in Frameworks */,
+				6A605496BA10462080D39D2D /* libRNFetchBlob.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -716,6 +719,7 @@
 				3069AB0C7FF44D7BA06EF769 /* RCTFBSDK.xcodeproj */,
 				C9845DEEF2BC46AF96000F1F /* RNAudio.xcodeproj */,
 				8182E6631EFC4F169D895E77 /* RNSound.xcodeproj */,
+				991DB8E7587549C781C82FB3 /* RNFetchBlob.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1378,6 +1382,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/leftYouNative.app/leftYouNative";
@@ -1395,6 +1400,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
