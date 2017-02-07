@@ -42,7 +42,7 @@ class LandingPage extends Component {
 
       // annotation objects (pins) for eggs waiting to be picked up
       eggPins: [],
-      pickupRadius: 0.0003,
+      pickupRadius: 0.003,
 
       // view toggler
       showEggs: true,
