@@ -268,10 +268,15 @@ class LandingPage extends Component {
             annotations={annotationsToDisplay}
           />
         </TouchableWithoutFeedback>
+        <View style={{marginTop: 20, marginBottom: 0}}>
+          {this.renderLeaveEggButton()}
+        
+        </View>
 
         <Picker
           selecedValue={this.state.eggsShown}
           onValueChange={filter => this.onPickerChange(filter)}
+          style={{marginTop: 0}}
         >
           <Picker.Item label="All eggs" value="all" />
           <Picker.Item label="Sent eggs" value="sent" />
@@ -280,7 +285,15 @@ class LandingPage extends Component {
 
         <View style={styles.touchStyle}>
 
-          {this.renderLeaveEggButton()}
+          <View style={{marginBottom: 20}}>
+            <Icon
+                name='ios-egg'
+                type= 'ionicon'
+                color='#f50'
+                size={50}
+                onPress={Actions.friends}
+            />
+          </View>
           <LoginButton
             readPermissions={['email', 'user_friends']}
             onLoginFinished={
@@ -314,14 +327,6 @@ class LandingPage extends Component {
             />
           </Modal>
         </View>
-        <View>
-          <Icon
-              name='ios-egg'
-              type= 'ionicon'
-              color='#f50'
-              onPress={Actions.friends}
-          />
-        </View>
       </View>
     );
   }
@@ -341,7 +346,7 @@ const styles = StyleSheet.create({
   },
   touchStyle: {
     flex: 0.35,
-    margin: 0
+    margin: 10
   },
   loginButton: {
     height: 30,
