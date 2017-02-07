@@ -38,32 +38,22 @@ class RecordAudio extends Component {
   }
 
   render() {
-    const { container } = styles;
     return (
-      <View style={container}>
-        <TouchableHighlight
-          onPressIn={() => this.onPressIn()}
-          onPressOut={() => this.onPressOut()}
-        >
-          <View>
-            <Icon
-              name="ios-mic"
-              type="ionicon"
-              color="#CD0240"
-            />
-          </View>
-        </TouchableHighlight>
-      </View>
+      <TouchableHighlight
+        onPressIn={() => this.onPressIn()}
+        onPressOut={() => this.onPressOut()}
+      >
+        <View>
+          <Icon
+            name="ios-mic"
+            type="ionicon"
+            color="#CD0240"
+          />
+        </View>
+      </TouchableHighlight>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-  },
-});
 
 const mapStateToProps = (state) => {
   const { recording } = state.audio;

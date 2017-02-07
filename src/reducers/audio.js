@@ -35,7 +35,7 @@ export const timeProgress = currentTime => ({
 });
 
 // Helper function!
-export const uploadAudioFile = audioUrl => {
+export const uploadAudioFile = (audioUrl) => {
   // Get a reference to audio folder in Firebase storage
   const filename = `${Date.now()}.aac`; //
   const clipRef = firebase.storage().ref().child('audio').child(filename);
@@ -45,16 +45,14 @@ export const uploadAudioFile = audioUrl => {
 
   // create Blob from file path
   return Blob.build(rnfbURI, { type: 'audio/aac;' })
-    .then(blob => {
+    .then((blob) => {
       return clipRef.put(blob, { contentType: 'audio/aac' }) // upload image using Firebase SDK
         .then(snapshot => {
           console.log('Uploaded audio file to Firebase storage.');
           blob.close();
         })
-        .then(() => clipRef)
-        .catch(err => {
-          console.error('Upload failed:', err);
-        });
+        .then(() => clipRef.getDownloadURL())
+        .catch(err => console.error('Upload failed:', err));
     })
     .catch(err => {
       console.error('func uploadAudioMsg failed:', err);

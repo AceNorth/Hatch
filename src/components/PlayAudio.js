@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { DeviceEventEmitter, View, StyleSheet, TouchableHighlight } from 'react-native';
+import { View, StyleSheet, TouchableHighlight } from 'react-native';
 import { connect } from 'react-redux';
 import Sound from 'react-native-sound';
 import { Icon } from 'react-native-elements';
@@ -35,61 +35,32 @@ class PlaybackMenu extends Component {
   }
 
   render() {
-    const { smallButton } = styles;
     return (
       <TouchableHighlight
         activeOpacity={0.8}
         underlayColor={'white'}
-        style={smallButton}
         onPress={this._togglePlayStop.bind(this)}
       >
         <View>
-        {
-          this.props.playing ?
-            <Icon
-              name="ios-pause"
-              type="ionicon"
-              color="#CD0240"
-            /> :
-            <Icon
-              name="ios-play"
-              type="ionicon"
-              color="#CD0240"
-            />
-        }
+          {
+            this.props.playing ?
+              <Icon
+                name="ios-pause"
+                type="ionicon"
+                color="#CD0240"
+              /> :
+              <Icon
+                name="ios-play"
+                type="ionicon"
+                color="#CD0240"
+              />
+          }
         </View>
       </TouchableHighlight>
 
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-  main: {
-    flex: 4,
-    alignItems: 'center',
-  },
-  footer: {
-    height: 80,
-    flexDirection: 'row',
-    justifyContent: 'space-between'
-  },
-  largeButton: {
-    width: 200,
-    height: 200,
-    borderRadius: 200 / 2
-  },
-  smallButton: {
-    width: 70,
-    height: 70,
-    marginRight: 8
-
-  },
-});
 
 const mapStateToProps = state => {
   const { playing, audioUrl } = state.audio;
