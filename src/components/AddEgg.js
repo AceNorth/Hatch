@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, Image, Picker, TextInput } from 'react-native';
+import { Text, View, StyleSheet, Image, Picker, TouchableHighlight } from 'react-native';
 import { connect } from 'react-redux';
 import axios from 'axios';
+import { AudioRecorder } from 'react-native-audio';
 import { Icon } from 'react-native-elements';
+
 import { CardSection, Button, InputNoLabel } from './common';
-import FriendsDropdown from './FriendsDropdown';
+import RecordAudio from './RecordAudio';
+import PlayAudio from './PlayAudio';
 import { showModal } from '../reducers/addNodeModal';
 import { setAnnotation, clearAnnotation } from '../reducers/map';
 import { tunnelIP } from '../TUNNELIP';
@@ -141,11 +144,16 @@ class AddEgg extends Component {
               value={this.state.text}
             />
           </View>
-          <Image
-            source={this.state.goHereImageSource}
-            style={{ width: 50, height: 50 }}
+          <TouchableHighlight
             onPress={() => this.selectImageForPicker('clue')}
-          />
+            activeOpacity={0.8}
+            underlayColor={'white'}
+          >
+            <Image
+              source={this.state.goHereImageSource}
+              style={{ width: 50, height: 50 }}
+            />
+          </TouchableHighlight>
         </CardSection>
         <CardSection>
           <View style={{ flexDirection: 'column', flex: 1 }}>
@@ -156,20 +164,23 @@ class AddEgg extends Component {
               value={this.state.payloadText}
             />
           </View>
+          <TouchableHighlight
+            onPress={() => this.selectImageForPicker('payload')}
+            activeOpacity={0.8}
+            underlayColor={'white'}
+          >
             <Image
               source={this.state.payloadImageSource}
               style={{ width: 50, height: 50 }}
-              onPress={() => this.selectImageForPicker('payload')}
             />
+          </TouchableHighlight>
         </CardSection>
         <CardSection style={{ flex: 1 }}>
-          <Icon
-            name="ios-mic"
-            type="ionicon"
-            color="#CD0240"
-            onPress={() => {}}
-
-          />
+          {
+            this.props.stoppedRecording
+            ? <PlayAudio />
+            : <RecordAudio prepareRecordingPath={this.props.prepareRecordingPath} />
+          }
           <Text style={{ paddingLeft: 15, paddingRight: 5 }}>Tap and hold to record a voice message for your egg.</Text>
         </CardSection>
         <CardSection >
@@ -217,16 +228,19 @@ const styles = StyleSheet.create({
 });
 
 
-const mapStateToProps = (state) => {
-  return {
-    showAddNodeModal: state.addNodeModal.showAddNodeModal,
-    annotation: state.map.annotation,
-    senderId: state.auth.fbId,
-    friends: state.friends.allFriends,
-  };
-}
+const mapStateToProps = state => ({
+  showAddNodeModal: state.addNodeModal.showAddNodeModal,
+  annotation: state.map.annotation,
+  senderId: state.auth.fbId,
+  friends: state.friends.allFriends,
+  stoppedRecording: state.audio.stoppedRecording,
+  currentTime: state.audio.currentTime,
+  prepareRecordingPath: (audioPath) => {
+    AudioRecorder.prepareRecordingAtPath(audioPath, { AudioEncoding: 'aac' });
+  },
+});
 
-const mapDispatchToProps = (dispatch, ownProps) => {
+const mapDispatchToProps = (dispatch) => {
   return {
     showModal: function(boolean) {
       dispatch(showModal(boolean));
@@ -237,7 +251,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     clearAnnotation: function() {
       dispatch(clearAnnotation());
     }
-  }
-}
+  };
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddEgg);
