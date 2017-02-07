@@ -374,38 +374,34 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    setSelectedEgg: (eggId) => {
-      dispatch(setSelectedEgg(eggId));
-    },
-    fetchAllEggs: (userId) => {
-      dispatch(fetchAllEggs(userId));
-    },
-    showModal: (boolean) => {
-      dispatch(showModal(boolean));
-    },
-    setAnnotation: (annotation) => {
-      dispatch(setAnnotation(annotation));
-    },
-    clearAnnotation: () => {
-      dispatch(clearAnnotation());
-    },
-    whoami: (user) => {
-      dispatch(whoami(user));
-    },
-  };
-};
+const mapDispatchToProps = dispatch => ({
+  setSelectedEgg: (eggId) => {
+    dispatch(setSelectedEgg(eggId));
+  },
+  fetchAllEggs: (userId) => {
+    dispatch(fetchAllEggs(userId));
+  },
+  showModal: (boolean) => {
+    dispatch(showModal(boolean));
+  },
+  setAnnotation: (annotation) => {
+    dispatch(setAnnotation(annotation));
+  },
+  clearAnnotation: () => {
+    dispatch(clearAnnotation());
+  },
+  whoami: (user) => {
+    dispatch(whoami(user));
+  },
+});
 
 LandingPage.propTypes = {
-  showAddNodeModal: PropTypes.func,
-  annotation: PropTypes.shape({
-    length: PropTypes.number,
-  }),
+  showAddNodeModal: PropTypes.boolean,
+  annotation: PropTypes.array,
   selectedEgg: PropTypes.number,
   allEggs: PropTypes.object,
   user: PropTypes.shape({
-    fbId: PropTypes.number
+    fbId: PropTypes.string
   }),
   setSelectedEgg: PropTypes.func,
   fetchAllEggs: PropTypes.func,

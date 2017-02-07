@@ -1,62 +1,74 @@
 import React, { Component } from 'react';
 import { Text, View, StyleSheet, Image, Picker, TouchableHighlight } from 'react-native';
 import { connect } from 'react-redux';
-import axios from 'axios';
-import { AudioRecorder } from 'react-native-audio';
-import {addEggToDbAndStore} from '../reducers/eggs';
-import { Icon } from 'react-native-elements';
+import { addEggToDbAndStore } from '../reducers/eggs';
 
 import { CardSection, Button, InputNoLabel } from './common';
 import RecordAudio from './RecordAudio';
 import PlayAudio from './PlayAudio';
 import { showModal } from '../reducers/addNodeModal';
 import { setAnnotation, clearAnnotation } from '../reducers/map';
+import { newRecording, uploadAudioFile } from '../reducers/audio';
 import { tunnelIP } from '../TUNNELIP';
 
 class AddEgg extends Component {
-    constructor(props){
-        super(props);
+  constructor(props){
+    super(props);
 
-        this.state = {
-            text: '',
-            payloadText: '',
-            payloadImage: '',
-            payloadImageSource: {uri: 'https://facebook.github.io/react/img/logo_og.png'},
-            payloadImageBuffer: null,
-            goHereImageSource: {uri: 'https://facebook.github.io/react/img/logo_og.png'},
-            goHereImageBuffer: null,
-            eggs: [],
-            recipient: this.props.friends[0].fbId}
-        ;
+    this.state = {
+      text: '',
+      payloadText: '',
+      payloadImage: '',
+      payloadImageSource: { uri: `${tunnelIP}/addImgOrange.png` },
+      payloadImageBuffer: null,
+      goHereImageSource: { uri: `${tunnelIP}/addImgRed.png` },
+      goHereImageBuffer: null,
+      eggs: [],
+      recipient: this.props.friends[0].fbId
+    };
 
-        this.handleInputChange=this.handleInputChange.bind(this);
-        this.onSubmitNode = this.onSubmitNode.bind(this);
-        this.onCancelSubmitNode = this.onCancelSubmitNode.bind(this);
-        this.showImagePicker = this.showImagePicker.bind(this);
+    this.handleInputChange=this.handleInputChange.bind(this);
+    this.onSubmitNode = this.onSubmitNode.bind(this);
+    this.onCancelSubmitNode = this.onCancelSubmitNode.bind(this);
+    this.showImagePicker = this.showImagePicker.bind(this);
+  }
 
+  onSubmitNode() {
+    const egg = {
+      goHereImage: this.state.goHereImageSource,
+      goHereText: this.state.text,
+      goHereImageBuffer: this.state.goHereImageBuffer,
+      latitude: this.props.annotation[0].latitude,
+      longitude: this.props.annotation[0].longitude,
+      payloadText: this.state.payloadText,
+      payloadImage: this.state.payloadImageSource,
+      payloadImageBuffer: this.state.payloadImageBuffer,
+      senderId: this.props.senderId,
+      recipient: this.state.recipient,
+    };
+
+    // If user recorded audio...
+    if (this.props.audioUrl) {
+
+      // Send that instead of payload image & set type to 'Audio'
+      egg.payloadImageBuffer = null;
+      egg.payloadType = 'Audio';
+
+      // Store audio in Firebase
+      uploadAudioFile(this.props.audioUrl)
+        .then((downloadUrl) => {
+          console.log('downloadUrl', downloadUrl);
+
+          // Add url to egg
+          egg.audioPath = downloadUrl;
+        });
     }
+    this.props.addEggToDbAndStore(egg);
 
-
-    onSubmitNode() {
-        const egg = {
-            goHereImage: this.state.goHereImageSource,
-            goHereText: this.state.text,
-            goHereImageBuffer: this.state.goHereImageBuffer,
-            latitude: this.props.annotation[0].latitude,
-            longitude: this.props.annotation[0].longitude,
-            payloadText: this.state.payloadText,
-            payloadImage: this.state.payloadImageSource,
-            payloadImageBuffer: this.state.payloadImageBuffer,
-            senderId: this.props.senderId,
-            recipient: this.state.recipient
-        }
-
-        this.props.addEggToDbAndStore(egg);
-
-        this.setState({ text:'', payloadText: '', goHereText: '', recipient:this.props.friends[0].fbId});
-        this.props.showModal(false);
-        this.props.clearAnnotation();
-
+    this.setState({ text:'', payloadText: '', goHereText: '', recipient:this.props.friends[0].fbId});
+    this.props.showModal(false);
+    this.props.clearAnnotation();
+    this.props.newRecording();
   }
 
   onCancelSubmitNode() {
@@ -66,7 +78,7 @@ class AddEgg extends Component {
   }
 
   selectImageForPicker(type) {
-    if (type == 'clue') {
+    if (type === 'clue') {
       this.showImagePicker('clue');
     } else {
       this.showImagePicker('pay');
@@ -74,7 +86,6 @@ class AddEgg extends Component {
   }
 
   showImagePicker(type) {
-
     const options = {
       storageOptions: {
         skipBackup: true,
@@ -129,7 +140,6 @@ class AddEgg extends Component {
       [field]: e });
   }
 
-
   render() {
     const { containerStyle, textStyle, cardSectionStyle } = styles;
     return (
@@ -178,9 +188,15 @@ class AddEgg extends Component {
           {
             this.props.stoppedRecording
             ? <PlayAudio />
-            : <RecordAudio prepareRecordingPath={this.props.prepareRecordingPath} />
+            : <RecordAudio />
           }
-          <Text style={{ paddingLeft: 15, paddingRight: 5 }}>Tap and hold to record a voice message for your egg.</Text>
+
+          {
+            this.props.stoppedRecording
+            ? <Text style={textStyle}>You recorded a voice message!</Text>
+            : <Text style={textStyle}>Tap and hold to record a voice message for your egg.</Text>
+          }
+
         </CardSection>
         <CardSection >
           <Picker
@@ -188,7 +204,7 @@ class AddEgg extends Component {
             selectedValue={this.state.recipient}
             onValueChange={(friend) => this.setState({ recipient: friend })}
           >
-            {this.props.friends.map(friend => (<Picker.Item label={friend.name} value={friend.fbId} />))}
+            {this.props.friends.map(friend => (<Picker.Item label={friend.name} value={friend.fbId} key={friend.fbId} />))}
           </Picker>
         </CardSection>
 
@@ -209,9 +225,8 @@ const styles = StyleSheet.create({
   },
   textStyle: {
     flex: 1,
-    fontSize: 18,
-    textAlign: 'center',
-    lineHeight: 40
+    paddingLeft: 15,
+    paddingRight: 5,
   },
   containerStyle: {
     backgroundColor: 'rgba(0, 0, 0, 0.75)',
@@ -234,9 +249,7 @@ const mapStateToProps = state => ({
   friends: state.friends.allFriends,
   stoppedRecording: state.audio.stoppedRecording,
   currentTime: state.audio.currentTime,
-  prepareRecordingPath: (audioPath) => {
-    AudioRecorder.prepareRecordingAtPath(audioPath, { AudioEncoding: 'aac' });
-  },
+  audioUrl: state.audio.audioUrl,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -252,6 +265,9 @@ const mapDispatchToProps = dispatch => ({
   addEggToDbAndStore: function (egg) {
     dispatch(addEggToDbAndStore(egg));
   },
+  newRecording: function() {
+    dispatch(newRecording());
+  }
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddEgg);
