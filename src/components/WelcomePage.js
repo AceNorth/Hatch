@@ -14,7 +14,7 @@ class WelcomePage extends Component {
     const { container, image } = styles;
     return (
       <View style={container}>
-        <Image style={image} source={{uri: `${tunnelIP}/eggboy.png`}} />
+        <Image style={image} source={{uri: `${tunnelIP}/eggboyHUGE.png`}} />
       </View>
     );
   }
@@ -28,8 +28,8 @@ const styles = {
     alignItems: 'center'
   },
   image: {
-    width: 105,
-    height: 135,
+    width: 189,
+    height: 243,
     alignSelf: 'center'
   }
 };
