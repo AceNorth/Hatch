@@ -2,29 +2,33 @@
 
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { View, Text, Image, StyleSheet, MapView, Picker,
-         TextInput, TouchableWithoutFeedback, Modal, Dimensions } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  MapView,
+  TouchableWithoutFeedback,
+  Modal,
+  Dimensions,
+  Picker
+} from 'react-native';
 import { Actions } from 'react-native-router-flux';
-import { Icon } from 'react-native-elements'
-import store from '../store';
+import { Icon } from 'react-native-elements';
 
-//Components
-import  AddEgg  from './AddEgg';
+// Components
+import AddEgg from './AddEgg';
 import { Button } from './common';
 
-//Reducers
+// Reducers
 import { setSelectedEgg, fetchAllEggs } from '../reducers/eggs';
-import {showModal} from '../reducers/addNodeModal';
+import { showModal } from '../reducers/addNodeModal';
 import { setAnnotation, clearAnnotation } from '../reducers/map';
 
-import axios from 'axios';
 import { tunnelIP } from '../TUNNELIP';
 
-//Fetches device height and width
+// Fetches device height and width
 let { height, width } = Dimensions.get('window');
 const DEVICE_WIDTH = width;
 const DEVICE_HEIGHT = height;
-
 
 class LandingPage extends Component {
 
@@ -51,10 +55,10 @@ class LandingPage extends Component {
 
   componentWillMount() {
   // set timer to update "current position" on state every second
-        this.timerID = setInterval(
-          () => this.updateCurrentPositionAndPins(),
-          10000
-        );
+    this.timerID = setInterval(
+      () => this.updateCurrentPositionAndPins(),
+      10000
+    );
     // fetch all eggs belonging to the current user
     this.props.fetchAllEggs(this.props.user.fbId);
   }
@@ -81,16 +85,17 @@ class LandingPage extends Component {
 
 
       for (let key in this.props.allEggs) {
-          let egg = this.props.allEggs[key];
-          if (egg.receiverId == this.props.user.fbId) {
-              let newPickup = this.createStaticAnnotation(egg.longitude, egg.latitude, egg.sender, egg.id, egg.goHereText);
-              pickUps.push(newPickup);
-          }
+        let egg = this.props.allEggs[key];
+        if (egg.receiverId == this.props.user.fbId) {
+          console.log('egg', egg)
+          let newPickup = this.createStaticAnnotation(egg.longitude, egg.latitude, egg.sender, egg.id, egg.goHereText);
+          pickUps.push(newPickup);
+        }
 
-          if (egg.senderId == this.props.user.fbId) {
-              let newDropoff = this.createStaticDropAnnotation(egg.longitude, egg.latitude, egg.receiver, egg.id, egg.goHereText);
-              dropOffs.push(newDropoff);
-          }
+        if (egg.senderId == this.props.user.fbId) {
+          let newDropoff = this.createStaticDropAnnotation(egg.longitude, egg.latitude, egg.receiver, egg.id, egg.goHereText);
+          dropOffs.push(newDropoff);
+        }
       }
 
       this.setState({ pickups: pickUps, dropoffs: dropOffs });
@@ -105,8 +110,8 @@ class LandingPage extends Component {
    let eggLong = Number(egg.longitude)
    let eggLat = Number(egg.latitude)
 
-   let fence = Math.pow((coordinatesObject.longitude-eggLong), 2)
-                + Math.pow((coordinatesObject.latitude-eggLat), 2);
+   let fence = Math.pow((coordinatesObject.longitude - eggLong), 2)
+                + Math.pow((coordinatesObject.latitude - eggLat), 2);
    if (fence < Math.pow(this.state.pickupRadius, 2)) {
      return true;
    }
@@ -115,7 +120,7 @@ class LandingPage extends Component {
 
   onMapLongPress(event) {
     if (!this.props.annotation.length) {
-      let options = {
+      const options = {
         enableHighAccuracy: true,
         timeout: 5000,
         maximumAge: 1
@@ -123,11 +128,8 @@ class LandingPage extends Component {
 
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          let newA = this.createAnnotation(position.coords.longitude, position.coords.latitude);
-
-          // this.setState({dropoffs: [...this.state.dropoffs, newA]})
-          //   console.log('---------->this.state', this.state);
-            this.props.setAnnotation(newA);
+          const newA = this.createAnnotation(position.coords.longitude, position.coords.latitude);
+          this.props.setAnnotation(newA);
         }
         , null, options);
     }
@@ -140,7 +142,7 @@ class LandingPage extends Component {
       draggable: true,
       onDragStateChange: (event) => {
         if (event.state === 'idle') {
-          let newAnnotation= this.createAnnotation(event.longitude, event.latitude);
+          const newAnnotation = this.createAnnotation(event.longitude, event.latitude);
           this.props.setAnnotation(newAnnotation);
         }
       },
@@ -150,10 +152,9 @@ class LandingPage extends Component {
   createStaticAnnotation(longitude, latitude, sender, eggId, goHereText) {
     // we might want to change what's displayed here later, this is just
     // a placeholder example fo the info we can put on pins
-    
-    let senderId = sender.id
-    let sentFrom = sender.firstName + " " + sender.lastName
-    let pinSubtitle = "Egg from " + sentFrom ;
+    const senderId = sender.id;
+    const sentFrom = `${sender.firstName} ${sender.lastName}`;
+    const pinSubtitle = `Egg from ${sentFrom}`;
     return {
       longitude,
       latitude,
@@ -164,14 +165,14 @@ class LandingPage extends Component {
       tintColor: MapView.PinColors.PURPLE,
       draggable: false
     };
-  };
+  }
 
   createStaticDropAnnotation(longitude, latitude, receiver, eggId, goHereText) {
     // we might want to change what's displayed here later, this is just
     // a placeholder example fo the info we can put on pins
-    
-    let sentTo = receiver.firstName + " " + receiver.lastName
-    let pinSubtitle = "Egg to " + sentTo ;
+
+    const sentTo = `${receiver.firstName} ${receiver.lastName}`;
+    const pinSubtitle = `Egg to ${sentTo}`;
     return {
       longitude,
       latitude,
@@ -181,7 +182,7 @@ class LandingPage extends Component {
       tintColor: MapView.PinColors.RED,
       draggable: false
     };
-  };
+  }
 
   renderLeaveEggButton() {
     if (this.props.annotation.length) {
@@ -189,32 +190,33 @@ class LandingPage extends Component {
         <Button onPress={this.onAddNodeButtonPress.bind(this)}>
         Leave an egg at the current pin
         </Button>
-        )
+      );
     }
   }
 
-  pickupPayload(selectedAnnotation){
-      this.props.setSelectedEgg(selectedAnnotation.eggId);
-      return (Actions.viewPayload())
+  pickupPayload(selectedAnnotation) {
+    this.props.setSelectedEgg(selectedAnnotation.eggId);
+    return (Actions.viewPayload());
   }
 
   setRenderAnnotations(annotations){
     annotations.map(annotation => {
-      if(annotations){
-        if(this.isWithinFence(this.state.currentPosition.coords, annotation) && annotation.senderId) {
+      if (annotations){
+        if (this.isWithinFence(this.state.currentPosition.coords, annotation) && annotation.senderId) {
           annotation.tintColor = MapView.PinColors.GREEN,
           annotation.rightCalloutView = (
             <Button
-              color='#517fa4'
+              color="#517fa4"
               onPress={(e) => this.pickupPayload(annotation, e)}
-              >Psst...
+            >
+              Psst...
             </Button>
           );
         }
       }
     });
 
-    return annotations
+    return annotations;
   }
 
   changeShownEggs(eggsToShow) {
@@ -225,21 +227,22 @@ class LandingPage extends Component {
         showEggs = this.setRenderAnnotations(this.state.pickups.concat(this.state.dropoffs));
         break;
       case 'sent':
-        //change annotations to just include dropoffs
+        // change annotations to just include dropoffs
         showEggs = this.setRenderAnnotations(this.state.dropoffs);
         break;
       case 'received':
-        //change annotations to just include dropoffs
+        // change annotations to just include dropoffs
         showEggs = this.setRenderAnnotations(this.state.pickups);
         break;
       default:
-        return showEggs;          
-    };
-    this.setState({eggsToDisplay: showEggs});
+        return showEggs;
+    }
+
+    this.setState({ eggsToDisplay: showEggs });
   }
 
   onPickerChange(displayEggs) {
-    this.setState({eggsShown: displayEggs})
+    this.setState({ eggsShown: displayEggs });
     this.changeShownEggs(displayEggs);
     this.forceUpdate();
   }
@@ -250,7 +253,7 @@ class LandingPage extends Component {
 
     return (
       <View style={styles.viewStyle}>
-        <TouchableWithoutFeedback onLongPress={ this.onMapLongPress }>
+        <TouchableWithoutFeedback onLongPress={this.onMapLongPress}>
           <MapView
             style={styles.mapStyle}
             showsUserLocation={true}
@@ -260,8 +263,9 @@ class LandingPage extends Component {
         </TouchableWithoutFeedback>
 
         <Picker
-          selecedValue= {this.state.eggsShown}
-          onValueChange= {filter => this.onPickerChange(filter)} >
+          selecedValue={this.state.eggsShown}
+          onValueChange={filter => this.onPickerChange(filter)}
+        >
           <Picker.Item label="All eggs" value="all" />
           <Picker.Item label="Sent eggs" value="sent" />
           <Picker.Item label="Received eggs" value="received" />
@@ -272,14 +276,14 @@ class LandingPage extends Component {
           {this.renderLeaveEggButton()}
 
           <Modal
-              visible={this.props.showAddNodeModal}
-              transparent
-              animationType="fade"
-              onRequestClose={() => {}}
+            visible={this.props.showAddNodeModal}
+            transparent
+            animationType="fade"
+            onRequestClose={() => {}}
           >
             <AddEgg
-                {...this.state}>
-            </AddEgg>
+              {...this.state}
+            />
           </Modal>
         </View>
         <View>
@@ -313,12 +317,10 @@ const styles = StyleSheet.create({
   }
 });
 
-const mapStateToProps = (state, ownProps) => {
-
+const mapStateToProps = (state) => {
   const user = state.auth;
-
-  let selectedEgg = state.eggs.selectedEgg;
-  let allEggs = state.eggs.allEggs;
+  const selectedEgg = state.eggs.selectedEgg;
+  const allEggs = state.eggs.allEggs;
 
   return {
     showAddNodeModal: state.addNodeModal.showAddNodeModal,
@@ -329,21 +331,21 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    setSelectedEgg: function(eggId) {
-        dispatch(setSelectedEgg(eggId));
-      },
-    fetchAllEggs: function(userId) {
+    setSelectedEgg: (eggId) => {
+      dispatch(setSelectedEgg(eggId));
+    },
+    fetchAllEggs: (userId) => {
       dispatch(fetchAllEggs(userId));
     },
-    showModal: function(boolean) {
-        dispatch(showModal(boolean));
+    showModal: (boolean) => {
+      dispatch(showModal(boolean));
     },
-    setAnnotation: function(annotation) {
+    setAnnotation: (annotation) => {
       dispatch(setAnnotation(annotation));
     },
-    clearAnnotation: function() {
+    clearAnnotation: () => {
       dispatch(clearAnnotation());
     }
   };
