@@ -4,7 +4,7 @@ import { StyleSheet, ListView } from 'react-native';
 
 import SingleFriend from './SingleFriend';
 
-class Friends extends Component {
+class FriendsDropdown extends Component {
   componentWillMount() {
     this.createDataSource(this.props.allFriends);
   }
@@ -40,9 +40,10 @@ class Friends extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5FCFF',
+    backgroundColor: '#fff',
     paddingTop: 65,
     textAlign: 'left',
+    height: 200,
   },
   welcome: {
     fontSize: 20,
@@ -53,9 +54,9 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = ({ friends }) => ({ allFriends: friends.allFriends });
 
-Friends.propTypes = {
+FriendsDropdown.propTypes = {
   allFriends: PropTypes.arrayOf(PropTypes.object),
 };
 
-export default connect(mapStateToProps)(Friends);
+export default connect(mapStateToProps)(FriendsDropdown);
 
