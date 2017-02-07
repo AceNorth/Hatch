@@ -97,6 +97,7 @@ class LandingPage extends Component {
           dropOffs.push(newDropoff);
         }
       }
+
       this.setState({ pickups: pickUps, dropoffs: dropOffs });
 
       // initially sets eggs to all pickups and dropoffs
@@ -198,8 +199,7 @@ class LandingPage extends Component {
     return (Actions.viewPayload());
   }
 
-  setRenderAnnotations(annotations) {
-    // console.log('setRenderAnnotations, e', e)
+  setRenderAnnotations(annotations){
     annotations.map(annotation => {
       if (annotations){
         if (this.isWithinFence(this.state.currentPosition.coords, annotation) && annotation.senderId) {
@@ -249,6 +249,7 @@ class LandingPage extends Component {
 
   render() {
     const position = this.state.currentPosition;
+    let annotationsToDisplay = [...this.state.eggsToDisplay, ...this.props.annotation]
 
     return (
       <View style={styles.viewStyle}>
@@ -256,8 +257,8 @@ class LandingPage extends Component {
           <MapView
             style={styles.mapStyle}
             showsUserLocation={true}
-            region={{ latitude: position.coords.latitude, longitude: position.coords.longitude, latitudeDelta: .01, longitudeDelta: .01 }}
-            annotations={this.state.eggsToDisplay}
+            region={{latitude: position.coords.latitude, longitude: position.coords.longitude, latitudeDelta: .01, longitudeDelta: .01}}
+            annotations={annotationsToDisplay}
           />
         </TouchableWithoutFeedback>
 
@@ -271,8 +272,6 @@ class LandingPage extends Component {
         </Picker>
 
         <View style={styles.touchStyle}>
-          {/*<Button onPress={Actions.friends}> My Egg Basket </Button>*/}
-          {/*<Image style={{width: 50, height: 50}} source={{uri: this.state.goHereImage.uri}}></Image>*/}
 
           {this.renderLeaveEggButton()}
 

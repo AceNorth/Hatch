@@ -17,6 +17,7 @@ const selectEgg = eggId => ({ type: SELECT_EGG, eggId });
 const fetchEggs = eggs => ({ type: FETCH_EGGS, eggs });
 const deleteEggFromState = egg => ({ type: DELETE_EGG, egg });
 const pickupThisEgg = egg => ({ type: PICKUP_EGG, egg});
+const addEggToStore = egg => ({ type: ADD_EGG, egg});
 
 /* ------------------    REDUCER    --------------------- */
 
@@ -58,6 +59,14 @@ export const setSelectedEgg = eggId => dispatch => {
     dispatch(selectEgg(eggId));
   // .catch(err => console.error('Problem setting egg', err));
 };
+
+export const addEggToDbAndStore = egg => dispatch =>{
+    axios.post(`${tunnelIP}/api/egg`, egg)
+        .then((newEgg)=>{
+            dispatch(addEggToStore(newEgg.data));
+        })
+        .catch(err => console.log('addEggToDbAndStore in eggs reducer error', err))
+}
 
 export const fetchAllEggs = userId => dispatch => {
     axios.get(`${tunnelIP}/api/egg/user/${userId}`)
