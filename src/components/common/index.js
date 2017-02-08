@@ -6,3 +6,4 @@ export * from './Input';
 export * from './InputNoLabel';
 export * from './Spinner';
 export * from './Confirm';
+export * from './JeanSection';

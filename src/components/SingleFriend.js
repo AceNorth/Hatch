@@ -3,7 +3,7 @@ import { Text, TouchableHighlight, Image, View } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 
-import { CardSection } from './common';
+import { JeanSection } from './common';
 import { selectFriend } from '../reducers/friends';
 
 class SingleFriend extends Component {
@@ -15,25 +15,29 @@ class SingleFriend extends Component {
   render() {
     const { name, picture } = this.props.friend;
     return (
-      <CardSection>
-        <TouchableHighlight onPress={this.onPress.bind(this)}>
-          <View style={styles.container}>
+      <JeanSection>
+        <TouchableHighlight
+          onPress={this.onPress.bind(this)}
+          activeOpacity={0.8}
+          underlayColor={'white'}
+        >
+          <View style={styles.friend}>
             <Image style={styles.photo} source={{ uri: picture.data.url }} />
             <Text style={styles.name}>
               {name}
             </Text>
           </View>
         </TouchableHighlight>
-      </CardSection>
+      </JeanSection>
     );
   }
 }
 
 const styles = {
-  container: {
+  friend: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-around',
   },
   name: {
     fontSize: 18,

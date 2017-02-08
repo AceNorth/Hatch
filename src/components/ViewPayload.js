@@ -60,7 +60,6 @@ class ViewPayload extends Component {
             <Text>{ this.state.viewEgg.payload.text }</Text>
             {
               (this.state.viewEgg.payload.type === 'Audio') ?
-                this.props.fetchAudio(this.state.viewEgg.payload.path)
                 <View>
                   <PlayAudio payloadAudioUrl={this.state.viewEgg.payload.path} />
                   <Text>Your egg hatched an audio message!</Text>
