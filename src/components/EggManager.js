@@ -2,13 +2,13 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 import { View, Text, TouchableOpacity, MapView, ScrollView, Picker, Dimensions } from 'react-native';
-import { Card, CardSection } from './common';
+import { Card, CardSection, JeanSection } from './common';
 import { setSelectedEgg, deleteEgg } from '../reducers/eggs';
 import EggManagerModal from './EggManagerModal';
 import { LoginButton } from 'react-native-fbsdk';
 
 
-class EggManager extends Component { 
+class EggManager extends Component {
   constructor(props) {
     super(props);
     // console.log('PROPS: ', props)
@@ -56,7 +56,7 @@ class EggManager extends Component {
         });
         break;
       default:
-        return;          
+        return;
     };
     this.setState({displayedEggIds});
   }
@@ -89,7 +89,7 @@ class EggManager extends Component {
 
     if (!egg.payload) {return};
     let payloadType = egg.payload.type;
-    
+
     switch (payloadType) {
       case 'Text':
         return (<Text style={styles.textStyle}> { egg.payload.text } </Text>)
@@ -105,27 +105,30 @@ class EggManager extends Component {
     let displayDate = new Date(Date.parse(egg.createdAt)).toString().split(" ").slice(0,4).join(" ");
     let displayColor = (egg.pickedUp) ? "#8db7fc" : "#2f7efc";
     return (
-      <TouchableOpacity 
-        key={egg.id} 
+      <TouchableOpacity
+        key={egg.id}
         onLongPress={() => this.onEggPress(egg)}
-        style={{backgroundColor: displayColor}}
+        style={{ backgroundColor: displayColor }}
       >
         <Card>
-          <CardSection>
-            <Text> GO HERE: {egg.goHereText} </Text>
-          </CardSection>
-          <CardSection>
-            <Text> TO: {egg.receiver.firstName + " " + egg.receiver.lastName} </Text>
-          </CardSection>
-          <CardSection>
-            <Text> FROM: {egg.sender.firstName + " " + egg.sender.lastName} </Text>
-          </CardSection>
-          <CardSection>
-            <Text> PAYLOAD: {egg.payload.text} </Text>
-          </CardSection>
-          <CardSection>
-            <Text> CREATED ON: {displayDate} </Text>
-          </CardSection>
+          <View style={styles.eggCard}>
+            <View style={styles.oneLine}>
+              <Text style={styles.boldText}>Instructions:  </Text>
+              <Text style={styles.text}>{egg.goHereText}</Text>
+            </View>
+            <View style={styles.oneLine}>
+              <Text style={styles.boldText}>To:  </Text>
+              <Text style={styles.text}>{egg.receiver.firstName + " " + egg.receiver.lastName}</Text>
+            </View>
+            <View style={styles.oneLine}>
+              <Text style={styles.boldText}>From:  </Text>
+              <Text style={styles.text}>{egg.sender.firstName + " " + egg.sender.lastName}</Text>
+            </View>
+            <View style={styles.oneLine}>
+              <Text style={styles.boldText}>Sent:  </Text>
+              <Text style={styles.text}>{displayDate}</Text>
+            </View>
+          </View>
         </Card>
       </TouchableOpacity>
       )
@@ -163,14 +166,14 @@ class EggManager extends Component {
               <View style={styles.lineItems}>
                   <View style={styles.mapStyle} >
                     <MapView
-                    style={{height: 250, width: 200, margin: 0}}
+                    style={{ height: 250, width: 200, margin: 0 }}
                     showsUserLocation={false}
-                    region={{latitude: this.state.chosenEgg.latitude, longitude: this.state.chosenEgg.longitude, latitudeDelta: .01, longitudeDelta: .01}}
+                    region={{ latitude: this.state.chosenEgg.latitude, longitude: this.state.chosenEgg.longitude, latitudeDelta: .01, longitudeDelta: .01 }}
                       annotations={[{
                         longitude: this.state.chosenEgg.longitude,
                         latitude: this.state.chosenEgg.latitude,
                         tintColor: MapView.PinColors.PURPLE,
-                        draggable: false 
+                        draggable: false
                       }]}
                     />
                   </View>
@@ -219,10 +222,35 @@ const styles = {
     backgroundColor: '#f4f281',
     justifyContent: 'center',
   },
+  eggCard: {
+    borderBottomWidth: 1,
+    padding: 10,
+    marginHorizontal: 20,
+    backgroundColor: '#fff',
+    justifyContent: 'center',
+    flexDirection: 'column',
+    borderColor: '#ddd',
+    position: 'relative',
+    borderRadius: 4,
+    alignItems: 'stretch',
+  },
+  oneLine: {
+    flex: 1,
+    flexDirection: 'row',
+    paddingTop: 3,
+    paddingBottom: 3,
+  },
   text: {
-    textAlign: 'center',
-    fontSize: 25,
-    color: '#fff',
+    textAlign: 'left',
+    fontSize: 16,
+    color: '#000',
+    fontWeight: '200',
+    flex: 1,
+  },
+  boldText: {
+    textAlign: 'left',
+    fontSize: 16,
+    color: '#000',
     fontWeight: '600',
   },
   managerStyle: {
@@ -253,10 +281,10 @@ const styles = {
   },
 };
 
-const mapStateToProps = (state, ownProps) => { 
+const mapStateToProps = (state, ownProps) => {
   const allEggs = state.eggs.allEggs;
   const selectedFriendId = state.friends.selectedFriendId;
-  return { allEggs, selectedFriendId }; 
+  return { allEggs, selectedFriendId };
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {

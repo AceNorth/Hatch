@@ -43,9 +43,9 @@ export default function (state = initialState, action) {
         case DELETE_EGG:
             newState = _.omit(newState, action.egg.id);
             break;
-        case PICKUP_EGG:    
+        case PICKUP_EGG:
             newState[egg.id].pickedUp = true;
-            break; 
+            break;
         default:
             return state;
     }
