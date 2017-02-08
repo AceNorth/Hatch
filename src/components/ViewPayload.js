@@ -22,6 +22,10 @@ class ViewPayload extends Component {
     this.setState({viewEgg: this.props.allEggs[this.props.selectedEgg]})
       let goHereImage2;
       axios.get(`${tunnelIP}/api/egg/goHereImage/`+ this.props.selectedEgg)
+          .then(response => {
+              goHereImage2 = response.data;
+              this.setState({goHereImage: goHereImage2});
+          })
          
       let payloadImage2;
       axios.get(`${tunnelIP}/api/egg/payloadImage/`+ this.props.allEggs[this.props.selectedEgg].payloadId)
