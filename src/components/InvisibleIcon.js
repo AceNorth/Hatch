@@ -6,10 +6,10 @@ const InvisibleIcon = (props) => {
   const {onPress, children} = props;
   const {iconStyle, textStyle} = styles;
   return (
-      <Icon 
+      <Icon
         name='ios-pin'
         type= 'ionicon'
-        color='#fff'
+        color='#3a3c82'
         size={50}
         onPress={onPress}
       />

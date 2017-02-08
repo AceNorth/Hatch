@@ -1,5 +1,6 @@
 import firebase from 'firebase';
 import RNFetchBlob from 'react-native-fetch-blob';
+import RNFS from 'react-native-fs';
 
 const Blob = RNFetchBlob.polyfill.Blob;
 
@@ -8,7 +9,7 @@ window.Blob = Blob;
 
 /* --------------    ACTION CONSTANTS    ---------------- */
 
-const NEW_RECORDING = 'NEW_RECORDING';
+const RESET_AUDIO_STATE = 'RESET_AUDIO_STATE';
 const START_RECORDING = 'START_RECORDING';
 const STOP_RECORDING = 'STOP_RECORDING';
 const TIME_PROGRESS = 'TIME_PROGRESS';
@@ -18,7 +19,7 @@ const STOP_PLAY = 'STOP_PLAY';
 
 /* --------------    ACTION CREATORS    ----------------- */
 
-export const newRecording = () => ({ type: NEW_RECORDING });
+export const resetAudioState = () => ({ type: RESET_AUDIO_STATE });
 export const startRecording = () => ({ type: START_RECORDING });
 export const stopRecording = () => ({ type: STOP_RECORDING });
 export const startPlay = () => ({ type: START_PLAY });
@@ -47,7 +48,7 @@ export const uploadAudioFile = (audioUrl) => {
   return Blob.build(rnfbURI, { type: 'audio/aac;' })
     .then((blob) => {
       return clipRef.put(blob, { contentType: 'audio/aac' }) // upload image using Firebase SDK
-        .then(snapshot => {
+        .then((snapshot) => {
           console.log('Uploaded audio file to Firebase storage.');
           blob.close();
         })
@@ -56,6 +57,55 @@ export const uploadAudioFile = (audioUrl) => {
     })
     .catch(err => {
       console.error('func uploadAudioMsg failed:', err);
+    });
+};
+
+export const fetchAudio = (uploadUrl) => {
+  // create an array of objects of the files you want to upload
+  const files = [
+    {
+      name: 'clip',
+      filename: 'clip.aac',
+      filepath: RNFS.DocumentDirectoryPath + '/clip.aac',
+      filetype: 'audio/aac'
+    }
+  ];
+
+  const uploadBegin = (response) => {
+    const jobId = response.jobId;
+    console.log('UPLOAD HAS BEGUN! JobId: ' + jobId);
+  };
+
+  const uploadProgress = (response) => {
+    const percentage = Math.floor((response.totalBytesSent/response.totalBytesExpectedToSend) * 100);
+    console.log('UPLOAD IS ' + percentage + '% DONE!');
+  };
+
+  // upload files
+  RNFS.uploadFiles({
+    toUrl: uploadUrl,
+    files,
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+    },
+    fields: {
+      'hello': 'world',
+    },
+    begin: uploadBegin,
+    progress: uploadProgress
+  }).promise.then((response) => {
+      if (response.statusCode == 200) {
+        console.log('FILES UPLOADED!'); // response.statusCode, response.headers, response.body
+      } else {
+        console.log('SERVER ERROR');
+      }
+    })
+    .catch((err) => {
+      if(err.description === "cancelled") {
+        // cancelled by user
+      }
+      console.log(err);
     });
 };
 
@@ -74,7 +124,7 @@ export default (prevState = audioInitialState, action) => {
   const newState = Object.assign({}, prevState);
 
   switch (action.type) {
-    case NEW_RECORDING:
+    case RESET_AUDIO_STATE:
       return audioInitialState;
     case START_RECORDING:
       newState.recording = true;

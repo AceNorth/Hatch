@@ -1,21 +1,30 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, TouchableHighlight } from 'react-native';
+import { View, TouchableHighlight } from 'react-native';
 import { connect } from 'react-redux';
 import Sound from 'react-native-sound';
 import { Icon } from 'react-native-elements';
 
-import { newRecording, stopPlay, startPlay, timeProgress } from '../reducers/audio';
+import { resetAudioState, stopPlay, startPlay, timeProgress } from '../reducers/audio';
 
 class PlaybackMenu extends Component {
   componentDidMount() {
-    // @todo: replace 'test.aac' with dynamically created clip names (also in recorder)
-    this.clip = new Sound('test.aac', Sound.DOCUMENT, (error) => {
-      if (error) {
-        console.log('failed to load the sound', error);
-      } else { // loaded successfully
-        console.log('yay loaded the sound');
-      }
-    });
+    if (this.props.payloadAudioUrl) {
+      this.clip = new Sound('clip.aac', Sound.DOCUMENT, (error) => {
+        if (error) {
+          console.log('failed to load the sound', error);
+        } else { // loaded successfully
+          console.log('yay loaded the sound');
+        }
+      });
+    } else {
+      this.clip = new Sound('test.aac', Sound.DOCUMENT, (error) => {
+        if (error) {
+          console.log('failed to load the sound', error);
+        } else { // loaded successfully
+          console.log('yay loaded the sound');
+        }
+      });
+    }
   }
 
   componentWillUnmount() {
@@ -68,7 +77,7 @@ const mapStateToProps = state => {
 };
 
 export default connect(mapStateToProps, {
-  newRecording,
+  resetAudioState,
   stopPlay,
   startPlay,
   timeProgress
