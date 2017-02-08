@@ -18,7 +18,8 @@ import { LoginButton } from 'react-native-fbsdk';
 import AddEgg from './AddEgg';
 import { InvisibleButton } from './InvisibleButton';
 import { InvisibleIcon } from './InvisibleIcon';
-import { Button } from './common';
+// import { Button } from './common';
+import { Button } from './common/PinButton';
 
 // Reducers
 import { setSelectedEgg, fetchAllEggs } from '../reducers/eggs';
@@ -273,15 +274,15 @@ class LandingPage extends Component {
       if (annotations){
         if (this.isWithinFence(this.state.currentPosition.coords, annotation) && annotation.senderId) {
           annotation.tintColor = MapView.PinColors.GREEN,
+          // annotation.title='Tap:' ,
+          // annotation.subtitle='',
           annotation.rightCalloutView = (
                 <Button
                     color="#517fa4"
                     onPress={(e) => this.pickupPayload(annotation, e)}
-                >
-                  Pssst... {annotation.title + "\n"}
-                  {annotation.subtitle}
+                > Tap Here!
                 </Button>
-          );
+          )
         }
       }
     });
