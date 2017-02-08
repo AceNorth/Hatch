@@ -37,24 +37,30 @@ class ViewPayload extends Component {
 
   onSubmitPickup(){
     let egg = this.state.viewEgg
-    this.state.viewEgg.pickedUp = true;
+    // this.state.viewEgg.pickedUp = true;
     this.props.pickupEgg(this.state.viewEgg)
   }
 
   render() {
+
+    const { container, textHeader, imageStyle, lineItems, innerText } = styles;
     return (
       <Card>
         <CardSection style={{flex: 1}}>
-          <Text style={{fontSize: 30, paddingTop: 50}}> Here's your message! </Text>
+          <Text style={styles.textHeader}> Here's your message! </Text>
         </CardSection>
         <CardSection>
           { this.onSubmitPickup() }
-          <View>
-            <Image style={{width: 50, height: 50}} source={{uri: this.state.goHereImage.uri}}></Image>
-            <Text>{ this.state.viewEgg.goHereText }</Text>
-
-            <Image style={{width: 50, height: 50}} source={{uri: this.state.payloadImage.uri}}></Image>
-            <Text>{ this.state.viewEgg.payload.text }</Text>
+          <View style={styles.lineItems}>
+            <View style={styles.item}>
+              <Image style={styles.imageStyle} source={{uri: this.state.goHereImage.uri}}></Image>
+              <Text style={styles.text}>{ this.state.viewEgg.goHereText }</Text>
+            </View>
+            
+            <View style={styles.item}>
+              <Image style={styles.imageStyle} source={{uri: this.state.payloadImage.uri}}></Image>
+              <Text style={styles.text}>{ this.state.viewEgg.payload.text }</Text>
+            </View>
           </View>
         </CardSection>
         <CardSection>
@@ -68,6 +74,44 @@ class ViewPayload extends Component {
     );
   };
 }
+
+const styles = {
+  item: {
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    paddingTop: 20, 
+    paddingBottom: 20 
+  },
+  lineItems: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    margin: 25,
+  },
+  text: {
+    textAlign: 'center',
+    fontSize: 16,
+    paddingLeft: 20,
+    // color: '#fff',
+    fontWeight: '600',
+  },
+  textHeader: {
+    fontSize: 30, 
+    paddingTop: 50
+  },
+  imageStyle: {
+    width: 80, 
+    height: 80
+  },
+  container: {
+    flex: 1,
+    backgroundColor: '#f4f281',
+    justifyContent: 'center',
+  },
+  managerStyle: {
+    flexDirection: 'column',
+  },
+};
 
 const mapStateToProps = (state, ownProps) => {
     const selectedEgg = state.eggs.selectedEgg;
