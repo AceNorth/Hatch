@@ -44,7 +44,7 @@ class LandingPage extends Component {
       // annotation objects (pins) for eggs waiting to be picked up
       eggPins: [],
 
-      // ANDY NOTE: 
+      // ANDY NOTE:
       // this is as small as I can make the fence and still pick up
       // an egg that was left at the simulator's "current location"
       // using my phone.
@@ -213,9 +213,10 @@ class LandingPage extends Component {
          <Icon
             name='ios-eye'
             type= 'ionicon'
-            color='#f50'
+            color='#fff'
             size={50}
             onPress={this.toggleView.bind(this)}
+            underlayColor='#3a3c82'
           />
       );
     } else {
@@ -223,9 +224,10 @@ class LandingPage extends Component {
         <Icon
             name='ios-eye-off'
             type= 'ionicon'
-            color='#f50'
+            color='#fff'
             size={50}
             onPress={this.toggleView.bind(this)}
+            underlayColor='#3a3c82'
         />
       );
     }
@@ -237,14 +239,15 @@ class LandingPage extends Component {
         <Icon
             name='ios-pin'
             type= 'ionicon'
-            color='#f50'
+            color='#fff'
             size={50}
             onPress={this.onAddNodeButtonPress.bind(this)}
+            underlayColor='#3a3c82'
           />
       );
     } else {
       return (
-        <InvisibleIcon 
+        <InvisibleIcon
         onPress={ () => {} }
         />
       );
@@ -256,7 +259,7 @@ class LandingPage extends Component {
       return(
         <View style={{flexDirection:'row'}}>
           <Text style={{flex:0}}>Press and Hold</Text>
-          <Text style={{flex:0}}>to Leave an Egg</Text>   
+          <Text style={{flex:0}}>to Leave an Egg</Text>
         </View>
       )
     }
@@ -328,9 +331,10 @@ class LandingPage extends Component {
               <Icon
                   name='ios-egg'
                   type= 'ionicon'
-                  color='#f50'
+                  color='#fff'
                   size={50}
                   onPress={Actions.friends}
+                  underlayColor='#3a3c82'
               />
             </View>
           </View>
@@ -357,11 +361,13 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     fontWeight: '500',
-    alignSelf: 'center'
+    alignSelf: 'center',
+    color: '#fff'
   },
   viewStyle: {
     width: DEVICE_WIDTH,
-    height: DEVICE_HEIGHT
+    height: DEVICE_HEIGHT,
+    backgroundColor: '#3a3c82'
   },
   mapStyle: {
     flex: 0.75,
