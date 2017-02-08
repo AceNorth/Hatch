@@ -43,9 +43,9 @@ export default function (state = initialState, action) {
         case DELETE_EGG:
             newState = _.omit(newState, action.egg.id);
             break;
-        case PICKUP_EGG:    
+        case PICKUP_EGG:
             newState[egg.id].pickedUp = true;
-            break; 
+            break;
         default:
             return state;
     }
@@ -71,6 +71,7 @@ export const addEggToDbAndStore = egg => dispatch =>{
 export const fetchAllEggs = userId => dispatch => {
     axios.get(`${tunnelIP}/api/egg/user/${userId}`)
     .then(res => {
+        console.log('hey eggss fetchin', res.data);
         dispatch(fetchEggs(res.data))})
     .catch(err => console.error('Problem fetching eggs', err.message));
 };

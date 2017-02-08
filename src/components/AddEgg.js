@@ -38,8 +38,8 @@ class AddEgg extends Component {
       goHereImage: this.state.goHereImageSource,
       goHereText: this.state.text,
       goHereImageBuffer: this.state.goHereImageBuffer,
-      latitude: this.props.annotation[0].latitude,
-      longitude: this.props.annotation[0].longitude,
+      latitude: this.props.annotation[0].latitude, // This is definitely a number
+      longitude: this.props.annotation[0].longitude, // Also definitely a number
       payloadText: this.state.payloadText,
       payloadImage: this.state.payloadImageSource,
       payloadImageBuffer: this.state.payloadImageBuffer,
@@ -60,10 +60,12 @@ class AddEgg extends Component {
           console.log('downloadUrl', downloadUrl);
 
           // Add url to egg
-          egg.audioPath = downloadUrl;
+          egg.path = downloadUrl;
+          this.props.addEggToDbAndStore(egg);
         });
+    } else {
+      this.props.addEggToDbAndStore(egg);
     }
-    this.props.addEggToDbAndStore(egg);
 
     this.setState({ text:'', payloadText: '', goHereText: '', recipient:this.props.friends[0].fbId});
     this.props.showModal(false);
