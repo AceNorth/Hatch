@@ -1,16 +1,20 @@
 import React, { Component } from 'react';
 import { Text, View, Modal, MapView } from 'react-native';
 import { CardSection, Button } from './common';
-import { showConfirm } from '../reducers/addNodeModal';
+import { showConfirm, setSubmittedEgg } from '../reducers/addNodeModal';
 import { connect } from 'react-redux';
 
 class EggConfirmationModal extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      egg: props.selectedEgg
+    }
   }
 
   onConfirm() {
     this.props.showConfirm(false);
+    this.props.setSubmittedEgg({});
   }
 
   render() {
@@ -18,8 +22,12 @@ class EggConfirmationModal extends Component {
 
     return (
         <View style={containerStyle}>
-          <Text style={textStyle}> YOU LEFT AN EGG! </Text>
-
+          <CardSection>
+            <Text style={textStyle}> YOU LEFT AN EGG! </Text>
+          </CardSection>
+          <CardSection>
+            <Text style={textStyle}> {this.props.submittedEgg.payloadText} </Text>
+          </CardSection>
           <CardSection>
             <Button onPress={this.onConfirm.bind(this)}>Great!</Button>
           </CardSection>
@@ -48,12 +56,15 @@ const styles = {
 
 const mapStateToProps = state => ({
   showConfirmationModal: state.addNodeModal.showConfirmationModal,
-  selectedEgg: state.eggs.selectedEgg
+  selectedEgg: state.addNodeModal.submittedEgg
 });
 
 const mapDispatchToProps = dispatch => ({
   showConfirm: function (boolean) {
     dispatch(showConfirm(boolean));
+  },
+  setSubmittedEgg: function (egg) {
+    dispatch(setSubmittedEgg(egg));
   }
 });
 

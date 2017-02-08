@@ -6,7 +6,7 @@ import { addEggToDbAndStore } from '../reducers/eggs';
 import { CardSection, Button, InputNoLabel } from './common';
 import RecordAudio from './RecordAudio';
 import PlayAudio from './PlayAudio';
-import { showModal, showConfirm } from '../reducers/addNodeModal';
+import { showModal, showConfirm, setSubmittedEgg } from '../reducers/addNodeModal';
 import { setAnnotation, clearAnnotation } from '../reducers/map';
 import { newRecording, uploadAudioFile } from '../reducers/audio';
 import { tunnelIP } from '../TUNNELIP';
@@ -64,7 +64,7 @@ class AddEgg extends Component {
         });
     }
     this.props.addEggToDbAndStore(egg);
-
+    this.props.setSubmittedEgg(egg);
     this.setState({ text:'', payloadText: '', goHereText: '', recipient:this.props.friends[0].fbId});
     this.props.showModal(false);
     this.props.showConfirm(true);
@@ -259,6 +259,9 @@ const mapDispatchToProps = dispatch => ({
   },
   showConfirm: function (boolean) {
     dispatch(showConfirm(boolean));
+  },
+  setSubmittedEgg: function (egg) {
+    dispatch(setSubmittedEgg(egg));
   },
   setAnnotation: function (annotation) {
     dispatch(setAnnotation(annotation));
