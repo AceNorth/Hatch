@@ -19,6 +19,7 @@ import AddEgg from './AddEgg';
 import { InvisibleButton } from './InvisibleButton';
 import { InvisibleIcon } from './InvisibleIcon';
 import { Button } from './common';
+import EggConfirmationModal from './EggConfirmationModal';
 
 // Reducers
 import { setSelectedEgg, fetchAllEggs } from '../reducers/eggs';
@@ -289,6 +290,10 @@ class LandingPage extends Component {
     return annotations;
   }
 
+  onConfirm() {
+    this.setState({showConfirmationModal: false})
+  }
+
   render() {
     const position = this.state.currentPosition;
     let annotationsToDisplay;
@@ -345,7 +350,16 @@ class LandingPage extends Component {
               {...this.state}
             />
           </Modal>
-        </View>
+
+          <Modal
+            visible={this.props.showConfirmationModal}
+            transparent
+            animationType="fade"
+            onRequestClose={() => {}}
+          >
+            <EggConfirmationModal />
+          </Modal>
+          </View>
       </View>
     );
   }
@@ -392,6 +406,7 @@ const mapStateToProps = (state) => {
 
   return {
     showAddNodeModal: state.addNodeModal.showAddNodeModal,
+    showConfirmationModal: state.addNodeModal.showConfirmationModal,
     annotation: state.map.annotation,
     selectedEgg,
     allEggs,
@@ -422,6 +437,7 @@ const mapDispatchToProps = dispatch => ({
 
 LandingPage.propTypes = {
   showAddNodeModal: PropTypes.boolean,
+  showConfirmationModal: PropTypes.boolean,
   annotation: PropTypes.array,
   selectedEgg: PropTypes.number,
   allEggs: PropTypes.object,
