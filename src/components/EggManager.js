@@ -125,10 +125,6 @@ class EggManager extends Component {
               <Text style={styles.text}>{egg.sender.firstName + " " + egg.sender.lastName}</Text>
             </View>
             <View style={styles.oneLine}>
-              <Text style={styles.boldText}>Message:  </Text>
-              <Text style={styles.text}>{egg.payload.text}</Text>
-            </View>
-            <View style={styles.oneLine}>
               <Text style={styles.boldText}>Sent:  </Text>
               <Text style={styles.text}>{displayDate}</Text>
             </View>
