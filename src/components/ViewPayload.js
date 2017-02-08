@@ -38,11 +38,10 @@ class ViewPayload extends Component {
         });
   }
 
-  onSubmitPickup() {
-    let egg = this.state.viewEgg;
-    // @todo: UNCOMMENT THESE WHEN DONE TESTING
-    // this.state.viewEgg.pickedUp = true;
-    // this.props.pickupEgg(this.state.viewEgg);
+  onSubmitPickup(){
+    let egg = this.state.viewEgg
+    this.state.viewEgg.pickedUp = true;
+    this.props.pickupEgg(this.state.viewEgg)
   }
 
   render() {

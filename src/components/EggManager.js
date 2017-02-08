@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
-import { View, Text, TouchableOpacity, MapView, ScrollView, Picker } from 'react-native';
+import { View, Text, TouchableOpacity, MapView, ScrollView, Picker, Dimensions } from 'react-native';
 import { Card, CardSection } from './common';
 import { setSelectedEgg, deleteEgg } from '../reducers/eggs';
 import EggManagerModal from './EggManagerModal';
+import { LoginButton } from 'react-native-fbsdk';
+
 
 class EggManager extends Component { 
   constructor(props) {
@@ -83,12 +85,14 @@ class EggManager extends Component {
   }
 
   renderPayload(egg) {
+    const { container, text } = styles;
+
     if (!egg.payload) {return};
     let payloadType = egg.payload.type;
     
     switch (payloadType) {
       case 'Text':
-        return (<Text> { egg.payload.text } </Text>)
+        return (<Text style={styles.textStyle}> { egg.payload.text } </Text>)
       case 'Image':
         return (<View> { egg.payload.path } </View>);
       default:
@@ -149,26 +153,60 @@ class EggManager extends Component {
           let egg = this.props.allEggs[eggId];
           return this.renderEggCard(egg);
         })}
-        <EggManagerModal
-            visible={this.state.showModal}
-            chosenEgg={this.state.chosenEgg}
-            onDelete={this.onDelete.bind(this)}
-            onCancel={this.onCancel.bind(this)}
-            >
-            
-            <MapView
-            style={{height: 250, width: 250, margin: 0}}
-            showsUserLocation={false}
-            region={{latitude: this.state.chosenEgg.latitude, longitude: this.state.chosenEgg.longitude, latitudeDelta: .01, longitudeDelta: .01}}
-              annotations={[{
-                longitude: this.state.chosenEgg.longitude,
-                latitude: this.state.chosenEgg.latitude,
-                tintColor: MapView.PinColors.PURPLE,
-                draggable: false 
-              }]}
-            />
-            {this.renderPayload(this.state.chosenEgg)}
-        </EggManagerModal>
+        <View style={styles.managerStyle}>
+            <EggManagerModal
+                visible={this.state.showModal}
+                chosenEgg={this.state.chosenEgg}
+                onDelete={this.onDelete.bind(this)}
+                onCancel={this.onCancel.bind(this)}
+                >
+              <View style={styles.lineItems}>
+                  <View style={styles.mapStyle} >
+                    <MapView
+                    style={{height: 250, width: 200, margin: 0}}
+                    showsUserLocation={false}
+                    region={{latitude: this.state.chosenEgg.latitude, longitude: this.state.chosenEgg.longitude, latitudeDelta: .01, longitudeDelta: .01}}
+                      annotations={[{
+                        longitude: this.state.chosenEgg.longitude,
+                        latitude: this.state.chosenEgg.latitude,
+                        tintColor: MapView.PinColors.PURPLE,
+                        draggable: false 
+                      }]}
+                    />
+                  </View>
+
+                  <View style={styles.payStyle}>
+                    {this.renderPayload(this.state.chosenEgg)}
+                  </View>
+              </View>
+            </EggManagerModal>
+        </View>
+
+        <View>
+          <Text></Text>
+        </View>
+
+          <LoginButton
+            readPermissions={['email', 'user_friends']}
+            onLoginFinished={
+              (error, result) => {
+                if (error) {
+                  console.log('Login failed with error:', error);
+                } else if (result.isCancelled) {
+                  console.log('Login was cancelled');
+                } else {
+                  this.props.fetchUserInfo();
+                  Actions.landingPage();
+                }
+              }
+            }
+            onLogoutFinished={() => {
+              console.log('User logged out');
+              this.props.whoami(null);
+              Actions.login();
+            }}
+            style={styles.loginButton}
+          />
       </ScrollView>
       </View>
     );
@@ -186,7 +224,33 @@ const styles = {
     fontSize: 25,
     color: '#fff',
     fontWeight: '600',
-  }
+  },
+  managerStyle: {
+    flexDirection: 'column',
+  },
+  lineItems: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    margin: 10,
+  },
+  mapSytle: {
+    flex: 1,
+  },
+  paySytle: {
+    flex: 1,
+  },
+  textStyle: {
+    paddingTop: 20,
+    fontWeight: 'bold',
+    fontSize: 16
+  },
+  loginButton: {
+    height: 30,
+    width: 200,
+    alignSelf: 'center'
+  },
 };
 
 const mapStateToProps = (state, ownProps) => { 
@@ -202,6 +266,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       },
     deleteEgg: function(egg) {
       dispatch(deleteEgg(egg));
+    },
+    whoami: (user) => {
+      dispatch(whoami(user));
     }
   };
 };
