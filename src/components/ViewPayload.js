@@ -55,11 +55,10 @@ class ViewPayload extends Component {
         <CardSection>
           { this.onSubmitPickup() }
           <View style={styles.lineItems}>
-            <View style={styles.item}>
-              <Image style={styles.imageStyle} source={{uri: this.state.goHereImage.uri}}></Image>
-              <Text style={styles.text}>{ this.state.viewEgg.goHereText }</Text>
-            </View>
-
+            {/*<View style={styles.item}>*/}
+              {/*<Image style={styles.imageStyle} source={{uri: this.state.goHereImage.uri}}></Image>*/}
+              {/*<Text style={styles.text}>{ this.state.viewEgg.goHereText }</Text>*/}
+            {/*</View>*/}      
             <View style={styles.item}>
               <Image style={styles.imageStyle} source={{uri: this.state.payloadImage.uri}}></Image>
               <Text style={styles.text}>{ this.state.viewEgg.payload.text }</Text>
