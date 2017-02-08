@@ -233,7 +233,7 @@ const styles = {
     flexDirection: 'column',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    margin: 10
+    margin: 10,
   },
   mapSytle: {
     flex: 1,
