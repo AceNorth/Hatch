@@ -85,12 +85,14 @@ class EggManager extends Component {
   }
 
   renderPayload(egg) {
+    const { container, text } = styles;
+
     if (!egg.payload) {return};
     let payloadType = egg.payload.type;
     
     switch (payloadType) {
       case 'Text':
-        return (<Text> { egg.payload.text } </Text>)
+        return (<Text style={styles.textStyle}> { egg.payload.text } </Text>)
       case 'Image':
         return (<View> { egg.payload.path } </View>);
       default:
@@ -151,33 +153,33 @@ class EggManager extends Component {
           let egg = this.props.allEggs[eggId];
           return this.renderEggCard(egg);
         })}
-        <View style={styles.viewStyle}>
-          <EggManagerModal
-              visible={this.state.showModal}
-              chosenEgg={this.state.chosenEgg}
-              onDelete={this.onDelete.bind(this)}
-              onCancel={this.onCancel.bind(this)}
-              >
-            <View style={styles.mapStyle} >
-              <MapView
-              style={{height: 250, width: 180, margin: 0}}
-              showsUserLocation={false}
-              region={{latitude: this.state.chosenEgg.latitude, longitude: this.state.chosenEgg.longitude, latitudeDelta: .01, longitudeDelta: .01}}
-                annotations={[{
-                  longitude: this.state.chosenEgg.longitude,
-                  latitude: this.state.chosenEgg.latitude,
-                  tintColor: MapView.PinColors.PURPLE,
-                  draggable: false 
-                }]}
-              />
-            </View>
+        <View style={styles.managerStyle}>
+            <EggManagerModal
+                visible={this.state.showModal}
+                chosenEgg={this.state.chosenEgg}
+                onDelete={this.onDelete.bind(this)}
+                onCancel={this.onCancel.bind(this)}
+                >
+              <View style={styles.lineItems}>
+                  <View style={styles.mapStyle} >
+                    <MapView
+                    style={{height: 250, width: 200, margin: 0}}
+                    showsUserLocation={false}
+                    region={{latitude: this.state.chosenEgg.latitude, longitude: this.state.chosenEgg.longitude, latitudeDelta: .01, longitudeDelta: .01}}
+                      annotations={[{
+                        longitude: this.state.chosenEgg.longitude,
+                        latitude: this.state.chosenEgg.latitude,
+                        tintColor: MapView.PinColors.PURPLE,
+                        draggable: false 
+                      }]}
+                    />
+                  </View>
 
-            <View style={styles.payStyle}>
-              {this.renderPayload(this.state.chosenEgg)}
-            </View>
-          </EggManagerModal>
-
-
+                  <View style={styles.payStyle}>
+                    {this.renderPayload(this.state.chosenEgg)}
+                  </View>
+              </View>
+            </EggManagerModal>
         </View>
 
         <View>
@@ -223,14 +225,26 @@ const styles = {
     color: '#fff',
     fontWeight: '600',
   },
-  viewStyle: {
-    flexDirection: 'row',
+  managerStyle: {
+    flexDirection: 'column',
+  },
+  lineItems: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    margin: 10
   },
   mapSytle: {
     flex: 1,
   },
   paySytle: {
     flex: 1,
+  },
+  textStyle: {
+    paddingTop: 20,
+    fontWeight: 'bold',
+    fontSize: 16
   },
   loginButton: {
     height: 30,
