@@ -8,7 +8,7 @@ import {
   Modal,
   Dimensions,
   Picker,
-  Text
+  Text,
 } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { Icon } from 'react-native-elements';
@@ -258,12 +258,13 @@ class LandingPage extends Component {
         if (this.isWithinFence(this.state.currentPosition.coords, annotation) && annotation.senderId) {
           annotation.tintColor = MapView.PinColors.GREEN,
           annotation.rightCalloutView = (
-            <Button
-              color="#517fa4"
-              onPress={(e) => this.pickupPayload(annotation, e)}
-            >
-              Psst...
-            </Button>
+                <Button
+                    color="#517fa4"
+                    onPress={(e) => this.pickupPayload(annotation, e)}
+                >
+                  Pssst... {annotation.title + "\n"}
+                  {annotation.subtitle}
+                </Button>
           );
         }
       }

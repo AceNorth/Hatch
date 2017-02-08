@@ -249,7 +249,11 @@
 			remoteGlobalIDString = 014A3B5C1C6CF33500B6D375;
 			remoteInfo = RNImagePicker;
 		};
+<<<<<<< HEAD
+		1BF3DE6C1E4B7DA8003E4E0A /* PBXContainerItemProxy */ = {
+=======
 		1BF1330F1E4A91BB00E887ED /* PBXContainerItemProxy */ = {
+>>>>>>> df302b6c943d67ffdf147a9998db9b6eb97a81a7
 			isa = PBXContainerItemProxy;
 			containerPortal = 991DB8E7587549C781C82FB3 /* RNFetchBlob.xcodeproj */;
 			proxyType = 2;
@@ -670,10 +674,17 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+
+		1BF3DE401E4B7DA8003E4E0A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1BF3DE6D1E4B7DA8003E4E0A /* libRNFetchBlob.a */,
+
 		1BF132E31E4A91BB00E887ED /* Products */ = {
 			isa = PBXGroup;
 			children = (
 				1BF133101E4A91BB00E887ED /* libRNFetchBlob.a */,
+ df302b6c943d67ffdf147a9998db9b6eb97a81a7
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -952,7 +963,11 @@
 					ProjectRef = CE98E431502A4604BF2ED515 /* RNBackgroundGeolocation.xcodeproj */;
 				},
 				{
+<<<<<<< HEAD
+					ProductGroup = 1BF3DE401E4B7DA8003E4E0A /* Products */;
+=======
 					ProductGroup = 1BF132E31E4A91BB00E887ED /* Products */;
+>>>>>>> df302b6c943d67ffdf147a9998db9b6eb97a81a7
 					ProjectRef = 991DB8E7587549C781C82FB3 /* RNFetchBlob.xcodeproj */;
 				},
 				{
@@ -1145,11 +1160,19 @@
 			remoteRef = 1B5FC0361E3FCA4F0039C7F9 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+<<<<<<< HEAD
+		1BF3DE6D1E4B7DA8003E4E0A /* libRNFetchBlob.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNFetchBlob.a;
+			remoteRef = 1BF3DE6C1E4B7DA8003E4E0A /* PBXContainerItemProxy */;
+=======
 		1BF133101E4A91BB00E887ED /* libRNFetchBlob.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
 			path = libRNFetchBlob.a;
 			remoteRef = 1BF1330F1E4A91BB00E887ED /* PBXContainerItemProxy */;
+>>>>>>> df302b6c943d67ffdf147a9998db9b6eb97a81a7
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		3DAD3E841DF850E9000B6D8A /* libRCTImage-tvOS.a */ = {
