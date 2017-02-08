@@ -43,7 +43,12 @@ class LandingPage extends Component {
 
       // annotation objects (pins) for eggs waiting to be picked up
       eggPins: [],
-      pickupRadius: 0.0003,
+
+      // ANDY NOTE: 
+      // this is as small as I can make the fence and still pick up
+      // an egg that was left at the simulator's "current location"
+      // using my phone.
+      pickupRadius: 0.002,
 
       // view toggler
       showEggs: true,
@@ -51,6 +56,7 @@ class LandingPage extends Component {
       // loading message
       showLoading: true
     };
+
     // update user's location every second as they walk around
     this.locationUpdater = setInterval(
       () => this.updateCurrentPosition(),
@@ -100,8 +106,6 @@ class LandingPage extends Component {
   }
 
   updateCurrentPosition() {
-    // change this because all pins are showing up every time this runs
-
     let options = {
       enableHighAccuracy: true,
       timeout: 1000,
