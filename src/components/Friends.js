@@ -42,7 +42,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F5FCFF',
     paddingTop: 65,
-    textAlign: 'left',
   },
   welcome: {
     fontSize: 20,

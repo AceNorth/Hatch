@@ -33,6 +33,7 @@ const styles = {
   container: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-around',
   },
   name: {
     fontSize: 18,

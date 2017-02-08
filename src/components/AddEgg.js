@@ -8,7 +8,7 @@ import RecordAudio from './RecordAudio';
 import PlayAudio from './PlayAudio';
 import { showModal } from '../reducers/addNodeModal';
 import { setAnnotation, clearAnnotation } from '../reducers/map';
-import { newRecording, uploadAudioFile } from '../reducers/audio';
+import { resetAudioState, uploadAudioFile } from '../reducers/audio';
 import { tunnelIP } from '../TUNNELIP';
 
 class AddEgg extends Component {
@@ -47,6 +47,10 @@ class AddEgg extends Component {
       recipient: this.state.recipient,
     };
 
+    // If user did not upload photos, make those fields blank
+    if (!egg.payloadImageBuffer) { egg.payloadImage = null; }
+    if (!egg.goHereImageBuffer) { egg.goHereImage = null; }
+
     // If user recorded audio...
     if (this.props.audioUrl) {
 
@@ -70,13 +74,14 @@ class AddEgg extends Component {
     this.setState({ text:'', payloadText: '', goHereText: '', recipient:this.props.friends[0].fbId });
     this.props.showModal(false);
     this.props.clearAnnotation();
-    this.props.newRecording();
+    this.props.resetAudioState();
   }
 
   onCancelSubmitNode() {
     this.setState({ text: '', payloadText: '', goHereText: '', recipient: this.props.friends[0] });
     this.props.showModal(false);
     this.props.clearAnnotation();
+    this.props.resetAudioState();
   }
 
   selectImageForPicker(type) {
@@ -267,8 +272,8 @@ const mapDispatchToProps = dispatch => ({
   addEggToDbAndStore: function (egg) {
     dispatch(addEggToDbAndStore(egg));
   },
-  newRecording: function() {
-    dispatch(newRecording());
+  resetAudioState: function() {
+    dispatch(resetAudioState());
   }
 });
 
