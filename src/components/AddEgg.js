@@ -67,7 +67,7 @@ class AddEgg extends Component {
       this.props.addEggToDbAndStore(egg);
     }
 
-    this.setState({ text:'', payloadText: '', goHereText: '', recipient:this.props.friends[0].fbId});
+    this.setState({ text:'', payloadText: '', goHereText: '', recipient:this.props.friends[0].fbId });
     this.props.showModal(false);
     this.props.clearAnnotation();
     this.props.newRecording();
