@@ -247,6 +247,18 @@ class LandingPage extends Component {
     }
   }
 
+  renderDirections(){
+    if (!this.state.showLoading) {
+      return(
+        <View style={{flexDirection:'row'}}>
+          <Text style={{flex:0}}>Press and Hold</Text>
+          <Text style={{flex:0}}>to Leave an Egg</Text>   
+        </View>
+      )
+    }
+
+  }
+
   pickupPayload(selectedAnnotation) {
     this.props.setSelectedEgg(selectedAnnotation.eggId);
     return (Actions.viewPayload());
@@ -304,6 +316,7 @@ class LandingPage extends Component {
             </View>
 
             <View style={styles.item}>
+            {/*this.renderDirections()*/}
             {this.renderLeaveEggButton()}
             </View>
 
