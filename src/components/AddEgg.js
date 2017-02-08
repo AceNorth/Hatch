@@ -152,7 +152,7 @@ class AddEgg extends Component {
     return (
       <View style={containerStyle}>
         <CardSection>
-          <View style={{ flexDirection: 'column', flex: 1 }}>
+          <View style={{ flexDirection: 'column', flex: 1, height: 50 }}>
             <Text>Egg pick-up instructions</Text>
             <InputNoLabel
               placeholder="Where we first met <3"
@@ -160,7 +160,7 @@ class AddEgg extends Component {
               value={this.state.text}
             />
           </View>
-          <TouchableHighlight
+          {/*<TouchableHighlight
             onPress={() => this.selectImageForPicker('clue')}
             activeOpacity={0.8}
             underlayColor={'white'}
@@ -169,7 +169,7 @@ class AddEgg extends Component {
               source={this.state.goHereImageSource}
               style={{ width: 50, height: 50 }}
             />
-          </TouchableHighlight>
+          </TouchableHighlight>*/}
         </CardSection>
         <CardSection>
           <View style={{ flexDirection: 'column', flex: 1 }}>
@@ -185,10 +185,10 @@ class AddEgg extends Component {
             activeOpacity={0.8}
             underlayColor={'white'}
           >
-            {/*<Image*/}
-              {/*source={this.state.payloadImageSource}*/}
-              {/*style={{ width: 50, height: 50 }}*/}
-            {/*/>*/}
+            <Image
+              source={this.state.payloadImageSource}
+              style={{ width: 50, height: 50 }}
+            />
           </TouchableHighlight>
         </CardSection>
         <CardSection style={{ flex: 1 }}>

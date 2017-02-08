@@ -49,7 +49,7 @@ class ViewPayload extends Component {
     const { container, textHeader, imageStyle, lineItems, innerText } = styles;
     return (
       <Card>
-        <CardSection style={{flex: 1}}>
+        <CardSection style={{ flex: 1 }}>
           <Text style={styles.textHeader}> Here's your message! </Text>
         </CardSection>
         <CardSection>
@@ -58,7 +58,7 @@ class ViewPayload extends Component {
             {/*<View style={styles.item}>*/}
               {/*<Image style={styles.imageStyle} source={{uri: this.state.goHereImage.uri}}></Image>*/}
               {/*<Text style={styles.text}>{ this.state.viewEgg.goHereText }</Text>*/}
-            {/*</View>*/}      
+            {/*</View>*/}
             <View style={styles.item}>
               <Image style={styles.imageStyle} source={{uri: this.state.payloadImage.uri}}></Image>
               <Text style={styles.text}>{ this.state.viewEgg.payload.text }</Text>
