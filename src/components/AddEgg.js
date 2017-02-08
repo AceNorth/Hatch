@@ -178,10 +178,10 @@ class AddEgg extends Component {
             activeOpacity={0.8}
             underlayColor={'white'}
           >
-            {/*<Image*/}
-              {/*source={this.state.payloadImageSource}*/}
-              {/*style={{ width: 50, height: 50 }}*/}
-            {/*/>*/}
+            <Image
+              source={this.state.payloadImageSource}
+              style={{ width: 50, height: 50 }}
+            />
           </TouchableHighlight>
         </CardSection>
         <CardSection style={{ flex: 1 }}>
