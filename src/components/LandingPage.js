@@ -8,7 +8,7 @@ import {
   Modal,
   Dimensions,
   Picker,
-  Text
+  Text,
 } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { Icon } from 'react-native-elements';
@@ -17,6 +17,7 @@ import { LoginButton } from 'react-native-fbsdk';
 // Components
 import AddEgg from './AddEgg';
 import { InvisibleButton } from './InvisibleButton';
+import { InvisibleIcon } from './InvisibleIcon';
 import { Button } from './common';
 
 // Reducers
@@ -69,6 +70,7 @@ class LandingPage extends Component {
 
     this.onMapLongPress = this.onMapLongPress.bind(this);
     this.setRenderAnnotations = this.setRenderAnnotations.bind(this);
+    this.renderViewToggleButton = this.renderViewToggleButton.bind(this)
   }
 
   componentWillMount() {
@@ -208,15 +210,23 @@ class LandingPage extends Component {
 
     if (this.state.showEggs) {
       return (
-        <Button onPress={this.toggleView.bind(this)}>
-        Hide pins
-        </Button>
+         <Icon
+            name='ios-eye'
+            type= 'ionicon'
+            color='#f50'
+            size={50}
+            onPress={this.toggleView.bind(this)}
+          />
       );
     } else {
       return (
-        <Button onPress={this.toggleView.bind(this)}>
-        Show pins
-        </Button>
+        <Icon
+            name='ios-eye-off'
+            type= 'ionicon'
+            color='#f50'
+            size={50}
+            onPress={this.toggleView.bind(this)}
+        />
       );
     }
   };
@@ -224,15 +234,19 @@ class LandingPage extends Component {
   renderLeaveEggButton() {
     if (this.props.annotation.length) {
       return (
-        <Button onPress={this.onAddNodeButtonPress.bind(this)}>
-        Leave an egg at the current pin
-        </Button>
+        <Icon
+            name='ios-pin'
+            type= 'ionicon'
+            color='#f50'
+            size={50}
+            onPress={this.onAddNodeButtonPress.bind(this)}
+          />
       );
     } else {
       return (
-        <InvisibleButton onPress={() => {}}>
-        I am invisible and you should not see me
-        </InvisibleButton>
+        <InvisibleIcon 
+        onPress={ () => {} }
+        />
       );
     }
   }
@@ -248,12 +262,13 @@ class LandingPage extends Component {
         if (this.isWithinFence(this.state.currentPosition.coords, annotation) && annotation.senderId) {
           annotation.tintColor = MapView.PinColors.GREEN,
           annotation.rightCalloutView = (
-            <Button
-              color="#517fa4"
-              onPress={(e) => this.pickupPayload(annotation, e)}
-            >
-              Psst...
-            </Button>
+                <Button
+                    color="#517fa4"
+                    onPress={(e) => this.pickupPayload(annotation, e)}
+                >
+                  Pssst... {annotation.title + "\n"}
+                  {annotation.subtitle}
+                </Button>
           );
         }
       }
@@ -286,40 +301,26 @@ class LandingPage extends Component {
         </TouchableWithoutFeedback>
 
         <View style={styles.touchStyle}>
-          {this.renderViewToggleButton()}
-          {this.renderLeaveEggButton()}
+          <View style={styles.lineItems}>
 
-          <View style={{marginBottom: 20}}>
-            <Icon
-                name='ios-egg'
-                type= 'ionicon'
-                color='#f50'
-                size={50}
-                onPress={Actions.friends}
-            />
+            <View style={{paddingLeft: 25, paddingRight: 40}}>
+              {this.renderViewToggleButton()}
+            </View>
+
+            <View style={styles.item}>
+            {this.renderLeaveEggButton()}
+            </View>
+
+            <View style={styles.item}>
+              <Icon
+                  name='ios-egg'
+                  type= 'ionicon'
+                  color='#f50'
+                  size={50}
+                  onPress={Actions.friends}
+              />
+            </View>
           </View>
-
-          <LoginButton
-            readPermissions={['email', 'user_friends']}
-            onLoginFinished={
-              (error, result) => {
-                if (error) {
-                  console.log('Login failed with error:', error);
-                } else if (result.isCancelled) {
-                  console.log('Login was cancelled');
-                } else {
-                  this.props.fetchUserInfo();
-                  Actions.landingPage();
-                }
-              }
-            }
-            onLogoutFinished={() => {
-              console.log('User logged out');
-              this.props.whoami(null);
-              Actions.login();
-            }}
-            style={styles.loginButton}
-          />
 
           <Modal
             visible={this.props.showAddNodeModal}
@@ -350,18 +351,25 @@ const styles = StyleSheet.create({
     height: DEVICE_HEIGHT
   },
   mapStyle: {
-    flex: 0.65,
+    flex: 0.75,
     margin: 0
   },
   touchStyle: {
-    flex: 0.35,
-    margin: 10
+    flex: 0.25,
+    margin: 10,
+    alignItems: 'center',
+    flexDirection: 'column',
+    width: DEVICE_WIDTH,
   },
-  loginButton: {
-    height: 30,
-    width: 200,
-    alignSelf: 'center'
+  lineItems: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
   },
+  item: {
+    paddingHorizontal: 40
+  }
 });
 
 const mapStateToProps = (state) => {
