@@ -23,7 +23,7 @@ class WelcomePage extends Component {
 const styles = {
   container: {
     flex: 1,
-    backgroundColor: '#f4f281',
+    backgroundColor: '#3a3c82',
     justifyContent: 'center',
     alignItems: 'center'
   },
