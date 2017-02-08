@@ -35,7 +35,6 @@ class ViewPayload extends Component {
         })
   }
 
-
   onSubmitPickup(){
     let egg = this.state.viewEgg
     this.state.viewEgg.pickedUp = true;
