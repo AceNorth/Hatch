@@ -148,6 +148,24 @@ class EggManager extends Component {
     this.forceUpdate();
   }
 
+  renderMap() {
+    if (!this.state.chosenEgg.visibleOutsideFence && !this.state.chosenEgg.pickedUp) {
+      return (<Text> This egg is hidden! Follow the clue to find it! </Text>);
+    } else {
+      return (<MapView
+                    style={{ height: 250, width: 200, margin: 0 }}
+                    showsUserLocation={false}
+                    region={{ latitude: this.state.chosenEgg.latitude, longitude: this.state.chosenEgg.longitude, latitudeDelta: .01, longitudeDelta: .01 }}
+                      annotations={[{
+                        longitude: this.state.chosenEgg.longitude,
+                        latitude: this.state.chosenEgg.latitude,
+                        tintColor: MapView.PinColors.PURPLE,
+                        draggable: false
+                      }]}
+                    />);
+    }
+  }
+
   render() {
     const { container, text } = styles;
     return (
