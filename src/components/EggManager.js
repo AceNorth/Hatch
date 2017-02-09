@@ -3,10 +3,9 @@ import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 import { View, Text, TouchableOpacity, MapView, ScrollView, Picker, Dimensions } from 'react-native';
 import { Card, CardSection, JeanSection } from './common';
+import { EggManagerCard } from './EggManagerCard'
 import { setSelectedEgg, deleteEgg } from '../reducers/eggs';
 import EggManagerModal from './EggManagerModal';
-import { LoginButton } from 'react-native-fbsdk';
-
 
 class EggManager extends Component {
   constructor(props) {
@@ -111,14 +110,15 @@ class EggManager extends Component {
 
   renderEggCard(egg) {
     let displayDate = new Date(Date.parse(egg.createdAt)).toString().split(" ").slice(0,4).join(" ");
-    let displayColor = (egg.pickedUp) ? "#8db7fc" : "#2f7efc";
+    let displayColor = (egg.pickedUp) ? "#3a3c82" : "#FF8F32";
+
     return (
       <TouchableOpacity
         key={egg.id}
         onLongPress={() => this.onEggPress(egg)}
         style={{ backgroundColor: displayColor }}
       >
-        <Card>
+        <EggManagerCard>
           <View style={styles.eggCard}>
             <View style={styles.oneLine}>
               <Text style={styles.boldText}>Instructions:  </Text>
@@ -137,7 +137,7 @@ class EggManager extends Component {
               <Text style={styles.text}>{displayDate}</Text>
             </View>
           </View>
-        </Card>
+        </EggManagerCard>
       </TouchableOpacity>
       )
   }
@@ -196,28 +196,6 @@ class EggManager extends Component {
         <View>
           <Text></Text>
         </View>
-
-          <LoginButton
-            readPermissions={['email', 'user_friends']}
-            onLoginFinished={
-              (error, result) => {
-                if (error) {
-                  console.log('Login failed with error:', error);
-                } else if (result.isCancelled) {
-                  console.log('Login was cancelled');
-                } else {
-                  this.props.fetchUserInfo();
-                  Actions.landingPage();
-                }
-              }
-            }
-            onLogoutFinished={() => {
-              console.log('User logged out');
-              this.props.whoami(null);
-              Actions.login();
-            }}
-            style={styles.loginButton}
-          />
       </ScrollView>
       </View>
     );
@@ -233,7 +211,7 @@ const styles = {
   eggCard: {
     borderBottomWidth: 1,
     padding: 10,
-    marginHorizontal: 20,
+    // marginHorizontal: 10,
     backgroundColor: '#fff',
     justifyContent: 'center',
     flexDirection: 'column',
@@ -281,12 +259,7 @@ const styles = {
     paddingTop: 20,
     fontWeight: 'bold',
     fontSize: 16
-  },
-  loginButton: {
-    height: 30,
-    width: 200,
-    alignSelf: 'center'
-  },
+  }
 };
 
 const mapStateToProps = (state, ownProps) => {
@@ -302,9 +275,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       },
     deleteEgg: function(egg) {
       dispatch(deleteEgg(egg));
-    },
-    whoami: (user) => {
-      dispatch(whoami(user));
     }
   };
 };

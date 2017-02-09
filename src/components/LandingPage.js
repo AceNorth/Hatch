@@ -233,7 +233,7 @@ class LandingPage extends Component {
             name='ios-eye'
             type= 'ionicon'
             color='#fff'
-            size={50}
+            size={70}
             onPress={this.toggleView.bind(this)}
             underlayColor='#3a3c82'
           />
@@ -244,7 +244,7 @@ class LandingPage extends Component {
             name='ios-eye-off'
             type= 'ionicon'
             color='#fff'
-            size={50}
+            size={70}
             onPress={this.toggleView.bind(this)}
             underlayColor='#3a3c82'
         />
@@ -259,7 +259,7 @@ class LandingPage extends Component {
             name='ios-pin'
             type= 'ionicon'
             color='#fff'
-            size={50}
+            size={60}
             onPress={this.onAddNodeButtonPress.bind(this)}
             underlayColor='#3a3c82'
           />
@@ -267,9 +267,33 @@ class LandingPage extends Component {
     } else {
       return (
         <InvisibleIcon
+        size={60}
         onPress={ () => {} }
         />
       );
+    }
+  }
+
+  renderEggManagerButton(){
+    if(this.state.showLoading){
+      return (
+        <InvisibleIcon
+        size={60}
+        onPress={ () => {} }
+        />
+      );
+    }
+    else {
+      return(
+        <Icon
+          name='ios-egg'
+          type= 'ionicon'
+          color='#fff'
+          size={50}
+          onPress={Actions.friends}
+          underlayColor='#3a3c82'
+        />
+      )
     }
   }
 
@@ -351,24 +375,17 @@ class LandingPage extends Component {
 
         <View style={styles.touchStyle}>
           <View style={styles.lineItems}>
-            <View style={{paddingLeft: 25, paddingRight: 40}}>
+            <View style={{paddingRight: 30}}>
               {this.renderViewToggleButton()}
             </View>
 
             <View style={styles.item}>
-            {/*this.renderDirections()*/}
-            {this.renderLeaveEggButton()}
+              {/*this.renderDirections()*/}
+              {this.renderLeaveEggButton()}
             </View>
 
             <View style={styles.item}>
-              <Icon
-                  name='ios-egg'
-                  type= 'ionicon'
-                  color='#fff'
-                  size={50}
-                  onPress={Actions.friends}
-                  underlayColor='#3a3c82'
-              />
+              {this.renderEggManagerButton()}
             </View>
           </View>
 
@@ -432,7 +449,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   item: {
-    paddingHorizontal: 40
+    paddingHorizontal: 30
   }
 });
 
