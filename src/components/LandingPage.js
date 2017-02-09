@@ -21,7 +21,7 @@ import AddEgg from './AddEgg';
 import { InvisibleButton } from './InvisibleButton';
 import { InvisibleIcon } from './InvisibleIcon';
 // import { Button } from './common';
-import { Button } from './common/PinButton';
+import { PinButton } from './common/PinButton';
 
 // Reducers
 import { setSelectedEgg, fetchAllEggs, makeOldEgg } from '../reducers/eggs';
@@ -321,11 +321,11 @@ class LandingPage extends Component {
           // annotation.title='Tap:' ,
           // annotation.subtitle='',
           annotation.leftCalloutView = (
-              <Button
-                  color="#517fa4"
+              <PinButton
+                  color="#3a3c82"
                   onPress={(e) => this.pickupPayload(annotation, e)}
               >Tap Here!
-              </Button>
+              </PinButton>
           )
         }
       }
