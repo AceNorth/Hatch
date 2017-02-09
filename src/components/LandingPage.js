@@ -5,6 +5,8 @@ import {
   StyleSheet,
   MapView,
   TouchableWithoutFeedback,
+  TouchableOpacity,
+  Alert,
   Modal,
   Dimensions,
   Picker,
@@ -18,15 +20,18 @@ import { LoginButton } from 'react-native-fbsdk';
 import AddEgg from './AddEgg';
 import { InvisibleButton } from './InvisibleButton';
 import { InvisibleIcon } from './InvisibleIcon';
-import { Button } from './common';
+import { Button } from './common/PinButton';
+import EggConfirmationModal from './EggConfirmationModal';
+
 
 // Reducers
-import { setSelectedEgg, fetchAllEggs } from '../reducers/eggs';
+import { setSelectedEgg, fetchAllEggs, makeOldEgg } from '../reducers/eggs';
 import { showModal } from '../reducers/addNodeModal';
 import { setAnnotation, clearAnnotation } from '../reducers/map';
 import { whoami } from '../reducers/auth';
 
 import { tunnelIP } from '../TUNNELIP';
+
 
 // Fetches device height and width
 let { height, width } = Dimensions.get('window');
@@ -54,7 +59,14 @@ class LandingPage extends Component {
       showEggs: true,
 
       // loading message
-      showLoading: true
+      showLoading: true,
+
+      // testing: require('../testImg.png')
+
+      // Showing alert for new egg
+      areThereNewEggs: false,
+      alertShown: false
+
     };
 
     // update user's location every second as they walk around
@@ -128,10 +140,17 @@ class LandingPage extends Component {
         return;
       }
       if (egg.receiverId === this.props.user.fbId && !egg.deletedByReceiver && !egg.pickedUp) {
-        let newPin = this.createStaticAnnotation(egg.longitude, egg.latitude, egg.sender, egg.id, egg.goHereText);
+        let newPin = this.createStaticAnnotation(egg.longitude, egg.latitude, egg.sender, egg.id, egg.goHereImage, egg.goHereText);
         pins.push(newPin);
+
+        if(egg.newEgg === true){
+          egg.newEgg = false;
+          this.props.makeOldEgg(egg)
+          this.setState({areThereNewEggs: true})
+        }
       }
     }
+
     this.setRenderAnnotations(pins);
     this.setState({ eggPins: pins });
   }
@@ -183,6 +202,7 @@ class LandingPage extends Component {
     };
   }
 
+
   createStaticAnnotation(longitude, latitude, sender, eggId, goHereText) {
     const senderId = sender.id;
     const sentFrom = `${sender.firstName} ${sender.lastName}`;
@@ -215,7 +235,7 @@ class LandingPage extends Component {
             name='ios-eye'
             type= 'ionicon'
             color='#fff'
-            size={50}
+            size={70}
             onPress={this.toggleView.bind(this)}
             underlayColor='#3a3c82'
           />
@@ -226,7 +246,7 @@ class LandingPage extends Component {
             name='ios-eye-off'
             type= 'ionicon'
             color='#fff'
-            size={50}
+            size={70}
             onPress={this.toggleView.bind(this)}
             underlayColor='#3a3c82'
         />
@@ -241,7 +261,7 @@ class LandingPage extends Component {
             name='ios-pin'
             type= 'ionicon'
             color='#fff'
-            size={50}
+            size={60}
             onPress={this.onAddNodeButtonPress.bind(this)}
             underlayColor='#3a3c82'
           />
@@ -249,9 +269,33 @@ class LandingPage extends Component {
     } else {
       return (
         <InvisibleIcon
+        size={60}
         onPress={ () => {} }
         />
       );
+    }
+  }
+
+  renderEggManagerButton(){
+    if(this.state.showLoading){
+      return (
+        <InvisibleIcon
+        size={60}
+        onPress={ () => {} }
+        />
+      );
+    }
+    else {
+      return(
+        <Icon
+          name='ios-egg'
+          type= 'ionicon'
+          color='#fff'
+          size={50}
+          onPress={Actions.friends}
+          underlayColor='#3a3c82'
+        />
+      )
     }
   }
 
@@ -277,20 +321,36 @@ class LandingPage extends Component {
       if (annotations){
         if (this.isWithinFence(this.state.currentPosition.coords, annotation) && annotation.senderId) {
           annotation.tintColor = MapView.PinColors.GREEN,
-          annotation.rightCalloutView = (
-                <Button
-                    color="#517fa4"
-                    onPress={(e) => this.pickupPayload(annotation, e)}
-                >
-                  Pssst... {annotation.title + "\n"}
-                  {annotation.subtitle}
-                </Button>
-          );
+          // annotation.title='Tap:' ,
+          // annotation.subtitle='',
+          annotation.leftCalloutView = (
+              <Button
+                  color="#517fa4"
+                  onPress={(e) => this.pickupPayload(annotation, e)}
+              >Tap Here!
+              </Button>
+          )
         }
       }
     });
 
     return annotations;
+  }
+
+  renderAlert(){
+
+    if(this.state.areThereNewEggs === true && this.state.alertShown === false){
+      this.setState({areThereNewEggs: false})
+      this.setState({alertShown: true})
+      return Alert.alert(
+        'You Have a New Egg!',
+        null,
+        [ {text: 'Close', onPress: () => console.log('Closed Alert!')}]
+      )
+    }
+
+  onConfirm() {
+    this.setState({showConfirmationModal: false})
   }
 
   render() {
@@ -305,7 +365,6 @@ class LandingPage extends Component {
 
     return (
       //the map
-
       <View style={styles.viewStyle}>
         <TouchableWithoutFeedback onLongPress={this.onMapLongPress}>
           <MapView
@@ -318,27 +377,21 @@ class LandingPage extends Component {
 
         <View style={styles.touchStyle}>
           <View style={styles.lineItems}>
-
-            <View style={{paddingLeft: 25, paddingRight: 40}}>
+            <View style={{paddingRight: 30}}>
               {this.renderViewToggleButton()}
             </View>
 
             <View style={styles.item}>
-            {/*this.renderDirections()*/}
-            {this.renderLeaveEggButton()}
+              {/*this.renderDirections()*/}
+              {this.renderLeaveEggButton()}
             </View>
 
             <View style={styles.item}>
-              <Icon
-                  name='ios-egg'
-                  type= 'ionicon'
-                  color='#fff'
-                  size={50}
-                  onPress={Actions.friends}
-                  underlayColor='#3a3c82'
-              />
+              {this.renderEggManagerButton()}
             </View>
           </View>
+
+          {this.renderAlert()}
 
           <Modal
             visible={this.props.showAddNodeModal}
@@ -350,7 +403,17 @@ class LandingPage extends Component {
               {...this.state}
             />
           </Modal>
+
         </View>
+          <Modal
+            visible={this.props.showConfirmationModal}
+            transparent
+            animationType="fade"
+            onRequestClose={() => {}}
+          >
+            <EggConfirmationModal />
+          </Modal>
+          </View>
       </View>
     );
   }
@@ -388,7 +451,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   item: {
-    paddingHorizontal: 40
+    paddingHorizontal: 30
   }
 });
 
@@ -399,6 +462,7 @@ const mapStateToProps = (state) => {
 
   return {
     showAddNodeModal: state.addNodeModal.showAddNodeModal,
+    showConfirmationModal: state.addNodeModal.showConfirmationModal,
     annotation: state.map.annotation,
     selectedEgg,
     allEggs,
@@ -412,6 +476,9 @@ const mapDispatchToProps = dispatch => ({
   },
   fetchAllEggs: (userId) => {
     dispatch(fetchAllEggs(userId));
+  },
+  makeOldEgg: (egg) => {
+    dispatch(makeOldEgg(egg));
   },
   showModal: (boolean) => {
     dispatch(showModal(boolean));
@@ -429,6 +496,7 @@ const mapDispatchToProps = dispatch => ({
 
 LandingPage.propTypes = {
   showAddNodeModal: PropTypes.boolean,
+  showConfirmationModal: PropTypes.boolean,
   annotation: PropTypes.array,
   selectedEgg: PropTypes.number,
   allEggs: PropTypes.object,
@@ -436,6 +504,7 @@ LandingPage.propTypes = {
     fbId: PropTypes.string
   }),
   setSelectedEgg: PropTypes.func,
+  makeOldEgg: PropTypes.func,
   fetchAllEggs: PropTypes.func,
   showModal: PropTypes.func,
   setAnnotation: PropTypes.func,
