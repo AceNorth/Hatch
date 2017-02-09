@@ -21,20 +21,20 @@ class ViewPayload extends Component {
     super(props);
     this.state = {
       viewEgg: props.allEggs[props.selectedEgg],
-      goHereImage: {},
-      payloadImage: {},
-    };
+      // goHereImage:{},
+      payloadImage:{}
+    }
   }
 
-  componentWillMount() {
-    this.setState({ viewEgg: this.props.allEggs[this.props.selectedEgg] })
-      let goHereImage2;
-      axios.get(`${tunnelIP}/api/egg/goHereImage/`+ this.props.selectedEgg)
-        .then(response => {
-          goHereImage2 = response.data;
-          this.setState({ goHereImage: goHereImage2 });
-        });
-
+  componentWillMount(){
+    this.setState({viewEgg: this.props.allEggs[this.props.selectedEgg]})
+      // let goHereImage2;
+      // axios.get(`${tunnelIP}/api/egg/goHereImage/`+ this.props.selectedEgg)
+      //     .then(response => {
+      //         goHereImage2 = response.data;
+      //         this.setState({goHereImage: goHereImage2});
+      //     })
+         
       let payloadImage2;
       axios.get(`${tunnelIP}/api/egg/payloadImage/`+ this.props.allEggs[this.props.selectedEgg].payloadId)
         .then(response => {
@@ -45,7 +45,7 @@ class ViewPayload extends Component {
 
   onSubmitPickup(){
     let egg = this.state.viewEgg
-    // this.state.viewEgg.pickedUp = true;
+    this.state.viewEgg.pickedUp = true;
     this.props.pickupEgg(this.state.viewEgg)
   }
 
