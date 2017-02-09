@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 import { View, Text, TouchableOpacity, MapView, ScrollView, Picker, Dimensions } from 'react-native';
 import { Card, CardSection, JeanSection } from './common';
+import { EggManagerCard } from './EggManagerCard'
 import { setSelectedEgg, deleteEgg } from '../reducers/eggs';
 import EggManagerModal from './EggManagerModal';
 
@@ -101,14 +102,15 @@ class EggManager extends Component {
 
   renderEggCard(egg) {
     let displayDate = new Date(Date.parse(egg.createdAt)).toString().split(" ").slice(0,4).join(" ");
-    let displayColor = (egg.pickedUp) ? "#8db7fc" : "#2f7efc";
+    let displayColor = (egg.pickedUp) ? "#3a3c82" : "#FF8F32";
+
     return (
       <TouchableOpacity
         key={egg.id}
         onLongPress={() => this.onEggPress(egg)}
         style={{ backgroundColor: displayColor }}
       >
-        <Card>
+        <EggManagerCard>
           <View style={styles.eggCard}>
             <View style={styles.oneLine}>
               <Text style={styles.boldText}>Instructions:  </Text>
@@ -127,7 +129,7 @@ class EggManager extends Component {
               <Text style={styles.text}>{displayDate}</Text>
             </View>
           </View>
-        </Card>
+        </EggManagerCard>
       </TouchableOpacity>
       )
   }
@@ -201,7 +203,7 @@ const styles = {
   eggCard: {
     borderBottomWidth: 1,
     padding: 10,
-    marginHorizontal: 20,
+    // marginHorizontal: 10,
     backgroundColor: '#fff',
     justifyContent: 'center',
     flexDirection: 'column',
