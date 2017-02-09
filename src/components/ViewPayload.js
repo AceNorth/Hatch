@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { View, Text, Image } from 'react-native';
+import { View, Text, Image, Dimensions } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import axios from 'axios';
 
@@ -10,26 +10,23 @@ import { tunnelIP } from '../TUNNELIP';
 import { pickupEgg } from '../reducers/eggs';
 import { fetchAudio } from '../reducers/audio';
 
+// Fetches device height and width
+let { height, width } = Dimensions.get('window');
+const DEVICE_WIDTH = width;
+const DEVICE_HEIGHT = height;
+
 class ViewPayload extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
       viewEgg: props.allEggs[props.selectedEgg],
-      goHereImage: {},
-      payloadImage: {},
-    };
+      payloadImage:{}
+    }
   }
 
-  componentWillMount() {
-    this.setState({ viewEgg: this.props.allEggs[this.props.selectedEgg] })
-      let goHereImage2;
-      axios.get(`${tunnelIP}/api/egg/goHereImage/`+ this.props.selectedEgg)
-        .then(response => {
-          goHereImage2 = response.data;
-          this.setState({ goHereImage: goHereImage2 });
-        });
-
+  componentWillMount(){
+    this.setState({viewEgg: this.props.allEggs[this.props.selectedEgg]})        
       let payloadImage2;
       axios.get(`${tunnelIP}/api/egg/payloadImage/`+ this.props.allEggs[this.props.selectedEgg].payloadId)
         .then(response => {
@@ -50,15 +47,11 @@ class ViewPayload extends Component {
     return (
       <Card>
         <CardSection style={{ flex: 1 }}>
-          <Text style={styles.textHeader}> Here's your message! </Text>
+          <Text style={styles.textHeader}>Here's your message!</Text>
         </CardSection>
         <CardSection>
           { this.onSubmitPickup() }
           <View style={styles.lineItems}>
-            {/*<View style={styles.item}>*/}
-              {/*<Image style={styles.imageStyle} source={{uri: this.state.goHereImage.uri}}></Image>*/}
-              {/*<Text style={styles.text}>{ this.state.viewEgg.goHereText }</Text>*/}
-            {/*</View>*/}
             <View style={styles.item}>
               <Image style={styles.imageStyle} source={{uri: this.state.payloadImage.uri}}></Image>
               <Text style={styles.text}>{ this.state.viewEgg.payload.text }</Text>
@@ -89,11 +82,13 @@ const styles = {
     flexDirection: 'column',
     justifyContent: 'flex-start',
     margin: 25,
+    paddingRight: 20
   },
   text: {
     textAlign: 'center',
     fontSize: 16,
     paddingLeft: 20,
+    paddingRight: 20,
     // color: '#fff',
     fontWeight: '600',
   },

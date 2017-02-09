@@ -20,15 +20,18 @@ const styles = {
   //position itself using flexbox rules (stretch to fill the container)
     alignSelf: 'flex-start',
     backgroundColor: '#007aff',
-    // marginLeft: 20,
-    // marginRight: 20,
+    // margin: 30,
+    borderRadius: 4,
+    marginLeft: 20,
+    marginRight: 20,
   },
   textStyle: {
     alignSelf: 'center',
     color: '#fff',
     fontSize: 18,
     fontWeight: '600',
-    lineHeight: 20
+    lineHeight: 20,
+    marginHorizontal: 10
   }
 }
 
