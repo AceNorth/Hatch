@@ -39,9 +39,11 @@ class ViewPayload extends Component {
   }
 
   onSubmitPickup(){
-    let egg = this.state.viewEgg
+    console.log('this is happening');
+    let egg = this.state.viewEgg;
     this.state.viewEgg.pickedUp = true;
-    this.props.pickupEgg(this.state.viewEgg)
+    console.log('heres the egg now', egg);
+    this.props.pickupEgg(this.state.viewEgg);
   }
 
   render() {
@@ -80,14 +82,14 @@ class ViewPayload extends Component {
 const styles = {
   item: {
     justifyContent: 'space-between',
-    flexDirection: 'row',
+    flexDirection: 'column',
     paddingTop: 20,
     paddingBottom: 20
   },
   lineItems: {
     flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
+    flexDirection: 'row',
+    justifyContent: 'center',
     margin: 25,
   },
   text: {
@@ -102,8 +104,9 @@ const styles = {
     paddingTop: 50
   },
   imageStyle: {
-    width: 80,
-    height: 80
+    width: 200,
+    height: 200,
+    alignSelf: 'center'
   },
   container: {
     flex: 1,

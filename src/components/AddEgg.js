@@ -153,7 +153,7 @@ class AddEgg extends Component {
       <View style={containerStyle}>
         <CardSection>
           <View style={{ flexDirection: 'column', flex: 1, height: 50 }}>
-            <Text>Egg pick-up instructions</Text>
+            <Text style={{ fontFamily: 'Heiti SC' }}>Egg pick-up instructions</Text>
             <InputNoLabel
               placeholder="Where we first met <3"
               onChangeText={e => this.handleInputChange('text', e)}
@@ -173,7 +173,7 @@ class AddEgg extends Component {
         </CardSection>
         <CardSection>
           <View style={{ flexDirection: 'column', flex: 1 }}>
-            <Text>Secret message (hidden till pickup)</Text>
+            <Text style={{ fontFamily: 'Heiti SC' }}>Secret message</Text>
             <InputNoLabel
               placeholder="You found me!"
               onChangeText={e => this.handleInputChange('payloadText', e)}
@@ -234,6 +234,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingLeft: 15,
     paddingRight: 5,
+    fontFamily: 'Heiti SC'
   },
   containerStyle: {
     backgroundColor: 'rgba(0, 0, 0, 0.75)',

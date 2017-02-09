@@ -65,8 +65,8 @@ export const addEggToDbAndStore = egg => dispatch =>{
         .then((newEgg)=>{
             dispatch(addEggToStore(newEgg.data));
         })
-        .catch(err => console.log('addEggToDbAndStore in eggs reducer error', err))
-}
+        .catch(err => console.log('addEggToDbAndStore in eggs reducer error', err));
+};
 
 export const fetchAllEggs = userId => dispatch => {
     axios.get(`${tunnelIP}/api/egg/user/${userId}`)
