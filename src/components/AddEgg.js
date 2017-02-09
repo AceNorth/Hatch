@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { addEggToDbAndStore } from '../reducers/eggs';
 
 import { CardSection, Button, InputNoLabel } from './common';
-import { showModal } from '../reducers/addNodeModal';
+import { showModal, showConfirm, setSubmittedEgg } from '../reducers/addNodeModal';
 import { setAnnotation, clearAnnotation } from '../reducers/map';
 import { tunnelIP } from '../TUNNELIP';
 
@@ -19,7 +19,8 @@ class AddEgg extends Component {
       payloadImageSource: { uri: `${tunnelIP}/addImgOrange.png` },
       payloadImageBuffer: null,
       eggs: [],
-      recipient: this.props.friends[0].fbId
+      recipient: this.props.friends[0].fbId,
+      visibleOutsideFence: true
     };
 
     this.handleInputChange=this.handleInputChange.bind(this);
@@ -38,14 +39,17 @@ class AddEgg extends Component {
       payloadImageBuffer: this.state.payloadImageBuffer,
       senderId: this.props.senderId,
       recipient: this.state.recipient,
+      visibleOutsideFence: this.state.visibleOutsideFence
     };
 
     // If user did not upload photos, make those fields blank
     if (!egg.payloadImageBuffer) { egg.payloadImage = null; }
 
     this.props.addEggToDbAndStore(egg);
-    this.setState({ text:'', payloadText: '', goHereText: '', recipient:this.props.friends[0].fbId });
+    this.props.setSubmittedEgg(egg);
+    this.setState({ text:'', payloadText: '', goHereText: '', recipient:this.props.friends[0].fbId});
     this.props.showModal(false);
+    this.props.showConfirm(true);
     this.props.clearAnnotation();
   }
 
@@ -109,10 +113,32 @@ class AddEgg extends Component {
       [field]: e });
   }
 
+  renderEggTypeHeader() {
+    if (this.state.visibleOutsideFence) {
+      return (
+        <CardSection>
+        <Text>New Visible Egg</Text>
+        </CardSection>
+        );
+    } else {
+      return (
+        <CardSection>
+        <Text style={{fontStyle: "italic"}}>New Invisible Egg</Text>
+        </CardSection>  
+        );
+    }
+  }
+
+  toggleEggVisibility() {
+    let visible = !this.state.visibleOutsideFence;
+    this.setState({visibleOutsideFence: visible});
+  }
+
   render() {
     const { containerStyle, textStyle, cardSectionStyle } = styles;
     return (
       <View style={containerStyle}>
+        {this.renderEggTypeHeader()}
         <CardSection>
           <View style={{ flexDirection: 'column', flex: 1, height: 50 }}>
             <Text style={{ fontFamily: 'Heiti SC' }}>Egg pick-up instructions</Text>
@@ -152,7 +178,9 @@ class AddEgg extends Component {
             {this.props.friends.map(friend => (<Picker.Item label={friend.name} value={friend.fbId} key={friend.fbId} />))}
           </Picker>
         </CardSection>
-
+        <CardSection>
+          <Button onPress={this.toggleEggVisibility.bind(this)}> Toggle Egg Visibility </Button>
+        </CardSection>
         <CardSection style={{ flex: 1 }}>
           <Button onPress={this.onSubmitNode}>Submit</Button>
           <Button onPress={this.onCancelSubmitNode}>Cancel</Button>
@@ -198,6 +226,12 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   showModal: function (boolean) {
     dispatch(showModal(boolean));
+  },
+  showConfirm: function (boolean) {
+    dispatch(showConfirm(boolean));
+  },
+  setSubmittedEgg: function (egg) {
+    dispatch(setSubmittedEgg(egg));
   },
   setAnnotation: function (annotation) {
     dispatch(setAnnotation(annotation));

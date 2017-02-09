@@ -1,12 +1,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { View, Text, Image } from 'react-native';
+import { View, Text, Image, Dimensions } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import axios from 'axios';
 
 import { Card, CardSection, Button } from './common';
 import { tunnelIP } from '../TUNNELIP';
 import { pickupEgg } from '../reducers/eggs';
+
+// Fetches device height and width
+let { height, width } = Dimensions.get('window');
+const DEVICE_WIDTH = width;
+const DEVICE_HEIGHT = height;
 
 class ViewPayload extends Component {
 
@@ -39,7 +44,7 @@ class ViewPayload extends Component {
     return (
       <Card>
         <CardSection style={{ flex: 1 }}>
-          <Text style={styles.textHeader}> Here's your message! </Text>
+          <Text style={styles.textHeader}>Here's your message!</Text>
         </CardSection>
         <CardSection>
           { this.onSubmitPickup() }
@@ -74,11 +79,13 @@ const styles = {
     flexDirection: 'row',
     justifyContent: 'center',
     margin: 25,
+    paddingRight: 20
   },
   text: {
     textAlign: 'center',
     fontSize: 16,
     paddingLeft: 20,
+    paddingRight: 20,
     // color: '#fff',
     fontWeight: '600',
   },

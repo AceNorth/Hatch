@@ -5,6 +5,7 @@ import { tunnelIP } from '../TUNNELIP';
 /* --------------    ACTION CONSTANTS    ---------------- */
 
 const ADD_EGG = 'ADD_EGG';
+const NEW_EGG = 'NEW_EGG';
 const SELECT_EGG = 'SELECT_EGG';
 const FETCH_EGGS = 'FETCH_EGGS';
 const DELETE_EGG = 'DELETE_EGG';
@@ -15,8 +16,9 @@ const PICKUP_EGG = 'PICKUP_EGG';
 const selectEgg = eggId => ({ type: SELECT_EGG, eggId });
 const fetchEggs = eggs => ({ type: FETCH_EGGS, eggs });
 const deleteEggFromState = egg => ({ type: DELETE_EGG, egg });
-const pickupThisEgg = egg => ({ type: PICKUP_EGG, egg });
-const addEggToStore = egg => ({ type: ADD_EGG, egg });
+const pickupThisEgg = egg => ({ type: PICKUP_EGG, egg});
+const addEggToStore = egg => ({ type: ADD_EGG, egg});
+const registerNewEgg = egg => ({ type: NEW_EGG, egg});
 
 /* ------------------    REDUCER    --------------------- */
 
@@ -45,6 +47,9 @@ export default function (state = initialState, action) {
     case PICKUP_EGG:
       newState.allEggs[action.egg.id].pickedUp = true;
       break;
+    case NEW_EGG:
+      newState.allEggs[action.egg.id].newEgg = false;
+      break;
     default:
       return state;
   }
@@ -54,11 +59,9 @@ export default function (state = initialState, action) {
 /* --------------    THUNKS/DISPATCHERS    -------------- */
 export const setSelectedEgg = eggId =>
   (dispatch) => {
-  // axios.get(`${tunnelIP}/api/egg/${eggId}`)
-  // .then(res => dispatch(selectEgg(res.data)))
     dispatch(selectEgg(eggId));
-  // .catch(err => console.error('Problem setting egg', err));
   };
+
 
 export const addEggToDbAndStore = egg =>
   (dispatch) => {
@@ -90,3 +93,9 @@ export const pickupEgg = egg =>
       .then(() => dispatch(pickupThisEgg(egg)))
       .catch(err => console.log('problem picking up egg', err));
   };
+
+export const makeOldEgg = egg => dispatch => {
+    axios.put(`${tunnelIP}/api/egg/${egg.id}`, egg)
+      .then(() => dispatch(registerNewEgg(egg)))
+      .catch(err => console.log('problem making old egg', err));
+}
