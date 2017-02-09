@@ -124,6 +124,9 @@ class LandingPage extends Component {
 
     for (let key in this.props.allEggs) {
       let egg = this.props.allEggs[key];
+      if (!egg.visibleOutsideFence && !this.isWithinFence(this.state.currentPosition.coords, egg)) {
+        return;
+      }
       if (egg.receiverId === this.props.user.fbId && !egg.deletedByReceiver && !egg.pickedUp) {
         let newPin = this.createStaticAnnotation(egg.longitude, egg.latitude, egg.sender, egg.id, egg.goHereText);
         pins.push(newPin);
@@ -181,8 +184,6 @@ class LandingPage extends Component {
   }
 
   createStaticAnnotation(longitude, latitude, sender, eggId, goHereText) {
-    // we might want to change what's displayed here later, this is just
-    // a placeholder example fo the info we can put on pins
     const senderId = sender.id;
     const sentFrom = `${sender.firstName} ${sender.lastName}`;
     const pinSubtitle = `Egg from ${sentFrom}`;
