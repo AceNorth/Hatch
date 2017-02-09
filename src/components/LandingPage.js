@@ -348,6 +348,7 @@ class LandingPage extends Component {
         [ {text: 'Close', onPress: () => console.log('Closed Alert!')}]
       )
     }
+  }
 
   onConfirm() {
     this.setState({showConfirmationModal: false})
@@ -404,7 +405,6 @@ class LandingPage extends Component {
             />
           </Modal>
 
-        </View>
           <Modal
             visible={this.props.showConfirmationModal}
             transparent
@@ -413,7 +413,7 @@ class LandingPage extends Component {
           >
             <EggConfirmationModal />
           </Modal>
-          </View>
+        </View>
       </View>
     );
   }
