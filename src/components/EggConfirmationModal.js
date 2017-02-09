@@ -5,13 +5,6 @@ import { showConfirm, setSubmittedEgg } from '../reducers/addNodeModal';
 import { connect } from 'react-redux';
 
 class EggConfirmationModal extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      egg: props.selectedEgg
-    }
-  }
-
   onConfirm() {
     this.props.showConfirm(false);
     this.props.setSubmittedEgg({});
@@ -19,14 +12,30 @@ class EggConfirmationModal extends Component {
 
   render() {
     const { containerStyle, textStyle, cardSectionStyle } = styles;
+    const egg = this.props.submittedEgg
 
     return (
         <View style={containerStyle}>
           <CardSection>
-            <Text style={textStyle}> YOU LEFT AN EGG! </Text>
+            <Text style={textStyle}> EGG HIDDEN! </Text>
           </CardSection>
           <CardSection>
-            <Text style={textStyle}> {this.props.submittedEgg.payloadText} </Text>
+            <View style={styles.mapStyle} >
+              <MapView
+              style={{height: 250, width: 200, margin: 0}}
+              showsUserLocation={false}
+              region={{latitude: egg.latitude, longitude: egg.longitude, latitudeDelta: .01, longitudeDelta: .01}}
+                annotations={[{
+                  longitude: egg.longitude,
+                  latitude: egg.latitude,
+                  tintColor: MapView.PinColors.PURPLE,
+                  draggable: false 
+                }]}
+              />
+            </View>
+          </CardSection>
+          <CardSection>
+            <Text style={textStyle}> {this.props.submittedEgg.goHereText}</Text>
           </CardSection>
           <CardSection>
             <Button onPress={this.onConfirm.bind(this)}>Great!</Button>
@@ -56,7 +65,7 @@ const styles = {
 
 const mapStateToProps = state => ({
   showConfirmationModal: state.addNodeModal.showConfirmationModal,
-  selectedEgg: state.addNodeModal.submittedEgg
+  submittedEgg: state.addNodeModal.submittedEgg
 });
 
 const mapDispatchToProps = dispatch => ({
