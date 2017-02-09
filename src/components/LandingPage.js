@@ -22,6 +22,8 @@ import { InvisibleButton } from './InvisibleButton';
 import { InvisibleIcon } from './InvisibleIcon';
 // import { Button } from './common';
 import { PinButton } from './common/PinButton';
+import EggConfirmationModal from './EggConfirmationModal';
+
 
 // Reducers
 import { setSelectedEgg, fetchAllEggs, makeOldEgg } from '../reducers/eggs';

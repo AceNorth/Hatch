@@ -69,7 +69,7 @@ class EggManager extends Component {
     // because we don't want to delete eggs from the database
     // so we're actually UPDATING the egg to SAY it's been deleted,
     // and by whom.
-    if (this.state.chosenEgg.senderId === this.state.selectedFriendId) {
+    if (this.state.chosenEgg.senderId === this.props.selectedFriendId) {
       this.state.chosenEgg.deletedByReceiver = true;
     } else {
       this.state.chosenEgg.deletedBySender = true;
@@ -88,12 +88,20 @@ class EggManager extends Component {
 
     if (!egg.payload) {return};
     let payloadType = egg.payload.type;
+    // kind of hacky but it'll do - if the egg hasn't been picked up
+    // and you're the recipient, we overwrite the payload type so
+    // you can't see it
+    if (!egg.pickedUp && this.state.chosenEgg.senderId === this.props.selectedFriendId) {
+      payloadType = 'Secret';
+    }
 
     switch (payloadType) {
       case 'Text':
         return (<Text style={styles.textStyle}> { egg.payload.text } </Text>)
       case 'Image':
         return (<View> { egg.payload.path } </View>);
+      case 'Secret':
+        return (<Text> Find this egg to see your message! </Text>);
       default:
         return (<Text> Something has GONE WRONG </Text>);
     }
@@ -138,6 +146,24 @@ class EggManager extends Component {
     this.setState({currentlyShowing: filter})
     this.changeDisplayedEggs(filter);
     this.forceUpdate();
+  }
+
+  renderMap() {
+    if (!this.state.chosenEgg.visibleOutsideFence && !this.state.chosenEgg.pickedUp) {
+      return (<Text> This egg is hidden! Follow the clue to find it! </Text>);
+    } else {
+      return (<MapView
+                    style={{ height: 250, width: 200, margin: 0 }}
+                    showsUserLocation={false}
+                    region={{ latitude: this.state.chosenEgg.latitude, longitude: this.state.chosenEgg.longitude, latitudeDelta: .01, longitudeDelta: .01 }}
+                      annotations={[{
+                        longitude: this.state.chosenEgg.longitude,
+                        latitude: this.state.chosenEgg.latitude,
+                        tintColor: MapView.PinColors.PURPLE,
+                        draggable: false
+                      }]}
+                    />);
+    }
   }
 
   render() {

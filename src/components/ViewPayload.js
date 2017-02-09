@@ -25,20 +25,12 @@ class ViewPayload extends Component {
     super(props);
     this.state = {
       viewEgg: props.allEggs[props.selectedEgg],
-      // goHereImage:{},
       payloadImage:{}
     }
   }
 
   componentWillMount(){
-    this.setState({viewEgg: this.props.allEggs[this.props.selectedEgg]})
-      // let goHereImage2;
-      // axios.get(`${tunnelIP}/api/egg/goHereImage/`+ this.props.selectedEgg)
-      //     .then(response => {
-      //         goHereImage2 = response.data;
-      //         this.setState({goHereImage: goHereImage2});
-      //     })
-         
+    this.setState({viewEgg: this.props.allEggs[this.props.selectedEgg]})        
       let payloadImage2;
       axios.get(`${tunnelIP}/api/egg/payloadImage/`+ this.props.allEggs[this.props.selectedEgg].payloadId)
         .then(response => {
@@ -62,11 +54,7 @@ class ViewPayload extends Component {
         <ViewPayloadCardSection>
           { this.onSubmitPickup() }
           <View style={styles.lineItems}>
-            {/*<View style={styles.item}>*/}
-              {/*<Image style={styles.imageStyle} source={{uri: this.state.goHereImage.uri}}></Image>*/}
-              {/*<Text style={styles.text}>{ this.state.viewEgg.goHereText }</Text>*/}
-            {/*</View>*/}
-            
+          
             <View style={styles.item}>
               <Image style={styles.imageStyle} source={{uri: this.state.payloadImage.uri}}></Image>
             </View>
