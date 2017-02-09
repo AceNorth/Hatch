@@ -5,10 +5,8 @@ import { Actions } from 'react-native-router-flux';
 import axios from 'axios';
 
 import { Card, CardSection, Button } from './common';
-import PlayAudio from './PlayAudio';
 import { tunnelIP } from '../TUNNELIP';
 import { pickupEgg } from '../reducers/eggs';
-import { fetchAudio } from '../reducers/audio';
 
 // Fetches device height and width
 let { height, width } = Dimensions.get('window');
@@ -21,29 +19,28 @@ class ViewPayload extends Component {
     super(props);
     this.state = {
       viewEgg: props.allEggs[props.selectedEgg],
-      payloadImage:{}
-    }
+      payloadImage: {},
+    };
   }
 
-  componentWillMount(){
-    this.setState({viewEgg: this.props.allEggs[this.props.selectedEgg]})        
-      let payloadImage2;
-      axios.get(`${tunnelIP}/api/egg/payloadImage/`+ this.props.allEggs[this.props.selectedEgg].payloadId)
-        .then(response => {
-          payloadImage2 = response.data;
-          this.setState({ payloadImage: payloadImage2 });
-        });
+  componentWillMount() {
+    this.setState({ viewEgg: this.props.allEggs[this.props.selectedEgg] });
+
+    let payloadImage2;
+    axios.get(`${tunnelIP}/api/egg/payloadImage/${this.props.allEggs[this.props.selectedEgg].payloadId}`)
+      .then(response => {
+        payloadImage2 = response.data;
+        this.setState({ payloadImage: payloadImage2 });
+      });
   }
 
-  onSubmitPickup(){
-    let egg = this.state.viewEgg
-    this.state.viewEgg.pickedUp = true;
-    this.props.pickupEgg(this.state.viewEgg)
+  onSubmitPickup() {
+    const egg = this.state.viewEgg;
+    egg.pickedUp = true;
+    this.props.pickupEgg(egg);
   }
 
   render() {
-
-    const { container, textHeader, imageStyle, lineItems, innerText } = styles;
     return (
       <Card>
         <CardSection style={{ flex: 1 }}>
@@ -53,7 +50,7 @@ class ViewPayload extends Component {
           { this.onSubmitPickup() }
           <View style={styles.lineItems}>
             <View style={styles.item}>
-              <Image style={styles.imageStyle} source={{uri: this.state.payloadImage.uri}}></Image>
+              <Image style={styles.imageStyle} source={{ uri: this.state.payloadImage.uri }}></Image>
               <Text style={styles.text}>{ this.state.viewEgg.payload.text }</Text>
             </View>
           </View>
@@ -73,14 +70,14 @@ class ViewPayload extends Component {
 const styles = {
   item: {
     justifyContent: 'space-between',
-    flexDirection: 'row',
+    flexDirection: 'column',
     paddingTop: 20,
     paddingBottom: 20
   },
   lineItems: {
     flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
+    flexDirection: 'row',
+    justifyContent: 'center',
     margin: 25,
     paddingRight: 20
   },
@@ -97,8 +94,9 @@ const styles = {
     paddingTop: 50
   },
   imageStyle: {
-    width: 80,
-    height: 80
+    width: 200,
+    height: 200,
+    alignSelf: 'center'
   },
   container: {
     flex: 1,
@@ -121,9 +119,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       pickupEgg: function(egg) {
         dispatch(pickupEgg(egg));
       },
-      fetchAudio: function(audioUrl) {
-        dispatch(fetchAudio(audioUrl));
-      }
     };
 };
 
