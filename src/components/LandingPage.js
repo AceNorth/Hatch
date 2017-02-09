@@ -5,6 +5,8 @@ import {
   StyleSheet,
   MapView,
   TouchableWithoutFeedback,
+  TouchableOpacity,
+  Alert,
   Modal,
   Dimensions,
   Picker,
@@ -22,12 +24,13 @@ import { InvisibleIcon } from './InvisibleIcon';
 import { Button } from './common/PinButton';
 
 // Reducers
-import { setSelectedEgg, fetchAllEggs } from '../reducers/eggs';
+import { setSelectedEgg, fetchAllEggs, makeOldEgg } from '../reducers/eggs';
 import { showModal } from '../reducers/addNodeModal';
 import { setAnnotation, clearAnnotation } from '../reducers/map';
 import { whoami } from '../reducers/auth';
 
 import { tunnelIP } from '../TUNNELIP';
+
 
 // Fetches device height and width
 let { height, width } = Dimensions.get('window');
@@ -49,13 +52,20 @@ class LandingPage extends Component {
       // this is as small as I can make the fence and still pick up
       // an egg that was left at the simulator's "current location"
       // using my phone.
-      pickupRadius: 0.002,
+      pickupRadius: 0.0002,
 
       // view toggler
       showEggs: true,
 
       // loading message
-      showLoading: true
+      showLoading: true,
+
+      // testing: require('../testImg.png')
+
+      // Showing alert for new egg
+      areThereNewEggs: false,
+      alertShown: false
+
     };
 
     // update user's location every second as they walk around
@@ -126,10 +136,17 @@ class LandingPage extends Component {
     for (let key in this.props.allEggs) {
       let egg = this.props.allEggs[key];
       if (egg.receiverId === this.props.user.fbId && !egg.deletedByReceiver && !egg.pickedUp) {
-        let newPin = this.createStaticAnnotation(egg.longitude, egg.latitude, egg.sender, egg.id, egg.goHereText);
+        let newPin = this.createStaticAnnotation(egg.longitude, egg.latitude, egg.sender, egg.id, egg.goHereImage, egg.goHereText);
         pins.push(newPin);
+
+        if(egg.newEgg === true){
+          egg.newEgg = false;
+          this.props.makeOldEgg(egg)
+          this.setState({areThereNewEggs: true})
+        }
       }
     }
+
     this.setRenderAnnotations(pins);
     this.setState({ eggPins: pins });
   }
@@ -181,7 +198,7 @@ class LandingPage extends Component {
     };
   }
 
-  createStaticAnnotation(longitude, latitude, sender, eggId, goHereText) {
+  createStaticAnnotation(longitude, latitude, sender, eggId, goHereImage, goHereText) {
     // we might want to change what's displayed here later, this is just
     // a placeholder example fo the info we can put on pins
     const senderId = sender.id;
@@ -279,18 +296,31 @@ class LandingPage extends Component {
           annotation.tintColor = MapView.PinColors.GREEN,
           // annotation.title='Tap:' ,
           // annotation.subtitle='',
-          annotation.rightCalloutView = (
-                <Button
-                    color="#517fa4"
-                    onPress={(e) => this.pickupPayload(annotation, e)}
-                > Tap Here!
-                </Button>
+          annotation.leftCalloutView = (
+              <Button
+                  color="#517fa4"
+                  onPress={(e) => this.pickupPayload(annotation, e)}
+              >Tap Here!
+              </Button>
           )
         }
       }
     });
 
     return annotations;
+  }
+
+  renderAlert(){
+
+    if(this.state.areThereNewEggs === true && this.state.alertShown === false){
+      this.setState({areThereNewEggs: false})
+      this.setState({alertShown: true})
+      return Alert.alert(
+        'You Have a New Egg',
+        null,
+        [ {text: 'Close', onPress: () => console.log('Closed Alert!')}]
+      )
+    }
   }
 
   render() {
@@ -305,7 +335,6 @@ class LandingPage extends Component {
 
     return (
       //the map
-
       <View style={styles.viewStyle}>
         <TouchableWithoutFeedback onLongPress={this.onMapLongPress}>
           <MapView
@@ -318,7 +347,6 @@ class LandingPage extends Component {
 
         <View style={styles.touchStyle}>
           <View style={styles.lineItems}>
-
             <View style={{paddingLeft: 25, paddingRight: 40}}>
               {this.renderViewToggleButton()}
             </View>
@@ -340,6 +368,8 @@ class LandingPage extends Component {
             </View>
           </View>
 
+          {this.renderAlert()}
+
           <Modal
             visible={this.props.showAddNodeModal}
             transparent
@@ -350,6 +380,8 @@ class LandingPage extends Component {
               {...this.state}
             />
           </Modal>
+
+
         </View>
       </View>
     );
@@ -413,6 +445,9 @@ const mapDispatchToProps = dispatch => ({
   fetchAllEggs: (userId) => {
     dispatch(fetchAllEggs(userId));
   },
+  makeOldEgg: (egg) => {
+    dispatch(makeOldEgg(egg));
+  },
   showModal: (boolean) => {
     dispatch(showModal(boolean));
   },
@@ -436,6 +471,7 @@ LandingPage.propTypes = {
     fbId: PropTypes.string
   }),
   setSelectedEgg: PropTypes.func,
+  makeOldEgg: PropTypes.func,
   fetchAllEggs: PropTypes.func,
   showModal: PropTypes.func,
   setAnnotation: PropTypes.func,
