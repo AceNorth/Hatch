@@ -5,8 +5,6 @@ import { View, Text, TouchableOpacity, MapView, ScrollView, Picker, Dimensions }
 import { Card, CardSection, JeanSection } from './common';
 import { setSelectedEgg, deleteEgg } from '../reducers/eggs';
 import EggManagerModal from './EggManagerModal';
-import { LoginButton } from 'react-native-fbsdk';
-
 
 class EggManager extends Component {
   constructor(props) {
@@ -188,28 +186,6 @@ class EggManager extends Component {
         <View>
           <Text></Text>
         </View>
-
-          <LoginButton
-            readPermissions={['email', 'user_friends']}
-            onLoginFinished={
-              (error, result) => {
-                if (error) {
-                  console.log('Login failed with error:', error);
-                } else if (result.isCancelled) {
-                  console.log('Login was cancelled');
-                } else {
-                  this.props.fetchUserInfo();
-                  Actions.landingPage();
-                }
-              }
-            }
-            onLogoutFinished={() => {
-              console.log('User logged out');
-              this.props.whoami(null);
-              Actions.login();
-            }}
-            style={styles.loginButton}
-          />
       </ScrollView>
       </View>
     );
@@ -273,12 +249,7 @@ const styles = {
     paddingTop: 20,
     fontWeight: 'bold',
     fontSize: 16
-  },
-  loginButton: {
-    height: 30,
-    width: 200,
-    alignSelf: 'center'
-  },
+  }
 };
 
 const mapStateToProps = (state, ownProps) => {
@@ -294,9 +265,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       },
     deleteEgg: function(egg) {
       dispatch(deleteEgg(egg));
-    },
-    whoami: (user) => {
-      dispatch(whoami(user));
     }
   };
 };
