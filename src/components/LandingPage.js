@@ -282,8 +282,7 @@ class LandingPage extends Component {
         />
       );
     }
-
-    if(this.state.showEggs){
+    else {
       return(
         <Icon
           name='ios-egg'
