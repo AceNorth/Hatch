@@ -1,12 +1,12 @@
 import { combineReducers } from 'redux';
-// import reducers
+
+// Import reducers
 import eggs from './eggs';
 import addNodeModal from './addNodeModal';
 import map from './map';
 import auth from './auth';
 import friends from './friends';
-import audio from './audio';
 
-const rootReducer = combineReducers({ eggs, addNodeModal, map, auth, friends, audio });
+const rootReducer = combineReducers({ eggs, addNodeModal, map, auth, friends });
 
 export default rootReducer;

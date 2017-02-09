@@ -428,7 +428,7 @@ const mapDispatchToProps = dispatch => ({
 });
 
 LandingPage.propTypes = {
-  showAddNodeModal: PropTypes.boolean,
+  showAddNodeModal: PropTypes.bool,
   annotation: PropTypes.array,
   selectedEgg: PropTypes.number,
   allEggs: PropTypes.object,

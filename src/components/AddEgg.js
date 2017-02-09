@@ -4,11 +4,8 @@ import { connect } from 'react-redux';
 import { addEggToDbAndStore } from '../reducers/eggs';
 
 import { CardSection, Button, InputNoLabel } from './common';
-import RecordAudio from './RecordAudio';
-import PlayAudio from './PlayAudio';
 import { showModal } from '../reducers/addNodeModal';
 import { setAnnotation, clearAnnotation } from '../reducers/map';
-import { resetAudioState, uploadAudioFile } from '../reducers/audio';
 import { tunnelIP } from '../TUNNELIP';
 
 class AddEgg extends Component {
@@ -21,8 +18,6 @@ class AddEgg extends Component {
       payloadImage: '',
       payloadImageSource: { uri: `${tunnelIP}/addImgOrange.png` },
       payloadImageBuffer: null,
-      goHereImageSource: { uri: `${tunnelIP}/addImgRed.png` },
-      goHereImageBuffer: null,
       eggs: [],
       recipient: this.props.friends[0].fbId
     };
@@ -35,9 +30,7 @@ class AddEgg extends Component {
 
   onSubmitNode() {
     const egg = {
-      goHereImage: this.state.goHereImageSource,
       goHereText: this.state.text,
-      goHereImageBuffer: this.state.goHereImageBuffer,
       latitude: this.props.annotation[0].latitude, // This is definitely a number
       longitude: this.props.annotation[0].longitude, // Also definitely a number
       payloadText: this.state.payloadText,
@@ -49,39 +42,17 @@ class AddEgg extends Component {
 
     // If user did not upload photos, make those fields blank
     if (!egg.payloadImageBuffer) { egg.payloadImage = null; }
-    if (!egg.goHereImageBuffer) { egg.goHereImage = null; }
 
-    // If user recorded audio...
-    if (this.props.audioUrl) {
-
-      // Send that instead of payload image & set type to 'Audio'
-      egg.payloadImageBuffer = null;
-      egg.payloadType = 'Audio';
-
-      // Store audio in Firebase
-      uploadAudioFile(this.props.audioUrl)
-        .then((downloadUrl) => {
-          console.log('downloadUrl', downloadUrl);
-
-          // Add url to egg
-          egg.path = downloadUrl;
-          this.props.addEggToDbAndStore(egg);
-        });
-    } else {
-      this.props.addEggToDbAndStore(egg);
-    }
-
+    this.props.addEggToDbAndStore(egg);
     this.setState({ text:'', payloadText: '', goHereText: '', recipient:this.props.friends[0].fbId });
     this.props.showModal(false);
     this.props.clearAnnotation();
-    this.props.resetAudioState();
   }
 
   onCancelSubmitNode() {
     this.setState({ text: '', payloadText: '', goHereText: '', recipient: this.props.friends[0] });
     this.props.showModal(false);
     this.props.clearAnnotation();
-    this.props.resetAudioState();
   }
 
   selectImageForPicker(type) {
@@ -119,16 +90,7 @@ class AddEgg extends Component {
       } else if (response.error) {
         console.log('ImagePicker Error: ', response.error);
       } else {
-        if (type === 'clue') {
-          // display the image using either data...
-          goSource = { uri: 'data:image/jpeg;base64,' + response.data };
-          goBuffer = response.data;
-
-          this.setState({
-            goHereImageSource: goSource,
-            goHereImageBuffer: goBuffer
-          });
-        } else if (type === 'pay') {
+        if (type === 'pay') {
           // display the image using either data...
           paySource = { uri: 'data:image/jpeg;base64,' + response.data };
           payBuffer = response.data;
@@ -160,16 +122,6 @@ class AddEgg extends Component {
               value={this.state.text}
             />
           </View>
-          {/*<TouchableHighlight
-            onPress={() => this.selectImageForPicker('clue')}
-            activeOpacity={0.8}
-            underlayColor={'white'}
-          >
-            <Image
-              source={this.state.goHereImageSource}
-              style={{ width: 50, height: 50 }}
-            />
-          </TouchableHighlight>*/}
         </CardSection>
         <CardSection>
           <View style={{ flexDirection: 'column', flex: 1 }}>
@@ -190,20 +142,6 @@ class AddEgg extends Component {
               style={{ width: 50, height: 50 }}
             />
           </TouchableHighlight>
-        </CardSection>
-        <CardSection style={{ flex: 1 }}>
-          {
-            this.props.stoppedRecording
-            ? <PlayAudio />
-            : <RecordAudio />
-          }
-
-          {
-            this.props.stoppedRecording
-            ? <Text style={textStyle}>You recorded a voice message!</Text>
-            : <Text style={textStyle}>Tap and hold to record a voice message for your egg.</Text>
-          }
-
         </CardSection>
         <CardSection >
           <Picker
@@ -255,9 +193,6 @@ const mapStateToProps = state => ({
   annotation: state.map.annotation,
   senderId: state.auth.fbId,
   friends: state.friends.allFriends,
-  stoppedRecording: state.audio.stoppedRecording,
-  currentTime: state.audio.currentTime,
-  audioUrl: state.audio.audioUrl,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -273,9 +208,6 @@ const mapDispatchToProps = dispatch => ({
   addEggToDbAndStore: function (egg) {
     dispatch(addEggToDbAndStore(egg));
   },
-  resetAudioState: function() {
-    dispatch(resetAudioState());
-  }
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddEgg);
