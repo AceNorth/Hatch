@@ -20,8 +20,9 @@ import { LoginButton } from 'react-native-fbsdk';
 import AddEgg from './AddEgg';
 import { InvisibleButton } from './InvisibleButton';
 import { InvisibleIcon } from './InvisibleIcon';
-// import { Button } from './common';
 import { Button } from './common/PinButton';
+import EggConfirmationModal from './EggConfirmationModal';
+
 
 // Reducers
 import { setSelectedEgg, fetchAllEggs, makeOldEgg } from '../reducers/eggs';
@@ -52,7 +53,7 @@ class LandingPage extends Component {
       // this is as small as I can make the fence and still pick up
       // an egg that was left at the simulator's "current location"
       // using my phone.
-      pickupRadius: 0.0002,
+      pickupRadius: 0.002,
 
       // view toggler
       showEggs: true,
@@ -316,11 +317,14 @@ class LandingPage extends Component {
       this.setState({areThereNewEggs: false})
       this.setState({alertShown: true})
       return Alert.alert(
-        'You Have a New Egg',
+        'You Have a New Egg!',
         null,
         [ {text: 'Close', onPress: () => console.log('Closed Alert!')}]
       )
     }
+
+  onConfirm() {
+    this.setState({showConfirmationModal: false})
   }
 
   render() {
@@ -381,8 +385,16 @@ class LandingPage extends Component {
             />
           </Modal>
 
-
         </View>
+          <Modal
+            visible={this.props.showConfirmationModal}
+            transparent
+            animationType="fade"
+            onRequestClose={() => {}}
+          >
+            <EggConfirmationModal />
+          </Modal>
+          </View>
       </View>
     );
   }
@@ -431,6 +443,7 @@ const mapStateToProps = (state) => {
 
   return {
     showAddNodeModal: state.addNodeModal.showAddNodeModal,
+    showConfirmationModal: state.addNodeModal.showConfirmationModal,
     annotation: state.map.annotation,
     selectedEgg,
     allEggs,
@@ -464,6 +477,7 @@ const mapDispatchToProps = dispatch => ({
 
 LandingPage.propTypes = {
   showAddNodeModal: PropTypes.boolean,
+  showConfirmationModal: PropTypes.boolean,
   annotation: PropTypes.array,
   selectedEgg: PropTypes.number,
   allEggs: PropTypes.object,
