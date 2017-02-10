@@ -6,11 +6,11 @@ import { Card, CardSection, JeanSection } from './common';
 import { EggManagerCard } from './EggManagerCard'
 import { setSelectedEgg, deleteEgg } from '../reducers/eggs';
 import EggManagerModal from './EggManagerModal';
+import { fetchAllEggs } from '../reducers/eggs';
 
 class EggManager extends Component {
   constructor(props) {
     super(props);
-    // console.log('PROPS: ', props)
     this.state = {
       showModal: false,
       displayedEggIds: [],
@@ -77,6 +77,7 @@ class EggManager extends Component {
 
     this.props.deleteEgg(this.state.chosenEgg);
     this.setState({chosenEgg: {}, showModal: false});
+    this.changeDisplayedEggs(this.state.currentlyShowing);
   }
 
   onCancel() {
@@ -273,7 +274,8 @@ const styles = {
 const mapStateToProps = (state, ownProps) => {
   const allEggs = state.eggs.allEggs;
   const selectedFriendId = state.friends.selectedFriendId;
-  return { allEggs, selectedFriendId };
+  const user = state.auth;
+  return { allEggs, selectedFriendId, user };
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
@@ -283,6 +285,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       },
     deleteEgg: function(egg) {
       dispatch(deleteEgg(egg));
+    },
+    fetchAllEggs: (userId) => {
+    dispatch(fetchAllEggs(userId));
     }
   };
 };
