@@ -40,9 +40,9 @@ class ViewPayload extends Component {
   }
 
   onSubmitPickup(){
-    let egg = this.state.viewEgg
-    this.state.viewEgg.pickedUp = true;
-    this.props.pickupEgg(this.state.viewEgg)
+    let egg = this.state.viewEgg;
+    egg.pickedUp = true;
+    this.props.pickupEgg(egg);
   }
 
   render() {
