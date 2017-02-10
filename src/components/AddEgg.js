@@ -1,29 +1,37 @@
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, Image, Picker, TouchableHighlight } from 'react-native';
+import {
+  Text,
+  View,
+  StyleSheet,
+  Image,
+  Picker,
+  TouchableHighlight,
+  Switch,
+} from 'react-native';
 import { connect } from 'react-redux';
 import { addEggToDbAndStore } from '../reducers/eggs';
 
-import { CardSection, Button, InputNoLabel } from './common';
+import { CardSection, PurpleButton, OrangeButton, InputNoLabel } from './common';
 import { showModal, showConfirm, setSubmittedEgg } from '../reducers/addNodeModal';
 import { setAnnotation, clearAnnotation } from '../reducers/map';
 import { tunnelIP } from '../TUNNELIP';
 
 class AddEgg extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
 
     this.state = {
       text: '',
       payloadText: '',
       payloadImage: '',
-      payloadImageSource: { uri: `${tunnelIP}/addImgOrange.png` },
+      payloadImageSource: { uri: `${tunnelIP}/addImageViolet.png` },
       payloadImageBuffer: null,
       eggs: [],
       recipient: this.props.friends[0].fbId,
-      visibleOutsideFence: true
+      visibleOutsideFence: true,
     };
 
-    this.handleInputChange=this.handleInputChange.bind(this);
+    this.handleInputChange = this.handleInputChange.bind(this);
     this.onSubmitNode = this.onSubmitNode.bind(this);
     this.onCancelSubmitNode = this.onCancelSubmitNode.bind(this);
     this.showImagePicker = this.showImagePicker.bind(this);
@@ -87,7 +95,7 @@ class AddEgg extends Component {
 
     ImagePicker.showImagePicker(options, (response) => {
       console.log('Response = ', response);
-      let goSource, goBuffer, paySource, payBuffer;
+      let paySource, payBuffer;
 
       if (response.didCancel) {
         console.log('User cancelled image picker');
@@ -96,7 +104,7 @@ class AddEgg extends Component {
       } else {
         if (type === 'pay') {
           // display the image using either data...
-          paySource = { uri: 'data:image/jpeg;base64,' + response.data };
+          paySource = { uri: `data:image/jpeg;base64${response.data}` };
           payBuffer = response.data;
 
           this.setState({
@@ -115,30 +123,29 @@ class AddEgg extends Component {
 
   renderEggTypeHeader() {
     if (this.state.visibleOutsideFence) {
-      return (
-        <CardSection>
-        <Text>New Visible Egg</Text>
-        </CardSection>
-        );
-    } else {
-      return (
-        <CardSection>
-        <Text style={{fontStyle: "italic"}}>New Invisible Egg</Text>
-        </CardSection>  
-        );
+      return (<Text style={{ paddingRight: 20, fontFamily: 'Heiti SC', fontSize: 14 }}>
+        Show egg location
+      </Text>);
     }
+    return <Text style={{ paddingRight: 20, fontFamily: 'Heiti SC', fontSize: 14, fontStyle: 'italic' }}>Hide egg location</Text>;
   }
 
   toggleEggVisibility() {
     let visible = !this.state.visibleOutsideFence;
-    this.setState({visibleOutsideFence: visible});
+    this.setState({ visibleOutsideFence: visible });
   }
 
   render() {
-    const { containerStyle, textStyle, cardSectionStyle } = styles;
+    const { containerStyle, toggleVisibilitySection, friendPickerSection } = styles;
     return (
       <View style={containerStyle}>
-        {this.renderEggTypeHeader()}
+        <View style={toggleVisibilitySection}>
+          {this.renderEggTypeHeader()}
+          <Switch
+            onValueChange={value => this.setState({ visibleOutsideFence: value })}
+            value={this.state.visibleOutsideFence}
+          />
+        </View>
         <CardSection>
           <View style={{ flexDirection: 'column', flex: 1, height: 50 }}>
             <Text style={{ fontFamily: 'Heiti SC' }}>Egg pick-up instructions</Text>
@@ -169,22 +176,21 @@ class AddEgg extends Component {
             />
           </TouchableHighlight>
         </CardSection>
-        <CardSection >
-          <Picker
-            style={styles.picker}
-            selectedValue={this.state.recipient}
-            onValueChange={(friend) => this.setState({ recipient: friend })}
-          >
-            {this.props.friends.map(friend => (<Picker.Item label={friend.name} value={friend.fbId} key={friend.fbId} />))}
-          </Picker>
-        </CardSection>
-        <CardSection>
-          <Button onPress={this.toggleEggVisibility.bind(this)}> Toggle Egg Visibility </Button>
-        </CardSection>
-        <CardSection style={{ flex: 1 }}>
-          <Button onPress={this.onSubmitNode}>Submit</Button>
-          <Button onPress={this.onCancelSubmitNode}>Cancel</Button>
-        </CardSection>
+        <View style={friendPickerSection}>
+          <View style={{ flexDirection: 'column', flex: 1 }}>
+            <Text style={{ fontFamily: 'Heiti SC' }}>Select recipient:</Text>
+            <Picker
+              selectedValue={this.state.recipient}
+              onValueChange={friend => this.setState({ recipient: friend })}
+            >
+              {this.props.friends.map(friend => (<Picker.Item label={friend.name} value={friend.fbId} key={friend.fbId} />))}
+            </Picker>
+          </View>
+        </View>
+        <View style={toggleVisibilitySection}>
+          <PurpleButton onPress={this.onSubmitNode}>Submit</PurpleButton>
+          <OrangeButton onPress={this.onCancelSubmitNode}>Cancel</OrangeButton>
+        </View>
       </View>
     );
   }
@@ -195,6 +201,31 @@ const styles = StyleSheet.create({
   cardSectionStyle: {
     flexDirection: 'row',
     flex: 1,
+  },
+  toggleVisibilitySection: {
+    borderBottomWidth: 1,
+    padding: 10,
+    marginHorizontal: 20,
+    backgroundColor: '#fff',
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    borderColor: '#ddd',
+    position: 'relative',
+    borderRadius: 4,
+    alignItems: 'center',
+    alignSelf: 'stretch',
+  },
+  friendPickerSection: {
+    borderBottomWidth: 1,
+    padding: 10,
+    marginHorizontal: 20,
+    backgroundColor: '#fff',
+    flexDirection: 'row',
+    borderColor: '#ddd',
+    position: 'relative',
+    borderRadius: 4,
+    alignItems: 'center',
+    alignSelf: 'stretch',
   },
   textStyle: {
     flex: 1,

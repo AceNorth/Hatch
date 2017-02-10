@@ -1,9 +1,9 @@
 import React from 'react';
 import { Text, TouchableOpacity } from 'react-native';
 
-const Button = (props) => {
-  const {onPress, children} = props;
-  const {buttonStyle, textStyle} = styles;
+const OrangeButton = (props) => {
+  const { onPress, children } = props;
+  const { buttonStyle, textStyle } = styles;
   return (
     <TouchableOpacity style={buttonStyle} onPress={onPress}>
       <Text style={textStyle}>
@@ -19,10 +19,10 @@ const styles = {
     // flex: 1,
   //position itself using flexbox rules (stretch to fill the container)
     alignSelf: 'stretch',
-    backgroundColor: '#fff',
+    backgroundColor: '#f8981d',
     borderRadius: 5,
-    borderWidth: 1,
-    borderColor: '#007aff',
+    borderWidth: 2,
+    borderColor: '#fff',
     marginLeft: 20,
     marginRight: 20,
     paddingLeft: 20,
@@ -30,7 +30,7 @@ const styles = {
   },
   textStyle: {
     alignSelf: 'center',
-    color: '#007aff',
+    color: '#fff',
     fontSize: 16,
     fontWeight: '600',
     paddingTop: 10,
@@ -39,4 +39,4 @@ const styles = {
   }
 }
 
-export { Button };
+export { OrangeButton };
