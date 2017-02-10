@@ -1,4 +1,6 @@
 export * from './Button';
+export * from './OrangeButton';
+export * from './PurpleButton';
 export * from './Card';
 export * from './CardSection';
 export * from './Header';
