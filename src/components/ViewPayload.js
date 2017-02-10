@@ -7,8 +7,7 @@ import axios from 'axios';
 import { Card, CardSection, Button } from './common';
 import { ViewPayloadCard } from './ViewPayloadCard';
 import { ViewPayloadCardSection } from './ViewPayloadCardSection';
-import { ModalButton } from './ModalButton'
-import PlayAudio from './PlayAudio';
+import { ModalButton } from './ModalButton';
 
 import { tunnelIP } from '../TUNNELIP';
 import { pickupEgg } from '../reducers/eggs';
@@ -40,9 +39,9 @@ class ViewPayload extends Component {
   }
 
   onSubmitPickup(){
-    let egg = this.state.viewEgg
+    let egg = this.state.viewEgg;
     this.state.viewEgg.pickedUp = true;
-    this.props.pickupEgg(this.state.viewEgg)
+    this.props.pickupEgg(this.state.viewEgg);
   }
 
   render() {
@@ -54,9 +53,9 @@ class ViewPayload extends Component {
         <ViewPayloadCardSection>
           { this.onSubmitPickup() }
           <View style={styles.lineItems}>
-          
+
             <View style={styles.item}>
-              <Image style={styles.imageStyle} source={{uri: this.state.payloadImage.uri}}></Image>
+              <Image style={styles.imageStyle} source={{ uri: this.state.payloadImage.uri }}></Image>
             </View>
 
             <View style={styles.item}>
@@ -68,7 +67,7 @@ class ViewPayload extends Component {
 
         <Text></Text>
         <Text></Text>
-        
+
         <ModalButton
           onPress={Actions.landingPage}
         >Go Back

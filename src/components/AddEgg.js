@@ -9,7 +9,7 @@ import { setAnnotation, clearAnnotation } from '../reducers/map';
 import { tunnelIP } from '../TUNNELIP';
 
 class AddEgg extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
 
     this.state = {
@@ -87,7 +87,7 @@ class AddEgg extends Component {
 
     ImagePicker.showImagePicker(options, (response) => {
       console.log('Response = ', response);
-      let goSource, goBuffer, paySource, payBuffer;
+      let paySource, payBuffer;
 
       if (response.didCancel) {
         console.log('User cancelled image picker');
@@ -96,7 +96,7 @@ class AddEgg extends Component {
       } else {
         if (type === 'pay') {
           // display the image using either data...
-          paySource = { uri: 'data:image/jpeg;base64,' + response.data };
+          paySource = { uri: `data:image/jpeg;base64${response.data}` };
           payBuffer = response.data;
 
           this.setState({
@@ -117,25 +117,25 @@ class AddEgg extends Component {
     if (this.state.visibleOutsideFence) {
       return (
         <CardSection>
-        <Text>New Visible Egg</Text>
+          <Text>New Visible Egg</Text>
         </CardSection>
-        );
+      );
     } else {
       return (
         <CardSection>
-        <Text style={{fontStyle: "italic"}}>New Invisible Egg</Text>
-        </CardSection>  
-        );
+          <Text style={{ fontStyle: 'italic' }}>New Invisible Egg</Text>
+        </CardSection>
+      );
     }
   }
 
   toggleEggVisibility() {
     let visible = !this.state.visibleOutsideFence;
-    this.setState({visibleOutsideFence: visible});
+    this.setState({ visibleOutsideFence: visible });
   }
 
   render() {
-    const { containerStyle, textStyle, cardSectionStyle } = styles;
+    const { containerStyle } = styles;
     return (
       <View style={containerStyle}>
         {this.renderEggTypeHeader()}
@@ -173,7 +173,7 @@ class AddEgg extends Component {
           <Picker
             style={styles.picker}
             selectedValue={this.state.recipient}
-            onValueChange={(friend) => this.setState({ recipient: friend })}
+            onValueChange={friend => this.setState({ recipient: friend })}
           >
             {this.props.friends.map(friend => (<Picker.Item label={friend.name} value={friend.fbId} key={friend.fbId} />))}
           </Picker>

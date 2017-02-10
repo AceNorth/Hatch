@@ -4,13 +4,6 @@ import android.app.Application;
 import android.util.Log;
 
 import com.facebook.react.ReactApplication;
-import com.rnfs.RNFSPackage;
-import com.RNFetchBlob.RNFetchBlobPackage;
-import com.zmxv.RNSound.RNSoundPackage;
-import com.rnim.rn.audio.ReactNativeAudioPackage;
-import com.oblador.vectoricons.VectorIconsPackage;
-import com.facebook.reactnative.androidsdk.FBSDKPackage;
-import com.imagepicker.ImagePickerPackage;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -31,14 +24,7 @@ public class MainApplication extends Application implements ReactApplication {
     @Override
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
-          new MainReactPackage(),
-            new RNFSPackage(),
-            new RNFetchBlobPackage(),
-            new RNSoundPackage(),
-            new ReactNativeAudioPackage(),
-            new VectorIconsPackage(),
-            new FBSDKPackage(),
-            new ImagePickerPackage()
+          new MainReactPackage()
       );
     }
   };

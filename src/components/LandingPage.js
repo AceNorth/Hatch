@@ -336,20 +336,20 @@ class LandingPage extends Component {
     return annotations;
   }
 
-  renderAlert(){
-
-    if(this.state.areThereNewEggs === true && this.state.alertShown === false){
-      this.setState({areThereNewEggs: false})
-      this.setState({alertShown: true})
+  renderAlert() {
+    if (this.state.areThereNewEggs === true && this.state.alertShown === false) {
+      this.setState({ areThereNewEggs: false });
+      this.setState({ alertShown: true });
       return Alert.alert(
         'You Have a New Egg',
         null,
-        [ {text: 'Close', onPress: () => console.log('Closed Alert!')}]
-      )
+        [{ text: 'Close', onPress: () => console.log('Closed Alert!') }]
+      );
     }
+  }
 
   onConfirm() {
-    this.setState({showConfirmationModal: false})
+    this.setState({ showConfirmationModal: false });
   }
 
   render() {
