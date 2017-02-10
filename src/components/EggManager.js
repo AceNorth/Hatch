@@ -153,17 +153,44 @@ class EggManager extends Component {
     if (!this.state.chosenEgg.visibleOutsideFence && !this.state.chosenEgg.pickedUp) {
       return;
     } else {
-      return (<MapView
-                    style={{ height: 250, width: 200, margin: 0 }}
-                    showsUserLocation={false}
-                    region={{ latitude: this.state.chosenEgg.latitude, longitude: this.state.chosenEgg.longitude, latitudeDelta: .01, longitudeDelta: .01 }}
-                      annotations={[{
-                        longitude: this.state.chosenEgg.longitude,
-                        latitude: this.state.chosenEgg.latitude,
-                        tintColor: MapView.PinColors.PURPLE,
-                        draggable: false
-                      }]}
-                    />);
+      return (
+        <MapView
+          style={{ height: 250, width: 200, margin: 10 }}
+          showsUserLocation={false}
+          region={{ latitude: this.state.chosenEgg.latitude, longitude: this.state.chosenEgg.longitude, latitudeDelta: .01, longitudeDelta: .01 }}
+            annotations={[{
+              longitude: this.state.chosenEgg.longitude,
+              latitude: this.state.chosenEgg.latitude,
+              tintColor: MapView.PinColors.PURPLE,
+              draggable: false
+            }]}
+          />
+      );
+    }
+  }
+
+  renderViewCard(){
+    if(this.props.user.fbId === this.state.chosenEgg.receiverId){
+      return(
+        <View style={styles.lineItems}>
+            <View style={styles.mapStyle} >
+              {this.renderMap()}
+            </View>
+
+            <View style={styles.payStyle}>
+              {this.renderPayload(this.state.chosenEgg)}
+            </View>
+        </View>
+      ) 
+    }
+    else {
+      return(
+        <View>
+            <View>
+              {this.renderPayload(this.state.chosenEgg)}
+            </View>
+        </View>
+      )
     }
   }
 
@@ -190,15 +217,7 @@ class EggManager extends Component {
                 onDelete={this.onDelete.bind(this)}
                 onCancel={this.onCancel.bind(this)}
                 >
-              <View style={styles.lineItems}>
-                  <View style={styles.mapStyle} >
-                    {this.renderMap()}
-                  </View>
-
-                  <View style={styles.payStyle}>
-                    {this.renderPayload(this.state.chosenEgg)}
-                  </View>
-              </View>
+              {this.renderViewCard()}
             </EggManagerModal>
         </View>
 
@@ -265,7 +284,8 @@ const styles = {
     flex: 1,
   },
   textStyle: {
-    paddingTop: 20,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
     fontWeight: 'bold',
     fontSize: 16
   }
