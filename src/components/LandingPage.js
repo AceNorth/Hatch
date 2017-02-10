@@ -278,7 +278,11 @@ class LandingPage extends Component {
       );
     } else {
       return (
-        <InvisibleIcon
+        <Icon
+        name='ios-pin'
+        type= 'ionicon'
+        color='#3a3c82'
+        underlayColor='#3a3c82'
         size={60}
         onPress={ () => {} }
         />
