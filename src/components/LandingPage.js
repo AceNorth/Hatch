@@ -54,7 +54,8 @@ class LandingPage extends Component {
       // this is as small as I can make the fence and still pick up
       // an egg that was left at the simulator's "current location"
       // using my phone.
-      pickupRadius: 0.002,
+      pickupRadius: 0.002, //test radius
+      // pickupRadius: 0.00005,
 
       // view toggler
       showEggs: true,
