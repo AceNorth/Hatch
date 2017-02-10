@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, TouchableOpacity } from 'react-native';
 
-const Button = (props) => {
+const PinButton = (props) => {
   const {onPress, children} = props;
   const {buttonStyle, textStyle} = styles;
   return (
@@ -19,15 +19,15 @@ const styles = {
     // flex: 1,
   //position itself using flexbox rules (stretch to fill the container)
     alignSelf: 'flex-start',
-    backgroundColor: '#007aff',
+    backgroundColor: '#B1B3ED',
     // margin: 30,
     borderRadius: 4,
-    marginLeft: 20,
-    marginRight: 20,
+    marginHorizontal: 20,
+    paddingVertical: 10
   },
   textStyle: {
     alignSelf: 'center',
-    color: '#fff',
+    // color: '#fff',
     fontSize: 18,
     fontWeight: '600',
     lineHeight: 20,
@@ -35,4 +35,4 @@ const styles = {
   }
 }
 
-export { Button };
+export { PinButton };

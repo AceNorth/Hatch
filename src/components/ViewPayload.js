@@ -5,6 +5,11 @@ import { Actions } from 'react-native-router-flux';
 import axios from 'axios';
 
 import { Card, CardSection, Button } from './common';
+import { ViewPayloadCard } from './ViewPayloadCard';
+import { ViewPayloadCardSection } from './ViewPayloadCardSection';
+import { ModalButton } from './ModalButton'
+import PlayAudio from './PlayAudio';
+
 import { tunnelIP } from '../TUNNELIP';
 import { pickupEgg } from '../reducers/eggs';
 
@@ -34,78 +39,72 @@ class ViewPayload extends Component {
       });
   }
 
-  onSubmitPickup() {
-    const egg = this.state.viewEgg;
-    egg.pickedUp = true;
-    this.props.pickupEgg(egg);
+  onSubmitPickup(){
+    let egg = this.state.viewEgg
+    this.state.viewEgg.pickedUp = true;
+    this.props.pickupEgg(this.state.viewEgg)
   }
 
   render() {
     return (
-      <Card>
-        <CardSection style={{ flex: 1 }}>
-          <Text style={styles.textHeader}>Here's your message!</Text>
-        </CardSection>
-        <CardSection>
+      <ViewPayloadCard>
+        <Text style={styles.textHeader}>Here's your message!</Text>
+        <Text></Text>
+
+        <ViewPayloadCardSection>
           { this.onSubmitPickup() }
           <View style={styles.lineItems}>
+          
             <View style={styles.item}>
-              <Image style={styles.imageStyle} source={{ uri: this.state.payloadImage.uri }}></Image>
+              <Image style={styles.imageStyle} source={{uri: this.state.payloadImage.uri}}></Image>
+            </View>
+
+            <View style={styles.item}>
               <Text style={styles.text}>{ this.state.viewEgg.payload.text }</Text>
             </View>
+
           </View>
-        </CardSection>
-        <CardSection>
-          <Button
-            color="#517fa4"
-            onPress={Actions.landingPage}
-          >Go Back
-          </Button>
-        </CardSection>
-      </Card>
+        </ViewPayloadCardSection>
+
+        <Text></Text>
+        <Text></Text>
+        
+        <ModalButton
+          onPress={Actions.landingPage}
+        >Go Back
+        </ModalButton>
+      </ViewPayloadCard>
     );
   };
 }
 
 const styles = {
-  item: {
-    justifyContent: 'space-between',
-    flexDirection: 'column',
-    paddingTop: 20,
-    paddingBottom: 20
-  },
   lineItems: {
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     margin: 25,
-    paddingRight: 20
+  },
+  item: {
+    flex: 0.5,
+    paddingVertical: 40
   },
   text: {
     textAlign: 'center',
     fontSize: 16,
-    paddingLeft: 20,
-    paddingRight: 20,
-    // color: '#fff',
+    paddingHorizontal: 5,
     fontWeight: '600',
   },
   textHeader: {
+    color: '#fff',
     fontSize: 30,
+    fontWeight: 'bold',
     paddingTop: 50
   },
   imageStyle: {
     width: 200,
-    height: 200,
-    alignSelf: 'center'
-  },
-  container: {
-    flex: 1,
-    backgroundColor: '#f4f281',
-    justifyContent: 'center',
-  },
-  managerStyle: {
-    flexDirection: 'column',
-  },
+    height: 200
+  }
 };
 
 const mapStateToProps = (state, ownProps) => {
