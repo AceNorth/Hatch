@@ -6,11 +6,11 @@ import { Card, CardSection, JeanSection } from './common';
 import { EggManagerCard } from './EggManagerCard'
 import { setSelectedEgg, deleteEgg } from '../reducers/eggs';
 import EggManagerModal from './EggManagerModal';
+import { fetchAllEggs } from '../reducers/eggs';
 
 class EggManager extends Component {
   constructor(props) {
     super(props);
-    // console.log('PROPS: ', props)
     this.state = {
       showModal: false,
       displayedEggIds: [],
@@ -77,6 +77,7 @@ class EggManager extends Component {
 
     this.props.deleteEgg(this.state.chosenEgg);
     this.setState({chosenEgg: {}, showModal: false});
+    this.changeDisplayedEggs(this.state.currentlyShowing);
   }
 
   onCancel() {
@@ -107,11 +108,17 @@ class EggManager extends Component {
     }
   }
 
-
   renderEggCard(egg) {
     console.log('here is the egg', egg);
     let displayDate = new Date(Date.parse(egg.createdAt)).toString().split(" ").slice(0,4).join(" ");
-    let displayColor = (egg.pickedUp) ? "#3a3c82" : "#FF8F32";
+    let displayColor = "";
+
+    if(egg.senderId === this.props.user.fbId){
+      displayColor= "#3a3c82"
+    }
+    else {
+      displayColor = (egg.pickedUp) ? "#D3D3D3" : "#FF8F32";
+    }
 
     return (
       <TouchableOpacity
@@ -153,17 +160,44 @@ class EggManager extends Component {
     if (!this.state.chosenEgg.visibleOutsideFence && !this.state.chosenEgg.pickedUp) {
       return;
     } else {
-      return (<MapView
-                    style={{ height: 250, width: 200, margin: 0 }}
-                    showsUserLocation={false}
-                    region={{ latitude: this.state.chosenEgg.latitude, longitude: this.state.chosenEgg.longitude, latitudeDelta: .01, longitudeDelta: .01 }}
-                      annotations={[{
-                        longitude: this.state.chosenEgg.longitude,
-                        latitude: this.state.chosenEgg.latitude,
-                        tintColor: MapView.PinColors.PURPLE,
-                        draggable: false
-                      }]}
-                    />);
+      return (
+        <MapView
+          style={{ height: 250, width: 200, margin: 10 }}
+          showsUserLocation={false}
+          region={{ latitude: this.state.chosenEgg.latitude, longitude: this.state.chosenEgg.longitude, latitudeDelta: .01, longitudeDelta: .01 }}
+            annotations={[{
+              longitude: this.state.chosenEgg.longitude,
+              latitude: this.state.chosenEgg.latitude,
+              tintColor: MapView.PinColors.PURPLE,
+              draggable: false
+            }]}
+          />
+      );
+    }
+  }
+
+  renderViewCard(){
+    if(this.props.user.fbId === this.state.chosenEgg.receiverId){
+      return(
+        <View style={styles.lineItems}>
+            <View style={styles.mapStyle} >
+              {this.renderMap()}
+            </View>
+
+            <View style={styles.payStyle}>
+              {this.renderPayload(this.state.chosenEgg)}
+            </View>
+        </View>
+      ) 
+    }
+    else {
+      return(
+        <View>
+            <View>
+              {this.renderPayload(this.state.chosenEgg)}
+            </View>
+        </View>
+      )
     }
   }
 
@@ -190,15 +224,7 @@ class EggManager extends Component {
                 onDelete={this.onDelete.bind(this)}
                 onCancel={this.onCancel.bind(this)}
                 >
-              <View style={styles.lineItems}>
-                  <View style={styles.mapStyle} >
-                    {this.renderMap()}
-                  </View>
-
-                  <View style={styles.payStyle}>
-                    {this.renderPayload(this.state.chosenEgg)}
-                  </View>
-              </View>
+              {this.renderViewCard()}
             </EggManagerModal>
         </View>
 
@@ -265,7 +291,8 @@ const styles = {
     flex: 1,
   },
   textStyle: {
-    paddingTop: 20,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
     fontWeight: 'bold',
     fontSize: 16
   }
@@ -274,7 +301,8 @@ const styles = {
 const mapStateToProps = (state, ownProps) => {
   const allEggs = state.eggs.allEggs;
   const selectedFriendId = state.friends.selectedFriendId;
-  return { allEggs, selectedFriendId };
+  const user = state.auth;
+  return { allEggs, selectedFriendId, user };
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
@@ -284,6 +312,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       },
     deleteEgg: function(egg) {
       dispatch(deleteEgg(egg));
+    },
+    fetchAllEggs: (userId) => {
+    dispatch(fetchAllEggs(userId));
     }
   };
 };
