@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Text, View, Modal, MapView } from 'react-native';
-import { CardSection, Button } from './common';
+import { CardSection, PurpleButton, OrangeButton, InputNoLabel } from './common';
 import { showConfirm, setSubmittedEgg } from '../reducers/addNodeModal';
 import { connect } from 'react-redux';
 
@@ -38,7 +38,7 @@ class EggConfirmationModal extends Component {
             <Text style={textStyle}> {this.props.submittedEgg.goHereText}</Text>
           </CardSection>
           <CardSection>
-            <Button onPress={this.onConfirm.bind(this)}>Great!</Button>
+            <PurpleButton onPress={this.onConfirm.bind(this)}>Great!</PurpleButton>
           </CardSection>
         </View>
     );
