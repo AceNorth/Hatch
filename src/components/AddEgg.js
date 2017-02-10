@@ -104,7 +104,7 @@ class AddEgg extends Component {
       } else {
         if (type === 'pay') {
           // display the image using either data...
-          paySource = { uri: `data:image/jpeg;base64${response.data}` };
+          paySource = { uri: `data:image/jpeg;base64,${response.data}` };
           payBuffer = response.data;
 
           this.setState({
