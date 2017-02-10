@@ -98,6 +98,15 @@ class LandingPage extends Component {
     this.stopFetching();
   }
 
+  startLocationUpdating() {
+    if (this.locationUpdater) {
+      this.locationUpdater = setInterval(
+      () => this.updateCurrentPosition(),
+      1000
+    );
+    }
+  }
+
   stopLocationUpdating() {
     // stops our location from updating every second,
     // for when we leave the page or want to drop a pin
@@ -220,6 +229,8 @@ class LandingPage extends Component {
 
   toggleView() {
     let view = !this.state.showEggs;
+    if (view) {this.startLocationUpdating()};
+    if (!view) {this.stopLocationUpdating()};
     this.setState({ showEggs: view });
   }
 
