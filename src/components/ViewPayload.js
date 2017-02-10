@@ -8,7 +8,7 @@ import { Card, CardSection, Button } from './common';
 import { ViewPayloadCard } from './ViewPayloadCard';
 import { ViewPayloadCardSection } from './ViewPayloadCardSection';
 import { ModalButton } from './ModalButton'
-import PlayAudio from './PlayAudio';
+// import PlayAudio from './PlayAudio';
 
 import { tunnelIP } from '../TUNNELIP';
 import { pickupEgg } from '../reducers/eggs';
