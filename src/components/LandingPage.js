@@ -137,10 +137,10 @@ class LandingPage extends Component {
     for (let key in this.props.allEggs) {
       let egg = this.props.allEggs[key];
       if (!egg.visibleOutsideFence && !this.isWithinFence(this.state.currentPosition.coords, egg)) {
-        return;
+        //do nothing
       }
-      if (egg.receiverId === this.props.user.fbId && !egg.deletedByReceiver && !egg.pickedUp) {
-        let newPin = this.createStaticAnnotation(egg.longitude, egg.latitude, egg.sender, egg.id, egg.goHereImage, egg.goHereText);
+      else if (egg.receiverId === this.props.user.fbId && !egg.deletedByReceiver && !egg.pickedUp) {
+        let newPin = this.createStaticAnnotation(egg.longitude, egg.latitude, egg.sender, egg.id, egg.goHereText);
         pins.push(newPin);
 
         if(egg.newEgg === true){
@@ -150,7 +150,6 @@ class LandingPage extends Component {
         }
       }
     }
-
     this.setRenderAnnotations(pins);
     this.setState({ eggPins: pins });
   }
@@ -204,7 +203,7 @@ class LandingPage extends Component {
 
 
   createStaticAnnotation(longitude, latitude, sender, eggId, goHereText) {
-    const senderId = sender.id;
+    const senderId = sender.fbId;
     const sentFrom = `${sender.firstName} ${sender.lastName}`;
     const pinSubtitle = `Egg from ${sentFrom}`;
     return {
