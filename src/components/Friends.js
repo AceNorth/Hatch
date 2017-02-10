@@ -27,7 +27,7 @@ class Friends extends Component {
     return <SingleFriend friend={friend} />;
   }
 
-  renderFooter(){ 
+  renderFooter() {
     return (
       <View style={styles.footer}>
         <LoginButton
@@ -52,7 +52,7 @@ class Friends extends Component {
           style={styles.loginButton}
         />
       </View>
-    )
+    );
   }
 
   render() {

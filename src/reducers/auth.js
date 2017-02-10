@@ -45,8 +45,10 @@ export const fetchUserInfo = () =>
             email,
           };
           addUserToDb(user);
-          dispatch(whoami({ ...user, profilePic: picture.data.url }));
-          dispatch(fetchFriends());
+
+          const userWithPhoto = { ...user, profilePic: picture.data.url };
+          dispatch(whoami(userWithPhoto));
+          dispatch(fetchFriends(userWithPhoto));
         }
       }
     );

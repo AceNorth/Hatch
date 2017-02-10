@@ -1,26 +1,22 @@
 import React from 'react';
-import { Text, TouchableOpacity } from 'react-native';
 import { Icon } from 'react-native-elements';
 
 const InvisibleIcon = (props) => {
-  const {onPress, children} = props;
-  const {iconStyle, textStyle} = styles;
+  const { onPress, children } = props;
+  const { iconStyle, textStyle } = styles;
   return (
-      <Icon
-        name='ios-pin'
-        type= 'ionicon'
-        color='#3a3c82'
-        size={50}
-        onPress={onPress}
-      />
-    );
+    <Icon
+      name="ios-pin"
+      type="ionicon"
+      color="#3a3c82"
+      size={60}
+      onPress={onPress}
+    />
+  );
 };
 
 const styles = {
   iconStyle: {
-  //expand to fill as much content as it possibly can
-    // flex: 1,
-  //position itself using flexbox rules (stretch to fill the container)
     alignSelf: 'stretch',
     backgroundColor: '#fff',
     borderRadius: 5,
@@ -37,6 +33,6 @@ const styles = {
     paddingTop: 10,
     paddingBottom: 10
   }
-}
+};
 
 export { InvisibleIcon };
