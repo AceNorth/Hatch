@@ -25,6 +25,8 @@ class ViewPayload extends Component {
       viewEgg: props.allEggs[props.selectedEgg],
       payloadImage: {},
     };
+
+    this.layout = this.layout.bind(this)
   }
 
   componentWillMount() {
@@ -44,26 +46,76 @@ class ViewPayload extends Component {
     this.props.pickupEgg(egg);
   }
 
+  layout(){
+      //if payload has both a photo and text
+      if(this.state.payloadImage.uri && this.state.viewEgg.payload.text){
+          return(
+            <ViewPayloadCardSection>
+              { this.onSubmitPickup() }
+              <View style={styles.imageAndText}>
+
+                <View style={styles.item}>
+                  <Image style={styles.imageStyle} source={{uri: this.state.payloadImage.uri}}></Image>
+                </View>
+
+                <View style={styles.item}>
+                  <Text style={styles.textStyle}>{ this.state.viewEgg.payload.text }</Text>
+                </View>
+
+             </View>
+            </ViewPayloadCardSection>
+          )
+      }
+      //if payload only has a photo
+      else if(this.state.payloadImage.uri && !this.state.viewEgg.payload.text){
+          return(
+              <ViewPayloadCardSection>
+                  { this.onSubmitPickup() }
+                  <View style={styles.imageOnly}>
+                      <View>
+                          <Image style={styles.imageOnlyStyle} source={{uri: this.state.payloadImage.uri}}></Image>
+                      </View>
+                  </View>
+              </ViewPayloadCardSection>
+          )
+      }
+
+     //if payload only has text
+      else if(this.state.viewEgg.payload.text && !this.state.payloadImage.uri){
+          return(
+            <ViewPayloadCardSection>
+              { this.onSubmitPickup() }
+              <View style={styles.textOnly}>
+                <View>
+                  <Text style={styles.textOnlyStyle}>{ this.state.viewEgg.payload.text }</Text>
+                </View>
+              </View>
+            </ViewPayloadCardSection>
+          )
+      }
+
+     //if payload is empty
+      else{
+          return (
+            <ViewPayloadCardSection>
+              <View style={styles.textOnly}>
+                <View>
+                  <Text style={styles.textOnlyStyle}>Your "friend" sent you an empty egg!  What a jerk!</Text>
+                </View>
+              </View>
+            </ViewPayloadCardSection>
+          )
+      }
+
+  }
+
   render() {
+    console.log(this.state.viewEgg)
     return (
       <ViewPayloadCard>
         <Text style={styles.textHeader}>Here's your message!</Text>
         <Text></Text>
-
-        <ViewPayloadCardSection>
-          { this.onSubmitPickup() }
-          <View style={styles.lineItems}>
-
-            <View style={styles.item}>
-              <Image style={styles.imageStyle} source={{ uri: this.state.payloadImage.uri }}></Image>
-            </View>
-
-            <View style={styles.item}>
-              <Text style={styles.text}>{ this.state.viewEgg.payload.text }</Text>
-            </View>
-
-          </View>
-        </ViewPayloadCardSection>
+          {this.layout()}
 
         <Text></Text>
         <Text></Text>
@@ -78,21 +130,49 @@ class ViewPayload extends Component {
 }
 
 const styles = {
-  lineItems: {
+  imageAndText: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    margin: 25,
+    alignItems: 'center'
+    // margin: 25,
   },
   item: {
     flex: 0.5,
-    paddingVertical: 40
+    // paddingVertical: 40
   },
-  text: {
+  imageStyle: {
+    width: 160,
+    height: 160,
+  },
+  textStyle: {
     textAlign: 'center',
     fontSize: 16,
-    paddingHorizontal: 5,
     fontWeight: '600',
+    marginHorizontal: 10
+  },
+  imageOnly: {
+    flex: 1,
+    flexDirection: 'column',
+    alignItems: 'center',
+    margin: 20
+    // paddingVertical: 40
+  },
+  imageOnlyStyle: {
+    width: 260,
+    height: 260,
+  },
+  textOnly: {
+    flex: 1,
+    flexDirection: 'column',
+    alignItems: 'center',
+    margin: 20
+  },
+  textOnlyStyle:{
+    textAlign: 'center',
+    fontSize: 20,
+    fontWeight: '600',
+    // marginHorizontal: 10
   },
   textHeader: {
     color: '#fff',
@@ -100,10 +180,6 @@ const styles = {
     fontWeight: 'bold',
     paddingTop: 50
   },
-  imageStyle: {
-    width: 200,
-    height: 200
-  }
 };
 
 const mapStateToProps = (state, ownProps) => {
