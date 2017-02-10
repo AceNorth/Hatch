@@ -108,10 +108,16 @@ class EggManager extends Component {
     }
   }
 
-
   renderEggCard(egg) {
     let displayDate = new Date(Date.parse(egg.createdAt)).toString().split(" ").slice(0,4).join(" ");
-    let displayColor = (egg.pickedUp) ? "#3a3c82" : "#FF8F32";
+    let displayColor = "";
+
+    if(egg.senderId === this.props.user.fbId){
+      displayColor= "#3a3c82"
+    }
+    else {
+      displayColor = (egg.pickedUp) ? "#D3D3D3" : "#FF8F32";
+    }
 
     return (
       <TouchableOpacity
