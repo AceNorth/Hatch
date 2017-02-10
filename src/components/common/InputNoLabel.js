@@ -26,6 +26,9 @@ const styles = {
     fontSize: 18,
     lineHeight: 23,
     flex: 1,
+    borderColor: '#ddd',
+    borderWidth: 1,
+    borderRadius: 3,
   },
   containerStyle: {
     height: 40,

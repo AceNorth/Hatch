@@ -391,7 +391,7 @@ class LandingPage extends Component {
 
         <View style={styles.touchStyle}>
           <View style={styles.lineItems}>
-            <View style={{paddingRight: 30}}>
+            <View style={{padding: 10}}>
               {this.renderViewToggleButton()}
             </View>
 
@@ -440,7 +440,9 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     alignSelf: 'center',
     color: '#fff',
-    fontFamily: 'Heiti SC'
+    fontSize: 18,
+    fontFamily: 'Heiti SC',
+    paddingLeft: 20,
   },
   viewStyle: {
     width: DEVICE_WIDTH,

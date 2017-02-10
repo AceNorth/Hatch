@@ -10,7 +10,7 @@ const SELECT_FRIEND = 'SELECT_FRIEND';
 
 export const selectFriend = selectedFriendId => ({ type: SELECT_FRIEND, selectedFriendId });
 
-export const fetchFriends = () =>
+export const fetchFriends = user =>
   (dispatch) => {
     const infoRequest = new GraphRequest(
       '/me/friends',
@@ -19,9 +19,23 @@ export const fetchFriends = () =>
         if (err) {
           console.error('problem getting friends', err);
         } else {
+          // Get logged in user's object to match format of friends
+          const me = {
+            name: `${user.firstName} ${user.lastName} (me)`,
+            id: user.fbId,
+            picture: {
+              data: {
+                url: user.profilePic,
+              },
+            }
+          };
+          // Add self to friends list
+          result.data.push(me);
+
+          // Sort friends by first name
           const friends = _.sortBy(result.data, ['name'])
             .map((friend) => {
-              const fbIdAdded = { ...friend, fbId: friend.id };
+              const fbIdAdded = { ...friend, fbId: friend.id }; // make fbId field
               return _.omit(fbIdAdded, 'id'); // delete old id key
             });
           dispatch({ type: FETCH_FRIENDS, friends });

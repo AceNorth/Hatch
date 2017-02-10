@@ -109,6 +109,7 @@ class EggManager extends Component {
   }
 
   renderEggCard(egg) {
+    console.log('here is the egg', egg);
     let displayDate = new Date(Date.parse(egg.createdAt)).toString().split(" ").slice(0,4).join(" ");
     let displayColor = "";
 
