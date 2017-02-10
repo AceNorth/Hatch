@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, TouchableOpacity } from 'react-native';
 
-const PinButton = (props) => {
+const ModalButton = (props) => {
   const {onPress, children} = props;
   const {buttonStyle, textStyle} = styles;
   return (
@@ -18,21 +18,23 @@ const styles = {
   //expand to fill as much content as it possibly can
     // flex: 1,
   //position itself using flexbox rules (stretch to fill the container)
-    alignSelf: 'flex-start',
-    backgroundColor: '#B1B3ED',
-    // margin: 30,
-    borderRadius: 4,
-    marginHorizontal: 20,
-    paddingVertical: 10
+    // alignSelf: 'stretch',
+    backgroundColor: '#fff',
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: '#fff',
+    marginLeft: 10,
+    marginRight: 10,
+    paddingHorizontal: 50
   },
   textStyle: {
     alignSelf: 'center',
-    // color: '#fff',
-    fontSize: 18,
+    color: '#3a3c82',
+    fontSize: 16,
     fontWeight: '600',
-    lineHeight: 20,
-    marginHorizontal: 10
+    paddingTop: 10,
+    paddingBottom: 10
   }
 }
 
-export { PinButton };
+export { ModalButton };

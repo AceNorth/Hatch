@@ -20,7 +20,8 @@ import { LoginButton } from 'react-native-fbsdk';
 import AddEgg from './AddEgg';
 import { InvisibleButton } from './InvisibleButton';
 import { InvisibleIcon } from './InvisibleIcon';
-import { Button } from './common/PinButton';
+// import { Button } from './common';
+import { PinButton } from './common/PinButton';
 import EggConfirmationModal from './EggConfirmationModal';
 
 
@@ -201,7 +202,6 @@ class LandingPage extends Component {
     };
   }
 
-
   createStaticAnnotation(longitude, latitude, sender, eggId, goHereText) {
     const senderId = sender.fbId;
     const sentFrom = `${sender.firstName} ${sender.lastName}`;
@@ -323,11 +323,11 @@ class LandingPage extends Component {
           // annotation.title='Tap:' ,
           // annotation.subtitle='',
           annotation.leftCalloutView = (
-              <Button
-                  color="#517fa4"
+              <PinButton
+                  color="#3a3c82"
                   onPress={(e) => this.pickupPayload(annotation, e)}
               >Tap Here!
-              </Button>
+              </PinButton>
           )
         }
       }
@@ -342,12 +342,11 @@ class LandingPage extends Component {
       this.setState({areThereNewEggs: false})
       this.setState({alertShown: true})
       return Alert.alert(
-        'You Have a New Egg!',
+        'You Have a New Egg',
         null,
         [ {text: 'Close', onPress: () => console.log('Closed Alert!')}]
       )
     }
-  }
 
   onConfirm() {
     this.setState({showConfirmationModal: false})
@@ -412,6 +411,7 @@ class LandingPage extends Component {
           >
             <EggConfirmationModal />
           </Modal>
+
         </View>
       </View>
     );
@@ -462,7 +462,6 @@ const mapStateToProps = (state) => {
 
   return {
     showAddNodeModal: state.addNodeModal.showAddNodeModal,
-    showConfirmationModal: state.addNodeModal.showConfirmationModal,
     annotation: state.map.annotation,
     selectedEgg,
     allEggs,
