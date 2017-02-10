@@ -104,7 +104,7 @@ class AddEgg extends Component {
       } else {
         if (type === 'pay') {
           // display the image using either data...
-          paySource = { uri: `data:image/jpeg;base64${response.data}` };
+          paySource = { uri: `data:image/jpeg;base64,${response.data}` };
           payBuffer = response.data;
 
           this.setState({
@@ -123,11 +123,11 @@ class AddEgg extends Component {
 
   renderEggTypeHeader() {
     if (this.state.visibleOutsideFence) {
-      return (<Text style={{ paddingRight: 20, fontFamily: 'Heiti SC', fontSize: 14 }}>
+      return (<Text style={{ paddingRight: 20, fontFamily: 'Heiti SC', fontSize: 17 }}>
         Show egg location
       </Text>);
     }
-    return <Text style={{ paddingRight: 20, fontFamily: 'Heiti SC', fontSize: 14, fontStyle: 'italic' }}>Hide egg location</Text>;
+    return <Text style={{ paddingRight: 20, fontFamily: 'Heiti SC', fontSize: 17, fontStyle: 'italic' }}>Hide egg location</Text>;
   }
 
   toggleEggVisibility() {
@@ -136,7 +136,7 @@ class AddEgg extends Component {
   }
 
   render() {
-    const { containerStyle, toggleVisibilitySection, friendPickerSection } = styles;
+    const { containerStyle, toggleVisibilitySection, friendPickerSection, submitSection } = styles;
     return (
       <View style={containerStyle}>
         <View style={toggleVisibilitySection}>
@@ -147,8 +147,8 @@ class AddEgg extends Component {
           />
         </View>
         <CardSection>
-          <View style={{ flexDirection: 'column', flex: 1, height: 50 }}>
-            <Text style={{ fontFamily: 'Heiti SC' }}>Egg pick-up instructions</Text>
+          <View style={{ flexDirection: 'column', flex: 1, height: 70 }}>
+            <Text style={{ fontFamily: 'Heiti SC', fontSize: 17, paddingBottom: 10 }}>Egg pick-up instructions</Text>
             <InputNoLabel
               placeholder="Where we first met <3"
               onChangeText={e => this.handleInputChange('text', e)}
@@ -157,8 +157,8 @@ class AddEgg extends Component {
           </View>
         </CardSection>
         <CardSection>
-          <View style={{ flexDirection: 'column', flex: 1 }}>
-            <Text style={{ fontFamily: 'Heiti SC' }}>Secret message</Text>
+          <View style={{ flexDirection: 'column', flex: 1, height: 70 }}>
+            <Text style={{ fontFamily: 'Heiti SC', fontSize: 17, paddingBottom: 10 }}>Secret message</Text>
             <InputNoLabel
               placeholder="You found me!"
               onChangeText={e => this.handleInputChange('payloadText', e)}
@@ -172,13 +172,13 @@ class AddEgg extends Component {
           >
             <Image
               source={this.state.payloadImageSource}
-              style={{ width: 50, height: 50 }}
+              style={{ width: 60, height: 60, margin: 10, alignSelf: 'center' }}
             />
           </TouchableHighlight>
         </CardSection>
         <View style={friendPickerSection}>
           <View style={{ flexDirection: 'column', flex: 1 }}>
-            <Text style={{ fontFamily: 'Heiti SC' }}>Select recipient:</Text>
+            <Text style={{ fontFamily: 'Heiti SC', fontSize: 17 }}>Select recipient:</Text>
             <Picker
               selectedValue={this.state.recipient}
               onValueChange={friend => this.setState({ recipient: friend })}
@@ -187,7 +187,7 @@ class AddEgg extends Component {
             </Picker>
           </View>
         </View>
-        <View style={toggleVisibilitySection}>
+        <View style={submitSection}>
           <PurpleButton onPress={this.onSubmitNode}>Submit</PurpleButton>
           <OrangeButton onPress={this.onCancelSubmitNode}>Cancel</OrangeButton>
         </View>
@@ -220,6 +220,20 @@ const styles = StyleSheet.create({
     padding: 10,
     marginHorizontal: 20,
     backgroundColor: '#fff',
+    color: '#fff',
+    flexDirection: 'row',
+    borderColor: '#ddd',
+    position: 'relative',
+    borderRadius: 4,
+    alignItems: 'center',
+    alignSelf: 'stretch',
+  },
+  submitSection: {
+    borderBottomWidth: 1,
+    padding: 10,
+    marginHorizontal: 20,
+    backgroundColor: '#fff',
+    justifyContent: 'space-between',
     flexDirection: 'row',
     borderColor: '#ddd',
     position: 'relative',

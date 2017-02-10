@@ -11,7 +11,7 @@ const Login = (props) => {
   return (
     <View style={container}>
       <View>
-        <Image style={image} source={{uri: `${tunnelIP}/eggboyHUGE.png`}} />
+        <Image style={image} source={{ uri: `${tunnelIP}/eggboyHUGE.png` }} />
         <LoginButton
           readPermissions={['email', 'user_friends']}
           onLoginFinished={
@@ -43,7 +43,9 @@ const styles = {
   },
   loginButton: {
     height: 30,
-    width: 200
+    width: 200,
+    flexDirection: 'column',
+    marginTop: 100,
   },
   text: {
     textAlign: 'center',
