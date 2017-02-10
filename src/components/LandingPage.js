@@ -403,15 +403,14 @@ class LandingPage extends Component {
             />
           </Modal>
 
-          <Modal
-            visible={this.props.showConfirmationModal}
-            transparent
-            animationType="fade"
-            onRequestClose={() => {}}
-          >
-            <EggConfirmationModal />
-          </Modal>
-
+            <Modal
+              visible={this.props.showConfirmationModal}
+              transparent
+              animationType="fade"
+              onRequestClose={() => {}}
+            >
+              <EggConfirmationModal />
+            </Modal>
         </View>
       </View>
     );
@@ -462,6 +461,7 @@ const mapStateToProps = (state) => {
 
   return {
     showAddNodeModal: state.addNodeModal.showAddNodeModal,
+    showConfirmationModal: state.addNodeModal.showConfirmationModal,
     annotation: state.map.annotation,
     selectedEgg,
     allEggs,
