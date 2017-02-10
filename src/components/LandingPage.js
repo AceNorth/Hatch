@@ -225,7 +225,7 @@ class LandingPage extends Component {
 
   renderViewToggleButton() {
     if (this.state.showLoading) {
-          return (<Text style={styles.loadingText}> LOADING YOUR EGGS... </Text>)
+          return (<Text style={styles.loadingText}> Loading your eggs... </Text>)
         }
 
     if (this.state.showEggs) {
@@ -347,6 +347,9 @@ class LandingPage extends Component {
         [ {text: 'Close', onPress: () => console.log('Closed Alert!')}]
       )
     }
+
+  onConfirm() {
+    this.setState({showConfirmationModal: false})
   }
 
   render() {
@@ -400,6 +403,14 @@ class LandingPage extends Component {
             />
           </Modal>
 
+          <Modal
+            visible={this.props.showConfirmationModal}
+            transparent
+            animationType="fade"
+            onRequestClose={() => {}}
+          >
+            <EggConfirmationModal />
+          </Modal>
 
         </View>
       </View>
@@ -414,7 +425,8 @@ const styles = StyleSheet.create({
   loadingText: {
     fontWeight: '500',
     alignSelf: 'center',
-    color: '#fff'
+    color: '#fff',
+    fontFamily: 'Heiti SC'
   },
   viewStyle: {
     width: DEVICE_WIDTH,
@@ -482,7 +494,8 @@ const mapDispatchToProps = dispatch => ({
 });
 
 LandingPage.propTypes = {
-  showAddNodeModal: PropTypes.boolean,
+  showAddNodeModal: PropTypes.bool,
+  showConfirmationModal: PropTypes.bool,
   annotation: PropTypes.array,
   selectedEgg: PropTypes.number,
   allEggs: PropTypes.object,

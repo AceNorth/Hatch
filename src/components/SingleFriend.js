@@ -41,6 +41,7 @@ const styles = {
   },
   name: {
     fontSize: 18,
+    fontFamily: 'Heiti SC',
     paddingLeft: 15,
   },
   photo: {

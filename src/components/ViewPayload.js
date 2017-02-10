@@ -8,11 +8,10 @@ import { Card, CardSection, Button } from './common';
 import { ViewPayloadCard } from './ViewPayloadCard';
 import { ViewPayloadCardSection } from './ViewPayloadCardSection';
 import { ModalButton } from './ModalButton'
-
 import PlayAudio from './PlayAudio';
+
 import { tunnelIP } from '../TUNNELIP';
 import { pickupEgg } from '../reducers/eggs';
-import { fetchAudio } from '../reducers/audio';
 
 // Fetches device height and width
 let { height, width } = Dimensions.get('window');
@@ -25,23 +24,24 @@ class ViewPayload extends Component {
     super(props);
     this.state = {
       viewEgg: props.allEggs[props.selectedEgg],
-      payloadImage:{}
-    }
+      payloadImage: {},
+    };
   }
 
-  componentWillMount(){
-    this.setState({viewEgg: this.props.allEggs[this.props.selectedEgg]})        
-      let payloadImage2;
-      axios.get(`${tunnelIP}/api/egg/payloadImage/`+ this.props.allEggs[this.props.selectedEgg].payloadId)
-        .then(response => {
-          payloadImage2 = response.data;
-          this.setState({ payloadImage: payloadImage2 });
-        });
+  componentWillMount() {
+    this.setState({ viewEgg: this.props.allEggs[this.props.selectedEgg] });
+
+    let payloadImage2;
+    axios.get(`${tunnelIP}/api/egg/payloadImage/${this.props.allEggs[this.props.selectedEgg].payloadId}`)
+      .then(response => {
+        payloadImage2 = response.data;
+        this.setState({ payloadImage: payloadImage2 });
+      });
   }
 
   onSubmitPickup(){
     let egg = this.state.viewEgg
-    // this.state.viewEgg.pickedUp = true;
+    this.state.viewEgg.pickedUp = true;
     this.props.pickupEgg(this.state.viewEgg)
   }
 
@@ -102,8 +102,8 @@ const styles = {
     paddingTop: 50
   },
   imageStyle: {
-    width: 80,
-    height: 80
+    width: 200,
+    height: 200
   }
 };
 
@@ -118,9 +118,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       pickupEgg: function(egg) {
         dispatch(pickupEgg(egg));
       },
-      fetchAudio: function(audioUrl) {
-        dispatch(fetchAudio(audioUrl));
-      }
     };
 };
 
