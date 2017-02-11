@@ -1465,7 +1465,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = Hatch2;
+				PRODUCT_BUNDLE_IDENTIFIER = Hatch;
 				PRODUCT_NAME = leftYouNative;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -1491,7 +1491,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = Hatch2;
+				PRODUCT_BUNDLE_IDENTIFIER = Hatch;
 				PRODUCT_NAME = leftYouNative;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
