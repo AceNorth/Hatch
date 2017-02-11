@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, View, Modal, MapView } from 'react-native';
-import { CardSection, Button } from './common';
+import { CardSection, PurpleButton, OrangeButton, InputNoLabel } from './common';
 
 const EggManagerModal = ({ children, visible, onDelete, onCancel }) => {
   const { containerStyle, textStyle, cardSectionStyle } = styles;
@@ -18,8 +18,8 @@ const EggManagerModal = ({ children, visible, onDelete, onCancel }) => {
         </CardSection>
 
         <CardSection>
-          <Button onPress={onDelete}>Delete this egg</Button>
-          <Button onPress={onCancel}>Done</Button>
+          <PurpleButton onPress={onDelete}>Delete Egg</PurpleButton>
+          <OrangeButton onPress={onCancel}>Done</OrangeButton>
         </CardSection>
       </View>
     </Modal>
