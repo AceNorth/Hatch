@@ -1,9 +1,3 @@
-# leftYouNative
-left you somethin using native map API
+# Hatch
 
-TESTING NOTES:
-
-1) In "left-you-somethin-backend", run "npm start"
-2) In the same folder, run "lt --port 1333" to get a tunnelIP
-3) In leftYouNative, change the file "src/TUNNELIP" to reflect the new tunnelIP
-4) enjoy!
+Hatch is a location-based mobile messaging app built with Node, Express, Postgres, and React Native.  It allows you to send messages that that the recipient can read when they are physically located within a certain geofence.  We call it Hatch as a play on the Easter egg concept - an intentional inside joke, a hidden message, or a secret feature of an interactive work (often, a computer program or video game).  It uses the Facebook SDK to connect users with their Facebook friends, encodes images in base64 for secure server-side storage, and sets up geofences that are approximately 1/2 block radius from the user-selected location.
